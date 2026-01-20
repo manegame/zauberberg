@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { generateStaticPaths, getPreviewData } from "../cms/dato";
+import isPreview from "../utils/isPreview";
+
+export async function getStaticPaths() {
+    return await generateStaticPaths();
+}
+
+const params = Astro.params;
+
+const props = Astro.props;
+
+let data = props.data;
+
+if (isPreview()) {
+    data = await getPreviewData(params);
+}
+---
+
+<Layout>
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+</Layout>
