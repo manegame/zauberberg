@@ -1,5 +1,9 @@
 ---
 import "../styles/global.css";
+
+import Navigation from "../components/global/Navigation.astro";
+
+const { layout } = Astro.props;
 ---
 
 <!doctype html>
@@ -11,6 +15,7 @@ import "../styles/global.css";
         <title>Astro Basics</title>
     </head>
     <body>
+        {layout?.navigation && <Navigation data={layout.navigation} />}
         <slot />
     </body>
 </html>

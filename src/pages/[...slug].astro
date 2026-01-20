@@ -1,7 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
 import { generateStaticPaths, getPreviewData } from "../cms/dato";
 import isPreview from "../utils/isPreview";
+
+import Layout from "../layouts/Layout.astro";
+import Page from "../components/global/Page.astro";
 
 export async function getStaticPaths() {
     return await generateStaticPaths();
@@ -18,6 +20,6 @@ if (isPreview()) {
 }
 ---
 
-<Layout>
-    <pre>{JSON.stringify(data, null, 2)}</pre>
+<Layout layout={data.layout}>
+    <Page data={data.page} />
 </Layout>
