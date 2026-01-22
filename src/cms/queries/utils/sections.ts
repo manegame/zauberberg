@@ -18,7 +18,10 @@ export default `
     ... on TitleContentModuleRecord {
         _modelApiKey
         id
-        title
+        items {
+          title
+          content
+        }
     }
     ... on TwoColsModuleRecord {
         _modelApiKey

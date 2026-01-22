@@ -62,13 +62,11 @@
     --text-caption-desktop--line-height: 1.1;
     --text-caption-desktop--font-weight: 500;
     --text-caption-desktop--letter-spacing: 0.05em;
-    --text-caption-desktop--text-transform: uppercase;
 
     --text-caption-mobile: 0.9rem;
     --text-caption-mobile--line-height: 1.1;
     --text-caption-mobile--font-weight: 500;
     --text-caption-mobile--letter-spacing: 0.05em;
-    --text-caption-mobile--text-transform: uppercase;
 
     --spacing: 0.1rem;
     --spacing-gutter: 3rem;
@@ -103,6 +101,9 @@
         @apply text-nav-mobile md:text-nav-desktop;
     }
     .text-caption {
-        @apply text-caption-mobile md:text-caption-desktop;
+        @apply text-caption-mobile md:text-caption-desktop uppercase;
+    }
+    .wysiwyg-content {
+        @apply [&_a]:underline;
     }
 }
