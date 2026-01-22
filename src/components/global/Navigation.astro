@@ -1,5 +1,11 @@
 ---
+import DatoLink from "./DatoLink.astro";
+
 const { data } = Astro.props;
 ---
 
-<header>navigation id : {data.id}</header>
+<header>
+    <div>
+        {data.links.map((link: any) => <DatoLink link={link} />)}
+    </div>
+</header>

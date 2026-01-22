@@ -1,0 +1,18 @@
+---
+const { link, class: className = "" } = Astro.props;
+
+const { label, externalLink, internalLink } = link;
+
+let linkUrl = "#";
+
+if (externalLink) {
+    linkUrl = externalLink;
+} else if (internalLink) {
+    const interlinkUrl = internalLink.slug || "/";
+    if (interlinkUrl) linkUrl = interlinkUrl;
+}
+
+const target = link.externalLink ? "_blank" : "_self";
+---
+
+<a href={linkUrl} class={className} target={target}>{label}</a>
