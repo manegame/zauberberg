@@ -1,8 +1,16 @@
 ---
+import Section from "../global/Section.astro";
+
 const { data } = Astro.props;
 ---
 
 <div>
     <h1>Basic</h1>
     <p>Title: {data.title}</p>
+    {
+        Array.isArray(data.content) &&
+            data.content.map((blok: any) => {
+                return <Section data={blok} />;
+            })
+    }
 </div>
