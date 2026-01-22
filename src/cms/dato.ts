@@ -18,6 +18,11 @@ const excecuteQuery = async (query: string, variables = {}) => {
     });
 
     const json = await response.json();
+
+    if (json.errors) {
+        throw new Error(JSON.stringify(json.errors));
+    }
+
     const data = json.data;
 
     return data;

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
 
 import Navigation from "../components/global/Navigation.astro";
 
@@ -13,15 +14,19 @@ const { layout } = Astro.props;
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <title>Astro Basics</title>
+        <ClientRouter />
     </head>
     <body>
         {layout?.navigation && <Navigation data={layout.navigation} />}
         <slot />
-    </body>
-</html>
+    </body></html
+>
 
 <script>
     import Zauberberg from "../scripts/Zauberberg";
 
+    console.log("layout loaded");
     const app = new Zauberberg();
+    console.log("is app initialized : ", app.initialized);
+    app.init();
 </script>
