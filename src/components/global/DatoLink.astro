@@ -1,5 +1,5 @@
 ---
-const { link, class: className = "" } = Astro.props;
+const { link, class: className = "", currentClass = "" } = Astro.props;
 
 const { label, externalLink, internalLink } = link;
 
@@ -8,11 +8,14 @@ let linkUrl = "#";
 if (externalLink) {
     linkUrl = externalLink;
 } else if (internalLink) {
-    const interlinkUrl = internalLink.slug || "/";
+    const interlinkUrl = internalLink.slug ? `/${internalLink.slug}` : "/";
     if (interlinkUrl) linkUrl = interlinkUrl;
 }
+
+const isCurrent = internalLink && linkUrl === Astro.url.pathname;
 
 const target = link.externalLink ? "_blank" : "_self";
 ---
 
-<a href={linkUrl} class={className} target={target}>{label}</a>
+<a href={linkUrl} class:list={[className, { [currentClass]: isCurrent }]} target={target}>{label}</a
+>

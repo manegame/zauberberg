@@ -1,11 +1,25 @@
 ---
 import DatoLink from "./DatoLink.astro";
+import Logo from "./Logo.astro";
 
 const { data } = Astro.props;
 ---
 
-<header>
-    <div>
-        {data.links.map((link: any) => <DatoLink link={link} />)}
-    </div>
-</header>
+<div
+    class="px-gutter pointer-events-none fixed inset-0 flex h-screen w-screen items-center justify-center pt-20 pb-30 md:py-0"
+>
+    <header class="flex h-full w-full flex-col items-center justify-between md:h-auto md:flex-row">
+        <Logo class="h-100" />
+        <div class="flex items-center gap-10">
+            {
+                data.links.map((link: any) => (
+                    <DatoLink
+                        class="text-nav pointer-events-auto opacity-30"
+                        currentClass="opacity-100"
+                        link={link}
+                    />
+                ))
+            }
+        </div>
+    </header>
+</div>
