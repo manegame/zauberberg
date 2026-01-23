@@ -1,10 +1,5 @@
 ---
-const {
-    link,
-    class: className = "",
-    currentClass = "",
-    showExternalIcon = false,
-} = Astro.props;
+const { link, class: className = "", currentClass = "" } = Astro.props;
 
 const { label, externalLink, internalLink } = link;
 
@@ -28,5 +23,5 @@ const isExternal = !!externalLink;
     class:list={[className, { [currentClass]: isCurrent }]}
     target={target}
 >
-    {label}{showExternalIcon && isExternal && " ↗"}
+    <slot>{label}</slot>
 </a>

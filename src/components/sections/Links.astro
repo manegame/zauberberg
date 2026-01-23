@@ -8,11 +8,10 @@ const { data } = Astro.props;
     {
         data.links.map((link: any) => (
             <div>
-                <DatoLink
-                    class="text-nav underline"
-                    link={link}
-                    showExternalIcon={true}
-                />
+                <DatoLink class="text-nav underline" link={link}>
+                    {link.label}
+                    {link.externalLink && " ↗"}
+                </DatoLink>
             </div>
         ))
     }
