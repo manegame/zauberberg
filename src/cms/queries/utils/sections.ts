@@ -10,6 +10,7 @@ export default `
     ... on IndentedTextModuleRecord {
         _modelApiKey
         id
+        text
     }
     ... on LinksModuleRecord {
         _modelApiKey

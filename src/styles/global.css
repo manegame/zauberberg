@@ -103,7 +103,15 @@
     .text-caption {
         @apply text-caption-mobile md:text-caption-desktop uppercase;
     }
+
+    /* Sections */
+    .sections-wrapper {
+        @apply flex flex-col gap-50 md:gap-70;
+    }
     .wysiwyg-content {
         @apply [&_a]:underline;
+    }
+    .indented-content {
+        @apply [&_a]:underline [&_p:not(:first-child)]:indent-52 md:[&_p:not(:first-child)]:indent-60;
     }
 }

@@ -1,7 +1,7 @@
 ---
-const { blok } = Astro.props;
+const { data } = Astro.props;
 ---
 
 <section class="section-indented-text">
-    <p>Section indented text</p>
+    <div class="text-nav indented-content" set:html={data.text} />
 </section>
