@@ -25,7 +25,7 @@ const isExternal = !!externalLink;
 
 <a
     href={linkUrl}
-    class:list={[className, "underline", { [currentClass]: isCurrent }]}
+    class:list={[className, { [currentClass]: isCurrent }]}
     target={target}
 >
     {label}{showExternalIcon && isExternal && " ↗"}
