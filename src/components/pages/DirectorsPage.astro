@@ -1,8 +1,72 @@
 ---
+import DatoLink from "../global/DatoLink.astro";
+import gsap from "gsap";
+
 const { data } = Astro.props;
+
+// temp: duplicate first director
+const directors = new Array(100).fill(data.directors[0]).map((director, index) => {
+    const name = `${director.name} ${index + 1}`;
+    return { ...director, name };
+});
+
+const directorsDup = directors.map((director) => {
+    const name = director.name + " dup";
+    return { ...director, name };
+});
+
+const directorsWithDuplicate = [...directors, ...directors];
+
+const ITEM_HEIGHT = 26; // 26px per director item
+
+const wrap = gsap.utils.wrap(
+    -directors.length * 1.5 * ITEM_HEIGHT,
+    -directors.length * 0.5 * ITEM_HEIGHT,
+);
+
+const randomIndex = Math.floor(Math.random() * directors.length) + directors.length;
+const initialOffset = wrap(randomIndex * ITEM_HEIGHT);
 ---
 
-<div class="min-h-screen bg-[#6B5529]">
-    <h1>Directors Page</h1>
-    <p>Title: {data.title}</p>
+<div
+    id="directors-page"
+    data-initial={initialOffset}
+    class="relative h-screen overflow-hidden bg-[#6B5529]"
+>
+    <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
+        <div
+            id="directors-list"
+            style={`transform: translateY(${initialOffset}px)`}
+            class="text-nav flex w-full flex-col items-center"
+        >
+            {
+                directorsWithDuplicate.map((director) => (
+                    <DatoLink class="relative mb-8 h-18" link={{ internalLink: director }}>
+                        <span class="opacity-20">{director.name}</span>
+                    </DatoLink>
+                ))
+            }
+        </div>
+    </div>
+    <div
+        class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
+    >
+        <div
+            id="directors-ghost-list"
+            style={`transform: translateY(${initialOffset}px)`}
+            class="text-nav flex w-full flex-col items-center"
+        >
+            {
+                directorsWithDuplicate.map((director) => (
+                    <span class="mb-8 h-18">{director.name}</span>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- Debug -->
+
+    <!-- <div class="absolute top-[50%] right-0 left-0 h-1 -translate-y-9 bg-[#ff0000] opacity-50"></div>
+    <div class="absolute top-[50%] right-0 left-0 h-1 bg-[#ff0000] opacity-50"></div>
+    <div class="absolute top-[50%] right-0 left-0 h-1 translate-y-9 bg-[#ff0000] opacity-50"></div> -->
 </div>

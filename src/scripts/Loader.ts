@@ -3,19 +3,22 @@ import gsap from "gsap";
 export default class Loader {
     element: HTMLElement;
     letters: NodeListOf<Element>;
-    startAnimation: gsap.core.Timeline | null;
+    startAnimation: gsap.core.Timeline | Promise<void> | null;
     finished: boolean;
 
     constructor() {
         this.element = document.getElementById("loader")!;
-        this.letters = this.element.querySelectorAll(".loader-path");
+        this.letters = this.element?.querySelectorAll(".loader-path");
 
         this.startAnimation = null;
         this.finished = false;
     }
 
     start() {
-        if (!this.element || !this.letters) return;
+        if (!this.element || !this.letters) {
+            this.startAnimation = Promise.resolve();
+            return;
+        }
 
         const startTl = gsap.timeline({ paused: true });
 
