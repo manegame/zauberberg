@@ -18,7 +18,7 @@ export default class DefaultSwap {
     }
 
     async execute() {
-        console.log("execute: ", this.constructor.name);
+        console.log("executing swap: ", this.constructor.name);
         this.beforeTransition();
         await this.transition();
         this.afterTransition();
@@ -30,6 +30,9 @@ export default class DefaultSwap {
 
     beforeTransition() {
         console.log("before transi: ", this.constructor.name);
+
+        const loaderEl = this.doc.getElementById("loader");
+        if (loaderEl) loaderEl.setAttribute("data-finished", "true");
 
         swapFunctions.deselectScripts(this.doc);
         swapFunctions.swapRootAttributes(this.doc);
