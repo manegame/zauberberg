@@ -1,7 +1,12 @@
 ---
-const { blok } = Astro.props;
+const { data } = Astro.props;
 ---
 
 <section class="section-blockquote">
-    <p>Section blockquote</p>
+    <blockquote>
+        <p
+            class={`text-quote text-center text-pretty before:content-['“_'] after:content-['”']`}
+            >{data.text}</p
+        >
+    </blockquote>
 </section>

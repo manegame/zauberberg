@@ -4,6 +4,7 @@ export default `
     ... on BlockquoteModuleRecord {
         _modelApiKey
         id
+        text
     }
     ... on ImagesModuleRecord {
         _modelApiKey
