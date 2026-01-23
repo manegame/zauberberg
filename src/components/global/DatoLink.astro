@@ -15,7 +15,13 @@ if (externalLink) {
 const isCurrent = internalLink && linkUrl === Astro.url.pathname;
 
 const target = link.externalLink ? "_blank" : "_self";
+const isExternal = !!externalLink;
 ---
 
-<a href={linkUrl} class:list={[className, { [currentClass]: isCurrent }]} target={target}>{label}</a
+<a
+    href={linkUrl}
+    class:list={[className, { [currentClass]: isCurrent }]}
+    target={target}
 >
+    <slot>{label}</slot>
+</a>

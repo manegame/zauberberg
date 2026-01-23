@@ -1,3 +1,5 @@
+import link from "../utils/link";
+
 export default `
     ... on BlockquoteModuleRecord {
         _modelApiKey
@@ -15,6 +17,9 @@ export default `
     ... on LinksModuleRecord {
         _modelApiKey
         id
+        links {
+            ${link}
+        }
     }
     ... on TitleContentModuleRecord {
         _modelApiKey
