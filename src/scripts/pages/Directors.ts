@@ -83,7 +83,7 @@ export default class DirectorsPage extends Page {
 
         this.scrollTo = gsap.quickTo(this.list, "y", {
             ease: "power3",
-            duration: 0.8,
+            duration: 1.2,
             modifiers: {
                 y: gsap.utils.unitize(this.wrap),
             },
@@ -91,7 +91,7 @@ export default class DirectorsPage extends Page {
 
         this.ghostScrollTo = gsap.quickTo(this.ghostList, "y", {
             ease: "power3",
-            duration: 0.8,
+            duration: 1.2,
             modifiers: {
                 y: gsap.utils.unitize(this.wrap),
             },

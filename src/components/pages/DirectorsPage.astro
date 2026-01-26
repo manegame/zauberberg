@@ -1,4 +1,5 @@
 ---
+import DatoImage from "../global/DatoImage.astro";
 import DatoLink from "../global/DatoLink.astro";
 import gsap from "gsap";
 
@@ -26,6 +27,8 @@ const wrap = gsap.utils.wrap(
 
 const randomIndex = Math.floor(Math.random() * directors.length) + directors.length;
 const initialOffset = wrap(randomIndex * ITEM_HEIGHT);
+
+const image = directors[0].showcase.poster;
 ---
 
 <div
@@ -33,6 +36,10 @@ const initialOffset = wrap(randomIndex * ITEM_HEIGHT);
     data-initial={initialOffset}
     class="relative h-dvh overflow-hidden overscroll-none bg-[#6B5529] select-none"
 >
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <DatoImage class="size-full object-cover" image={image} />
+    </div>
     <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
         <div
             id="directors-list"
