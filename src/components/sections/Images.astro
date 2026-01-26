@@ -1,7 +1,15 @@
 ---
-const { blok } = Astro.props;
+import DatoImage from "../global/DatoImage.astro";
+
+const { data } = Astro.props;
 ---
 
-<section class="section-images">
-    <p>Section images</p>
+<section class="section-images flex flex-col gap-5">
+    {
+        data.images.map((image: any) => (
+            <div class="w-full">
+                <DatoImage class="w-full" image={image} />
+            </div>
+        ))
+    }
 </section>
