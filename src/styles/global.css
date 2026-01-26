@@ -80,6 +80,18 @@
     --text-quote-mobile--letter-spacing: 0.05em;
     --text-quote-mobile--font-feature-settings: 'ss07' on;
 
+    --text-subtitle-desktop: 1.9rem;
+    --text-subtitle-desktop--line-height: 1.1;
+    --text-subtitle-desktop--font-weight: 400;
+    --text-subtitle-desktop--letter-spacing: 0.03em;
+    --text-subtitle-desktop--font-feature-settings: 'ss07' on;
+
+    --text-subtitle-mobile: 1.5rem;
+    --text-subtitle-mobile--line-height: 1.1;
+    --text-subtitle-mobile--font-weight: 400;
+    --text-subtitle-mobile--letter-spacing: 0em;
+    --text-subtitle-mobile--font-feature-settings: 'ss07' on;
+
     --spacing: 0.1rem;
     --spacing-gutter: 3rem;
 }
@@ -117,6 +129,9 @@
     }
     .text-quote {
         @apply text-quote-mobile md:text-quote-desktop font-giga italic;
+    }
+    .text-subtitle {
+        @apply text-subtitle-mobile md:text-subtitle-desktop font-giga italic underline underline-offset-3 md:no-underline;
     }
 
     /* Sections */
