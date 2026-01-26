@@ -1,5 +1,12 @@
 import Page from "./Page";
-import gsap from "gsap";
+
+import { gsap } from "gsap";
+
+// @ts-ignore
+import { Observer } from "gsap/Observer";
+
+gsap.registerPlugin(Observer);
+
 export default class DirectorsPage extends Page {
     y!: number;
     list!: HTMLElement;
@@ -10,6 +17,7 @@ export default class DirectorsPage extends Page {
     scrollEndTimeout?: number;
     DELTA_MULTIPLIER: number;
     ITEM_HEIGHT: number;
+    observer!: Observer;
 
     constructor() {
         super();
@@ -89,8 +97,13 @@ export default class DirectorsPage extends Page {
             },
         });
 
-        this.app.scroll.lenis.on("virtual-scroll", (scroll: any) => {
-            this.onScrollEvent(scroll);
+        this.observer = Observer.create({
+            target: this.container,
+            type: "wheel,touch,pointer",
+            wheelSpeed: -0.5,
+            onChangeY: (self) => {
+                this.onScrollEvent(self);
+            },
         });
     }
 }
