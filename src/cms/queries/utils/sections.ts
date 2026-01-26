@@ -1,4 +1,5 @@
 import link from "../utils/link";
+import img from "../utils/img";
 
 export default `
     ... on BlockquoteModuleRecord {
@@ -9,6 +10,9 @@ export default `
     ... on ImagesModuleRecord {
         _modelApiKey
         id
+        images {
+            ${img}
+        }
     }
     ... on IndentedTextModuleRecord {
         _modelApiKey
