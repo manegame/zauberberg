@@ -35,6 +35,7 @@ export default class DirectorsPage extends Page {
     destroy() {
         super.destroy();
         if (this.observer) this.observer.kill();
+        if (this.scrollEndTimeout) clearTimeout(this.scrollEndTimeout);
     }
 
     init() {
@@ -45,6 +46,8 @@ export default class DirectorsPage extends Page {
     }
 
     onScrollEvent(scroll: any) {
+        if (this.scrollEndTimeout) clearTimeout(this.scrollEndTimeout);
+
         const deltaY = Math.max(
             -this.MAX_SCROLL_SPEED,
             Math.min(this.MAX_SCROLL_SPEED, scroll.deltaY),
@@ -55,13 +58,28 @@ export default class DirectorsPage extends Page {
         this.scrollTo(this.y);
         this.ghostScrollTo(this.y);
 
-        if (this.scrollEndTimeout) {
-            clearTimeout(this.scrollEndTimeout);
-        }
-
         this.scrollEndTimeout = setTimeout(() => {
-            this.snapToGrid();
-        }, 800) as any;
+            this.onScrollEnd();
+        }, 100) as any;
+    }
+
+    onScrollEnd() {
+        this.snapToGrid();
+        this.selectCurrentDirector();
+    }
+
+    selectCurrentDirector() {
+        const totalItems = this.list.children.length;
+        const centerIndex =
+            Math.round(
+                (-this.y % (totalItems * this.ITEM_HEIGHT)) / this.ITEM_HEIGHT,
+            ) % totalItems;
+
+        const directors = this.list.querySelectorAll(".director-item");
+
+        const directorToSelect = directors[centerIndex] as HTMLElement;
+
+        console.log("selected director: ", directorToSelect.dataset.director);
     }
 
     snapToGrid() {

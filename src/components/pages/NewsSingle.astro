@@ -1,15 +1,14 @@
 ---
 import LeftRightTitle from "../news/LeftRightTitle.astro";
 import Section from "../global/Section.astro";
+import EdgeGradient from "../global/EdgeGradient.astro";
 
 const { data } = Astro.props;
 
 const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
-    const month = date
-        .toLocaleString("en-US", { month: "short" })
-        .toUpperCase();
+    const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
     const year = date.getFullYear();
     return `${day} ${month}, ${year}`;
 };
@@ -18,18 +17,14 @@ const formattedDate = data.date ? formatDate(data.date) : "";
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
-    <div
-        class="flex w-full flex-col items-center gap-25 pt-212 pb-80 md:gap-35 md:py-112"
-    >
+    <div class="flex w-full flex-col items-center gap-25 pt-212 pb-80 md:gap-35 md:py-112">
         <div class="flex w-full flex-col items-center gap-8 md:gap-15">
             <div class="flex w-10/12 flex-col gap-9 md:w-6/24 md:gap-10">
                 <LeftRightTitle
                     leftAlignedTitle={data.leftAlignedTitle}
                     rightAlignedTitle={data.rightAlignedTitle}
                 />
-                <div
-                    class="text-caption flex flex-wrap justify-center gap-7 opacity-30 md:gap-10"
-                >
+                <div class="text-caption flex flex-wrap justify-center gap-7 opacity-30 md:gap-10">
                     {
                         formattedDate && (
                             <time datetime={data.date} itemprop="datePublished">
@@ -53,4 +48,5 @@ const formattedDate = data.date ? formatDate(data.date) : "";
             }
         </div>
     </div>
+    <EdgeGradient top="0" topFade="0" />
 </div>

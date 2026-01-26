@@ -40,34 +40,38 @@ const image = directors[0].showcase.poster;
         <div class="absolute inset-0 bg-black/40"></div>
         <DatoImage class="size-full object-cover" image={image} />
     </div>
-    <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
-        <div
-            id="directors-list"
-            style={`transform: translateY(${initialOffset}px)`}
-            class="text-nav flex w-full flex-col items-center"
-        >
-            {
-                directorsWithDuplicate.map((director) => (
-                    <DatoLink class="relative mb-8 h-18" link={{ internalLink: director }}>
-                        <span class="opacity-20">{director.name}</span>
-                    </DatoLink>
-                ))
-            }
+    <div class="pointer-events-none absolute inset-0 max-md:mask-(--masking-edge-gradient)">
+        <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
+            <div
+                id="directors-list"
+                style={`transform: translateY(${initialOffset}px)`}
+                class="text-nav flex w-full flex-col items-center"
+            >
+                {
+                    directorsWithDuplicate.map((director) => (
+                        <div data-director={director.name} class="director-item mb-8 h-18">
+                            <DatoLink class="relative h-18" link={{ internalLink: director }}>
+                                <span class="opacity-20">{director.name}</span>
+                            </DatoLink>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
-    </div>
-    <div
-        class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
-    >
         <div
-            id="directors-ghost-list"
-            style={`transform: translateY(${initialOffset}px)`}
-            class="text-nav flex w-full flex-col items-center"
+            class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
         >
-            {
-                directorsWithDuplicate.map((director) => (
-                    <span class="mb-8 h-18">{director.name}</span>
-                ))
-            }
+            <div
+                id="directors-ghost-list"
+                style={`transform: translateY(${initialOffset}px)`}
+                class="text-nav flex w-full flex-col items-center"
+            >
+                {
+                    directorsWithDuplicate.map((director) => (
+                        <span class="mb-8 h-18">{director.name}</span>
+                    ))
+                }
+            </div>
         </div>
     </div>
 

@@ -72,28 +72,38 @@
     --text-quote-desktop--line-height: 1.1;
     --text-quote-desktop--font-weight: 400;
     --text-quote-desktop--letter-spacing: 0em;
-    --text-quote-desktop--font-feature-settings:'ss07' on;
+    --text-quote-desktop--font-feature-settings: "ss07" on;
 
     --text-quote-mobile: 1.9rem;
     --text-quote-mobile--line-height: 1.1;
     --text-quote-mobile--font-weight: 500;
     --text-quote-mobile--letter-spacing: 0.05em;
-    --text-quote-mobile--font-feature-settings: 'ss07' on;
+    --text-quote-mobile--font-feature-settings: "ss07" on;
 
     --text-subtitle-desktop: 1.9rem;
     --text-subtitle-desktop--line-height: 1.1;
     --text-subtitle-desktop--font-weight: 400;
     --text-subtitle-desktop--letter-spacing: 0.03em;
-    --text-subtitle-desktop--font-feature-settings: 'ss07' on;
+    --text-subtitle-desktop--font-feature-settings: "ss07" on;
 
     --text-subtitle-mobile: 1.5rem;
     --text-subtitle-mobile--line-height: 1.1;
     --text-subtitle-mobile--font-weight: 400;
     --text-subtitle-mobile--letter-spacing: 0em;
-    --text-subtitle-mobile--font-feature-settings: 'ss07' on;
+    --text-subtitle-mobile--font-feature-settings: "ss07" on;
 
     --spacing: 0.1rem;
     --spacing-gutter: 3rem;
+
+    --masking-edge-gradient: linear-gradient(
+        to bottom,
+        transparent,
+        transparent 130px,
+        black 200px,
+        black calc(100% - 150px),
+        transparent calc(100% - 54px),
+        transparent
+    );
 }
 
 @layer base {
@@ -145,10 +155,6 @@
         @apply [&_a]:underline [&_p:not(:first-child)]:indent-52 md:[&_p:not(:first-child)]:indent-60;
     }
     .wysiwyg-content {
-        @apply 
-            [&_a]:underline
-            [&_h2]:underline [&_h2]:my-35 [&_h2:first-child]:mt-0 [&_h2:last-child]:mb-0
-            [&_h3]:my-14 [&_h3:first-child]:mt-0 [&_h3:last-child]:mb-0
-            [&_h4]:uppercase [&_h4]:text-caption-mobile [&_h4]:md:text-caption-desktop [&_h4]:my-14 [&_h4:first-child]:mt-0 [&_h4:last-child]:mb-0;
+        @apply [&_h4]:text-caption-mobile [&_h4]:md:text-caption-desktop [&_a]:underline [&_h2]:my-35 [&_h2]:underline [&_h2:first-child]:mt-0 [&_h2:last-child]:mb-0 [&_h3]:my-14 [&_h3:first-child]:mt-0 [&_h3:last-child]:mb-0 [&_h4]:my-14 [&_h4]:uppercase [&_h4:first-child]:mt-0 [&_h4:last-child]:mb-0;
     }
 }
