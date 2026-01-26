@@ -23,5 +23,5 @@ export default defineConfig({
     vite: {
         plugins: [tailwindcss()],
     },
-    adapter,
+    adapter: isPreview ? adapter : undefined,
 });
