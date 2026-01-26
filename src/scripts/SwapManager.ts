@@ -13,6 +13,10 @@ export default class SwapManager {
         this.currentSwap = null;
     }
 
+    onAfterSwapEvent() {
+        this.app.switchPage();
+    }
+
     onBeforeSwapEvent(event: any) {
         const swap = this.getSwap(event);
 

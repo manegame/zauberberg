@@ -17,26 +17,38 @@ export default class DirectorsPage extends Page {
     scrollEndTimeout?: number;
     DELTA_MULTIPLIER: number;
     ITEM_HEIGHT: number;
+    MAX_SCROLL_SPEED: number;
     observer!: Observer;
 
     constructor() {
         super();
+
         this.DELTA_MULTIPLIER = 1;
         this.ITEM_HEIGHT = 26;
+        this.MAX_SCROLL_SPEED = 20;
+
         this.container = document.querySelector(
             "#directors-page",
         ) as HTMLElement;
+    }
+
+    destroy() {
+        super.destroy();
+        if (this.observer) this.observer.kill();
     }
 
     init() {
         if (!this.container) return;
 
         this.setupInfiniteScroll();
-        this.initalized = true;
+        super.init();
     }
 
     onScrollEvent(scroll: any) {
-        const deltaY = scroll.deltaY;
+        const deltaY = Math.max(
+            -this.MAX_SCROLL_SPEED,
+            Math.min(this.MAX_SCROLL_SPEED, scroll.deltaY),
+        );
 
         this.y += deltaY * this.DELTA_MULTIPLIER;
 

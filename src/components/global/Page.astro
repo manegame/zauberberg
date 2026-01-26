@@ -33,6 +33,6 @@ if (!template) {
 const PageTemplate = template || DEFAULT_TEMPLATE;
 ---
 
-<div class="page min-h-dvh" data-template={props.data._modelApiKey}>
+<div id="page" class="page min-h-dvh" data-template={props.data._modelApiKey}>
     <PageTemplate {...props} />
 </div>

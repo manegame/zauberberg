@@ -44,6 +44,7 @@ export default class DefaultSwap {
         console.log("after transi: ", this.constructor.name);
         swapFunctions.swapBodyElement(this.doc.body, document.body);
         this.restoreFocusFunction();
+        this.manager.onAfterSwapEvent();
     }
 
     kill() {
