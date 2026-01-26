@@ -44,5 +44,6 @@ export default `
     ... on WysiwygModuleRecord {
         _modelApiKey
         id
+        content
     }
 `;
