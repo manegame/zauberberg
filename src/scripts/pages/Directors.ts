@@ -21,7 +21,7 @@ export default class DirectorsPage extends Page {
 
     constructor() {
         super();
-        this.DELTA_MULTIPLIER = 0.5;
+        this.DELTA_MULTIPLIER = 1;
         this.ITEM_HEIGHT = 26;
         this.container = document.querySelector(
             "#directors-page",
@@ -100,7 +100,7 @@ export default class DirectorsPage extends Page {
         this.observer = Observer.create({
             target: this.container,
             type: "wheel,touch,pointer",
-            wheelSpeed: -0.5,
+            wheelSpeed: -0.25,
             onChangeY: (self) => {
                 this.onScrollEvent(self);
             },
