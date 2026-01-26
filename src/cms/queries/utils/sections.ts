@@ -26,13 +26,20 @@ export default `
         _modelApiKey
         id
         items {
-          title
-          content
+            title
+            content
         }
     }
     ... on TwoColsModuleRecord {
         _modelApiKey
         id
+        items {
+            title
+            lines {
+                leftColText
+                rightColText
+            }
+        }
     }
     ... on WysiwygModuleRecord {
         _modelApiKey
