@@ -12,16 +12,16 @@ if (externalLink) {
     if (interlinkUrl) linkUrl = interlinkUrl;
 }
 
-const isCurrent = internalLink && linkUrl === Astro.url.pathname;
+// on build Astro add a trailing slash to the pathname
+let pathName = Astro.url.pathname;
+if (pathName !== "/" && pathName.endsWith("/")) pathName = pathName.slice(0, -1);
+
+const isCurrent = internalLink && linkUrl === pathName;
 
 const target = link.externalLink ? "_blank" : "_self";
 const isExternal = !!externalLink;
 ---
 
-<a
-    href={linkUrl}
-    class:list={[className, { [currentClass]: isCurrent }]}
-    target={target}
->
+<a href={linkUrl} class:list={[className, { [currentClass]: isCurrent }]} target={target}>
     <slot>{label}</slot>
 </a>
