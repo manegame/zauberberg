@@ -1,8 +1,51 @@
 ---
+import LeftRightTitle from "../news/LeftRightTitle.astro";
+import Section from "../global/Section.astro";
+
 const { data } = Astro.props;
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date
+        .toLocaleString("en-US", { month: "short" })
+        .toUpperCase();
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`;
+};
+
+const formattedDate = data.date ? formatDate(data.date) : "";
 ---
 
-<div>
-    <h1>News Single</h1>
-    <p>Title: {data.title}</p>
+<div class="px-gutter flex min-h-dvh items-center justify-center">
+    <div class="w-full pt-212 md:w-4/12 md:py-112">
+        <div class="mb-8 flex flex-col gap-9 md:mb-15 md:gap-10">
+            <LeftRightTitle
+                leftAlignedTitle={data.leftAlignedTitle}
+                rightAlignedTitle={data.rightAlignedTitle}
+            />
+            <div
+                class="text-caption flex flex-wrap justify-center gap-7 opacity-30 md:gap-10"
+            >
+                {
+                    formattedDate && (
+                        <time datetime={data.date} itemprop="datePublished">
+                            {formattedDate}
+                        </time>
+                    )
+                }
+                <div>
+                    {data.category.category}
+                </div>
+            </div>
+        </div>
+        <div class="sections-wrapper">
+            {
+                Array.isArray(data.content) &&
+                    data.content.map((blok: any) => {
+                        return <Section data={blok} />;
+                    })
+            }
+        </div>
+    </div>
 </div>
