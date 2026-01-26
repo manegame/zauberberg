@@ -7,7 +7,9 @@ const { data } = Astro.props;
         data.items.map((item: { title: string; lines: any }) => (
             <div class="flex flex-col gap-12 md:gap-7">
                 {item.title && (
-                    <p class="text-subtitle md:pl-145">{item.title}</p>
+                    <p class="text-subtitle italic underline underline-offset-3 md:pl-145 md:no-underline">
+                        {item.title}
+                    </p>
                 )}
                 <div class="flex flex-col gap-12 md:gap-7">
                     {item.lines.map(

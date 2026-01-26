@@ -131,7 +131,7 @@
         @apply text-quote-mobile md:text-quote-desktop font-giga italic;
     }
     .text-subtitle {
-        @apply text-subtitle-mobile md:text-subtitle-desktop font-giga italic underline underline-offset-3 md:no-underline;
+        @apply text-subtitle-mobile md:text-subtitle-desktop font-giga;
     }
 
     /* Sections */
