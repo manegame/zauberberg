@@ -8,7 +8,7 @@ const { data } = Astro.props;
     {
         data.images.map((image: any) => (
             <div class="w-full">
-                <DatoImage class="w-full" image={image} />
+                <DatoImage imgClass="w-full" data={image.responsiveImage} />
             </div>
         ))
     }

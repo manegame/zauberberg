@@ -1,15 +1,17 @@
 ---
-import DatoImage from "../global/DatoImage.astro";
+import DatoImage from "../global/OldDatoImage.astro";
 import DatoLink from "../global/DatoLink.astro";
 import gsap from "gsap";
 
 const { data } = Astro.props;
 
 // temp: duplicate first director
-const directors = new Array(40).fill(data.directors[0]).map((director, index) => {
-    const name = `${director.name} ${index + 1}`;
-    return { ...director, name };
-});
+const directors = new Array(40)
+    .fill(data.directors[0])
+    .map((director, index) => {
+        const name = `${director.name} ${index + 1}`;
+        return { ...director, name };
+    });
 
 const directorsDup = directors.map((director) => {
     const name = director.name + " dup";
@@ -25,7 +27,8 @@ const wrap = gsap.utils.wrap(
     -directors.length * 0.5 * ITEM_HEIGHT,
 );
 
-const randomIndex = Math.floor(Math.random() * directors.length) + directors.length;
+const randomIndex =
+    Math.floor(Math.random() * directors.length) + directors.length;
 const initialOffset = wrap(randomIndex * ITEM_HEIGHT);
 
 const image = directors[0].showcase.poster;
@@ -40,7 +43,9 @@ const image = directors[0].showcase.poster;
         <div class="absolute inset-0 bg-black/40"></div>
         <DatoImage class="size-full object-cover" image={image} />
     </div>
-    <div class="pointer-events-none absolute inset-0 max-md:mask-(--masking-edge-gradient)">
+    <div
+        class="pointer-events-none absolute inset-0 max-md:mask-(--masking-edge-gradient)"
+    >
         <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
             <div
                 id="directors-list"
@@ -49,8 +54,14 @@ const image = directors[0].showcase.poster;
             >
                 {
                     directorsWithDuplicate.map((director) => (
-                        <div data-director={director.name} class="director-item mb-8 h-18">
-                            <DatoLink class="relative h-18" link={{ internalLink: director }}>
+                        <div
+                            data-director={director.name}
+                            class="director-item mb-8 h-18"
+                        >
+                            <DatoLink
+                                class="relative h-18"
+                                link={{ internalLink: director }}
+                            >
                                 <span class="opacity-20">{director.name}</span>
                             </DatoLink>
                         </div>

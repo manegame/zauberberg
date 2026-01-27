@@ -1,0 +1,41 @@
+---
+const { class: className, pictureClass, image, loading, fetchpriority } = Astro.props;
+
+const isSvg = image.filename?.endsWith(".svg");
+const isGif = image.filename?.endsWith(".gif");
+
+const skipOptimization = isSvg || isGif;
+---
+
+{
+    image &&
+        image.id &&
+        (skipOptimization ? (
+            <img
+                class={`select-none ${className || ""}`}
+                width={image.width}
+                height={image.height}
+                loading={loading}
+                fetchpriority={fetchpriority}
+                src={image.url}
+                alt={image.alt}
+                draggable="false"
+                style="-webkit-touch-callout: none;"
+            />
+        ) : (
+            <picture class={pictureClass || ""}>
+                <source srcset={`${image.url}?fm=webp`} type="image/webp" />
+                <img
+                    class={`select-none ${className || ""}`}
+                    width={image.width}
+                    height={image.height}
+                    loading={loading}
+                    fetchpriority={fetchpriority}
+                    src={image.url}
+                    alt={image.alt}
+                    draggable="false"
+                    style="-webkit-touch-callout: none;"
+                />
+            </picture>
+        ))
+}

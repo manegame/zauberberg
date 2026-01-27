@@ -1,4 +1,4 @@
-import img from "../utils/img";
+import responsiveImg from "../utils/responsiveImg";
 import sections from "../utils/sections";
 
 export default `
@@ -13,8 +13,9 @@ export default `
         category
     }
     cover {
-        ${img}
+        ${responsiveImg}
     }
+    coverSize
     content {
         ${sections}
     }
