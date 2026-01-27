@@ -1,41 +1,117 @@
 ---
-const { class: className, pictureClass, image, loading, fetchpriority } = Astro.props;
+import { buildSrcSet } from "../../cms/queries/utils/buildSrcSet";
 
-const isSvg = image.filename?.endsWith(".svg");
-const isGif = image.filename?.endsWith(".gif");
+const {
+    data,
+    pictureClass,
+    pictureStyle,
+    imgClass,
+    imgStyle,
+    loading,
+    fetchpriority,
+    usePlaceholder = true,
+    sizes,
+    srcSetCandidates = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4],
+    referrerPolicy = "no-referrer-when-downgrade",
+} = Astro.props;
 
-const skipOptimization = isSvg || isGif;
+const placeholderStyle =
+    usePlaceholder && data.base64
+        ? {
+              backgroundImage: `url("${data.base64}")`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "50% 50%",
+              color: "transparent",
+          }
+        : usePlaceholder && data.bgColor
+          ? { backgroundColor: data.bgColor ?? undefined, color: "transparent" }
+          : undefined;
+
+const { width } = data;
+
+const height =
+    data.height ?? Math.round(data.aspectRatio ? width / data.aspectRatio : 0);
+
+const sizingStyle = {
+    aspectRatio: `${width} / ${height}`,
+};
 ---
 
-{
-    image &&
-        image.id &&
-        (skipOptimization ? (
+<picture class={pictureClass} style={pictureStyle} data-datocms-image="true">
+    {
+        data.webpSrcSet && (
+            <source
+                srcset={data.webpSrcSet}
+                sizes={sizes ?? data.sizes ?? null}
+                type="image/webp"
+            />
+        )
+    }
+    <source
+        srcset={data.srcSet ??
+            buildSrcSet(data.src, data.width, srcSetCandidates) ??
+            null}
+        sizes={sizes ?? data.sizes ?? null}
+    />
+    {
+        data.src && (
             <img
-                class={`select-none ${className || ""}`}
-                width={image.width}
-                height={image.height}
+                src={data.src}
+                alt={data.alt ?? ""}
+                title={data.title ?? null}
+                referrerpolicy={referrerPolicy}
+                class={`select-none ${imgClass}`}
+                style={{
+                    ...placeholderStyle,
+                    ...sizingStyle,
+                    ...imgStyle,
+                }}
                 loading={loading}
                 fetchpriority={fetchpriority}
-                src={image.url}
-                alt={image.alt}
+                data-testid="img"
                 draggable="false"
-                style="-webkit-touch-callout: none;"
             />
-        ) : (
-            <picture class={pictureClass || ""}>
-                <source srcset={`${image.url}?fm=webp`} type="image/webp" />
-                <img
-                    class={`select-none ${className || ""}`}
-                    width={image.width}
-                    height={image.height}
-                    loading={loading}
-                    fetchpriority={fetchpriority}
-                    src={image.url}
-                    alt={image.alt}
-                    draggable="false"
-                    style="-webkit-touch-callout: none;"
-                />
-            </picture>
-        ))
-}
+        )
+    }
+</picture>
+
+<script>
+    function removeBackgroundStyles(element: HTMLElement) {
+        element.style.backgroundColor = "";
+        element.style.backgroundImage = "";
+    }
+
+    function setup() {
+        for (const pictureEl of [
+            ...document.querySelectorAll("picture[data-datocms-image=true]"),
+        ]) {
+            const imgEl = pictureEl.querySelector("img");
+
+            if (!imgEl) {
+                return;
+            }
+
+            if (imgEl.complete) {
+                removeBackgroundStyles(imgEl);
+            } else {
+                imgEl.addEventListener("load", () =>
+                    removeBackgroundStyles(imgEl),
+                );
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", setup);
+    document.addEventListener("astro:page-load", setup);
+
+    if (document.readyState === "complete") {
+        setup();
+    }
+</script>
+
+<style>
+    picture[data-datocms-image="true"] img {
+        -webkit-touch-callout: none;
+    }
+</style>
