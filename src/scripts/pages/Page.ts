@@ -12,7 +12,7 @@ export default class Page {
         this.destroyed = false;
     }
 
-    init() {
+    async init() {
         this.initialized = true;
     }
 

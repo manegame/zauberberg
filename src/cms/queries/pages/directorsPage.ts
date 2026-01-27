@@ -9,6 +9,9 @@ export default `
         id
         name
         slug
+        color {
+            hex
+        }
         showcase {
             ${video}
         }

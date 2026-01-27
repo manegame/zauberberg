@@ -1,55 +1,41 @@
 ---
-import DatoImage from "../global/DatoImage.astro";
 import DatoLink from "../global/DatoLink.astro";
-import gsap from "gsap";
 
 const { data } = Astro.props;
 
-// temp: duplicate first director
-const directors = new Array(40).fill(data.directors[0]).map((director, index) => {
-    const name = `${director.name} ${index + 1}`;
-    return { ...director, name };
-});
-
-const directorsDup = directors.map((director) => {
-    const name = director.name + " dup";
-    return { ...director, name };
-});
+const directors = data.directors || [];
 
 const directorsWithDuplicate = [...directors, ...directors];
-
-const ITEM_HEIGHT = 26; // 26px per director item
-
-const wrap = gsap.utils.wrap(
-    -directors.length * 1.5 * ITEM_HEIGHT,
-    -directors.length * 0.5 * ITEM_HEIGHT,
-);
-
-const randomIndex = Math.floor(Math.random() * directors.length) + directors.length;
-const initialOffset = wrap(randomIndex * ITEM_HEIGHT);
-
-const image = directors[0].showcase.poster;
 ---
 
 <div
     id="directors-page"
-    data-initial={initialOffset}
     class="relative h-dvh overflow-hidden overscroll-none bg-[#6B5529] select-none"
 >
-    <div class="absolute inset-0">
-        <div class="absolute inset-0 bg-black/40"></div>
-        <DatoImage class="size-full object-cover" image={image} />
+    <div class="pointer-events-none absolute inset-0">
+        <div class="absolute inset-0 z-1 bg-black/40"></div>
+        <video
+            id="director-video"
+            class="absolute inset-0 h-full w-full object-cover"
+            autoplay
+            muted
+            loop
+            playsinline
+        >
+        </video>
     </div>
-    <div class="pointer-events-none absolute inset-0 max-md:mask-(--masking-edge-gradient)">
+    <div class="pointer-events-none absolute inset-0 z-1 max-md:mask-(--masking-edge-gradient)">
         <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
-            <div
-                id="directors-list"
-                style={`transform: translateY(${initialOffset}px)`}
-                class="text-nav flex w-full flex-col items-center"
-            >
+            <div id="directors-list" class="text-nav flex w-full flex-col items-center">
                 {
                     directorsWithDuplicate.map((director) => (
-                        <div data-director={director.name} class="director-item mb-8 h-18">
+                        <div
+                            data-video={director.showcase.wiredriveUrl}
+                            data-poster={director.showcase.poster.url}
+                            data-color={director.color.hex}
+                            data-director={director.name}
+                            class="director-item mb-8 h-18"
+                        >
                             <DatoLink class="relative h-18" link={{ internalLink: director }}>
                                 <span class="opacity-20">{director.name}</span>
                             </DatoLink>
@@ -61,11 +47,7 @@ const image = directors[0].showcase.poster;
         <div
             class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
         >
-            <div
-                id="directors-ghost-list"
-                style={`transform: translateY(${initialOffset}px)`}
-                class="text-nav flex w-full flex-col items-center"
-            >
+            <div id="directors-ghost-list" class="text-nav flex w-full flex-col items-center">
                 {
                     directorsWithDuplicate.map((director) => (
                         <span class="mb-8 h-18">{director.name}</span>
