@@ -8,14 +8,11 @@ const directors = data.directors || [];
 const directorsWithDuplicate = [...directors, ...directors];
 ---
 
-<div
-    id="directors-page"
-    class="relative h-dvh overflow-hidden overscroll-none bg-[#6B5529] select-none"
->
-    <div class="pointer-events-none absolute inset-0">
-        <div class="absolute inset-0 z-1 bg-black/40"></div>
+<div id="directors-page" class="relative h-dvh overflow-hidden overscroll-none select-none">
+    <div class="pointer-events-none absolute inset-0 z-0">
+        <div class="absolute inset-0 z-3 bg-black/40"></div>
         <video
-            id="director-video"
+            id="director-video-1"
             class="absolute inset-0 h-full w-full object-cover"
             autoplay
             muted
@@ -23,16 +20,26 @@ const directorsWithDuplicate = [...directors, ...directors];
             playsinline
         >
         </video>
+        <video
+            id="director-video-2"
+            class="absolute inset-0 h-full w-full object-cover opacity-0"
+            autoplay
+            muted
+            loop
+            playsinline
+        >
+        </video>
     </div>
-    <div class="pointer-events-none absolute inset-0 z-1 max-md:mask-(--masking-edge-gradient)">
+    <div class="absolute inset-0 z-1 max-md:mask-(--masking-edge-gradient)">
         <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
             <div id="directors-list" class="text-nav flex w-full flex-col items-center">
                 {
-                    directorsWithDuplicate.map((director) => (
+                    directorsWithDuplicate.map((director, index) => (
                         <div
                             data-video={director.showcase.wiredriveUrl}
                             data-poster={director.showcase.poster.url}
                             data-color={director.color.hex}
+                            data-index={index % directors.length}
                             data-director={director.name}
                             class="director-item mb-8 h-18"
                         >

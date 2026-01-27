@@ -15,7 +15,11 @@ export default class DirectorsPage extends Page {
 
     y!: number;
 
-    videoEl!: HTMLVideoElement;
+    videoEl1!: HTMLVideoElement;
+    videoEl2!: HTMLVideoElement;
+    activeVideoEl!: HTMLVideoElement;
+    inactiveVideoEl!: HTMLVideoElement;
+    crossfadeTimeline!: gsap.core.Timeline;
     list!: HTMLElement;
     ghostList!: HTMLElement;
     directors!: NodeListOf<HTMLElement>;
@@ -24,8 +28,8 @@ export default class DirectorsPage extends Page {
     currentIndex!: number;
     currentDirector!: HTMLElement;
 
-    allVideos!: string[];
-    videosToLoad!: string[];
+    allVideos!: { video: string; index: number }[];
+    videosToLoad!: { video: string; index: number }[];
     preloadedVideoBlobs!: Map<string, string>;
 
     scrollTo!: any;
@@ -70,7 +74,7 @@ export default class DirectorsPage extends Page {
         await super.init();
     }
 
-    private async fetchVideoAsBlob(videoUrl: string): Promise<string> {
+    async fetchVideoAsBlob(videoUrl: string): Promise<string> {
         if (this.preloadedVideoBlobs.has(videoUrl)) {
             return this.preloadedVideoBlobs.get(videoUrl)!;
         }
@@ -87,23 +91,35 @@ export default class DirectorsPage extends Page {
 
         this.preloadedVideoBlobs.set(videoUrl, blobUrl);
 
-        this.videosToLoad = this.videosToLoad.filter((vid) => vid !== videoUrl);
+        this.videosToLoad = this.videosToLoad.filter(
+            (vid) => vid.video !== videoUrl,
+        );
 
         return blobUrl;
     }
 
     async loadAndSetFirstVideo() {
-        this.videoEl = this.container.querySelector(
-            "#director-video",
+        this.videoEl1 = this.container.querySelector(
+            "#director-video-1",
         ) as HTMLVideoElement;
+
+        this.videoEl2 = this.container.querySelector(
+            "#director-video-2",
+        ) as HTMLVideoElement;
+
+        this.activeVideoEl = this.videoEl1;
+        this.inactiveVideoEl = this.videoEl2;
 
         const firstVideoUrl = this.currentDirector.dataset.video!;
         await this.fetchVideoAsBlob(firstVideoUrl);
 
-        this.setBackgroundVideo();
+        this.activeVideoEl.poster = this.currentDirector.dataset.poster!;
+        this.activeVideoEl.src =
+            this.preloadedVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
+        this.activeVideoEl.load();
 
         return new Promise<void>((resolve) => {
-            this.videoEl.addEventListener(
+            this.activeVideoEl.addEventListener(
                 "loadeddata",
                 () => {
                     console.log(`Video ready: ${firstVideoUrl}`);
@@ -115,14 +131,34 @@ export default class DirectorsPage extends Page {
     }
 
     async preloadOtherVideos() {
+        const initialIndex = this.currentIndex;
+
+        const getCircularDistance = (fromIndex: number, toIndex: number) => {
+            const directDist = Math.abs(toIndex - fromIndex);
+            const wrapDist = this.totalItems - directDist;
+            return Math.min(directDist, wrapDist);
+        };
+
+        // We sort them based on their distance from the initial index
+        this.videosToLoad.sort((a, b) => {
+            const distA = getCircularDistance(initialIndex, a.index);
+            const distB = getCircularDistance(initialIndex, b.index);
+            return distA - distB;
+        });
+
         const videosToPreload = [...this.videosToLoad];
 
-        const preloadPromises = videosToPreload.map(async (videoUrl) => {
+        console.log(
+            "Videos to preload in order:",
+            videosToPreload.map((v) => v.index),
+        );
+
+        const preloadPromises = videosToPreload.map(async ({ video }) => {
             try {
-                await this.fetchVideoAsBlob(videoUrl);
-                console.log(`Preloaded: ${videoUrl}`);
+                await this.fetchVideoAsBlob(video);
+                console.log(`Preloaded: ${video}`);
             } catch (error) {
-                console.error(`Failed to preload ${videoUrl}:`, error);
+                console.error(`Failed to preload ${video}:`, error);
             }
         });
 
@@ -156,12 +192,50 @@ export default class DirectorsPage extends Page {
     setBackgroundVideo() {
         const videoUrl = this.currentDirector.dataset.video!;
         const videoPoster = this.currentDirector.dataset.poster!;
-
         const srcToUse = this.preloadedVideoBlobs.get(videoUrl) || videoUrl;
 
-        this.videoEl.src = srcToUse;
-        this.videoEl.poster = videoPoster;
-        this.videoEl.load();
+        // decomment later, for now we have the same video for all directors so we want to see the transi
+        // if (this.inactiveVideoEl.src === srcToUse) return;
+
+        this.inactiveVideoEl.src = srcToUse;
+        this.inactiveVideoEl.poster = videoPoster;
+        this.inactiveVideoEl.load();
+
+        this.startCrossfadeWhenReady();
+    }
+
+    startCrossfadeWhenReady() {
+        this.crossfadeTimeline?.kill();
+        this.crossfadeTimeline = gsap
+            .timeline({ paused: true })
+            .set(this.inactiveVideoEl, { zIndex: 2 })
+            .set(this.activeVideoEl, { zIndex: 1 })
+            .to(this.inactiveVideoEl, {
+                opacity: 1,
+                duration: 0.5,
+                ease: "power2.out",
+            })
+            .call(() => {
+                // Swap active/inactive references
+                [this.activeVideoEl, this.inactiveVideoEl] = [
+                    this.inactiveVideoEl,
+                    this.activeVideoEl,
+                ];
+
+                gsap.set(this.inactiveVideoEl, { opacity: 0 });
+            });
+
+        if (this.inactiveVideoEl.readyState >= 3) {
+            this.crossfadeTimeline.play();
+        } else {
+            this.inactiveVideoEl.addEventListener(
+                "loadeddata",
+                () => {
+                    this.crossfadeTimeline.play();
+                },
+                { once: true },
+            );
+        }
     }
 
     selectCurrentDirectorFromScroll() {
@@ -221,10 +295,18 @@ export default class DirectorsPage extends Page {
         this.directors = this.list.querySelectorAll(".director-item");
         this.totalItems = this.directors.length / this.NUMBER_OF_DUPLICATES;
 
-        this.allVideos = Array.from(this.directors).map(
-            (dir) => dir.dataset.video!,
-        );
-        this.videosToLoad = Array.from(new Set(this.allVideos));
+        const allVideos = Array.from(this.directors).map((dir) => ({
+            video: dir.dataset.video!,
+            index: parseInt(dir.dataset.index!),
+        }));
+
+        // Remove duplicates
+        this.videosToLoad = Array.from(
+            new Set(allVideos.map((v) => v.video)),
+        ).map((video) => {
+            return allVideos.find((v) => v.video === video)!;
+        });
+
         this.preloadedVideoBlobs = new Map();
 
         // Only when NUMBER_OF_DUPLICATES is 2
