@@ -3,7 +3,18 @@ import { Icon } from "astro-icon/components";
 
 import DatoImage from "../global/DatoImage.astro";
 
+import VideoItem from "../director/VideoItem.astro";
+
 const { data } = Astro.props;
+
+const videos = [
+    ...data.videos,
+    ...data.videos,
+    ...data.videos,
+    ...data.videos,
+    ...data.videos,
+    ...data.videos,
+];
 ---
 
 <div
@@ -89,8 +100,9 @@ const { data } = Astro.props;
                     </div>
                 </div>
                 <div
-                    class="hidden h-163 shrink-0 bg-white in-data-[selected='work']:block md:block lg:h-210"
+                    class="px-gutter group mb-5 hidden w-full shrink-0 gap-5 overflow-x-auto in-data-[selected='work']:flex md:mb-0 md:flex md:gap-0 md:px-0"
                 >
+                    {videos.map((video: any) => <VideoItem video={video} />)}
                 </div>
             </div>
         </div>

@@ -1,0 +1,46 @@
+---
+import DatoImage from "../global/DatoImage.astro";
+import DatoLink from "../global/DatoLink.astro";
+
+const { video } = Astro.props;
+---
+
+<DatoLink
+    class:list={[
+        "relative flex w-220 shrink-0 flex-col gap-5 select-none md:w-340",
+        "md:hover:[&_.overlay]:opacity-40 md:hover:[&_.video-poster]:opacity-0 md:hover:[&_.video-text]:translate-y-0 md:hover:[&_.video-text]:opacity-100",
+    ]}
+    link={{ internalLink: video }}
+>
+    <div
+        class="text-caption flex flex-col gap-5 md:absolute md:inset-0 md:z-2 md:flex-row md:items-center md:justify-between md:px-15 md:text-white"
+    >
+        <div
+            class="video-text transition-all duration-300 ease-in-out md:translate-y-20 md:opacity-0"
+            >{video.client}</div
+        >
+        <div
+            class="video-text transition-all delay-100 duration-300 ease-in-out md:translate-y-20 md:opacity-0"
+            >&#8216;{video.name}&#8217;</div
+        >
+    </div>
+    <div class="relative aspect-16/10 w-full">
+        <div
+            class="overlay absolute inset-0 z-1 bg-black opacity-40 transition-opacity duration-300 ease-in-out md:group-hover:opacity-80"
+        ></div>
+        <video
+            class="absolute inset-0 hidden size-full object-cover md:block"
+            autoplay
+            muted
+            loop
+            playsinline
+            src={video.preview.wiredriveUrl}
+        >
+        </video>
+        <DatoImage
+            pictureClass="video-poster transition-opacity duration-300 ease-in-out"
+            imgClass="absolute inset-0 size-full object-cover "
+            data={video.preview.poster.responsiveImage}
+        />
+    </div>
+</DatoLink>

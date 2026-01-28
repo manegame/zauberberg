@@ -26,16 +26,17 @@ export default `
         ${video}
     }
     videos {
+        _modelApiKey
         id
         slug
         name
         client
         preview {
-            ${video}
+            id
+            wiredriveUrl
+            poster {
+                ${responsiveImg}
+            }
         }
-        video {
-            ${video}
-        }
-
     }
 `;

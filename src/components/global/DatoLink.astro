@@ -22,6 +22,11 @@ const target = link.externalLink ? "_blank" : "_self";
 const isExternal = !!externalLink;
 ---
 
-<a href={linkUrl} class:list={[className, { [currentClass]: isCurrent }]} target={target}>
+<a
+    href={linkUrl}
+    draggable="false"
+    class:list={[className, { [currentClass]: isCurrent }]}
+    target={target}
+>
     <slot>{label}</slot>
 </a>
