@@ -6,6 +6,7 @@ import { ClientRouter } from "astro:transitions";
 
 import Navigation from "../components/global/Navigation.astro";
 import Loader from "../components/global/Loader.astro";
+import Grid from "../components/global/Grid.astro";
 
 const { layout } = Astro.props;
 ---
@@ -22,7 +23,8 @@ const { layout } = Astro.props;
     <body>
         {layout?.navigation && <Navigation data={layout.navigation} />}
         <slot />
-        <Loader />
+        <!-- <Loader /> -->
+        <Grid />
     </body></html
 >
 

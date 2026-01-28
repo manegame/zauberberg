@@ -7,6 +7,8 @@ import netlify from "@astrojs/netlify";
 import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
 
+import icon from "astro-icon";
+
 const env = loadEnv("", process.cwd(), ["DATO", "NETLIFY"]);
 const isPreview = env.DATO_PREVIEW === "true";
 
@@ -19,7 +21,7 @@ const adapter =
 export default defineConfig({
     output: isPreview ? "server" : "static",
     site: "https://www.example.com",
-    integrations: [sitemap()],
+    integrations: [sitemap(), icon()],
     vite: {
         plugins: [tailwindcss()],
     },

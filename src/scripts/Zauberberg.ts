@@ -1,3 +1,4 @@
+import DebugGrid from "./DebugGrid";
 import Loader from "./Loader";
 import SwapManager from "./SwapManager";
 import Scroll from "./Scroll";
@@ -14,6 +15,7 @@ export default class Zauberberg {
     scroll!: Scroll;
     directorsPage!: DirectorsPage;
     page!: null | Page;
+    debugGrid!: DebugGrid;
 
     constructor() {
         if (Zauberberg.instance) return Zauberberg.instance;
@@ -25,6 +27,7 @@ export default class Zauberberg {
         this.directorsPage = new DirectorsPage();
         this.swapManager = new SwapManager();
         this.loader = new Loader();
+        this.debugGrid = new DebugGrid();
 
         const initialTemplate =
             document.querySelector<HTMLElement>("#page")!.dataset.template;
@@ -58,6 +61,7 @@ export default class Zauberberg {
         this.scroll.init();
         this.swapManager.init();
         this.page?.init();
+        this.debugGrid.init();
         this.initialized = true;
 
         this.loader.end();
