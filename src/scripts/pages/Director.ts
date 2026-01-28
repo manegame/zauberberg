@@ -35,6 +35,18 @@ export default class Director extends Page {
             "#director-close-btn",
         ) as HTMLButtonElement;
 
+        const overlay = document.querySelector(
+            "#director-overlay",
+        ) as HTMLDivElement;
+
+        overlay.addEventListener(
+            "click",
+            () => {
+                this.close();
+            },
+            { signal: this.abortController.signal },
+        );
+
         closeBtn.addEventListener(
             "click",
             () => {
