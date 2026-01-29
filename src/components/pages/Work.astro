@@ -8,11 +8,17 @@ const { data } = Astro.props;
 <div id="work" class="flex pt-200 lg:h-dvh lg:items-center lg:overflow-y-auto">
     <div class="px-gutter">
         <div
-            class="mx-auto grid w-full grid-cols-2 gap-x-20 gap-y-60 lg:w-18/24 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-195"
+            class="group pointer-events-none mx-auto grid w-full grid-cols-2 gap-x-20 gap-y-60 lg:w-18/24 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-195"
         >
             {
                 data.videos.map((video: any) => (
-                    <DatoLink class="relative col-span-1 block" link={{ internalLink: video }}>
+                    <DatoLink
+                        class:list={[
+                            "video-item pointer-events-auto relative col-span-1 block",
+                            "lg:hover:[&_.overlay]:opacity-30 lg:hover:[&_.video-text]:opacity-100",
+                        ]}
+                        link={{ internalLink: video }}
+                    >
                         <div class="relative aspect-16/10 w-full">
                             <video
                                 class="size-full object-cover"
@@ -23,16 +29,16 @@ const { data } = Astro.props;
                                 src={video.video.preview.wiredriveUrl}
                                 poster={video.video.preview.poster.url}
                             />
-                            <div class="absolute inset-0 bg-black/30" />
+                            <div class="overlay absolute -inset-1 bg-black opacity-30 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
                         </div>
                         <div class="text-caption mt-5 flex flex-col gap-2 lg:absolute lg:inset-0 lg:justify-center lg:px-15">
-                            <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                            <div class="video-text flex flex-col gap-2 transition-opacity duration-300 ease-in-out lg:flex-row lg:items-center lg:justify-between lg:opacity-0">
                                 <div>{video.video.client}</div>
                                 <div>&#8216;{video.video.name}&#8217;</div>
                             </div>
-                            <div class="flex gap-2 overflow-hidden text-ellipsis whitespace-nowrap opacity-30">
+                            <div class="video-text flex gap-2 overflow-hidden text-ellipsis whitespace-nowrap transition-opacity duration-300 ease-in-out lg:opacity-0">
                                 {video.video.directors.map((director: any, index: number) => (
-                                    <span>{director.name}</span>
+                                    <span class="opacity-30">{director.name}</span>
                                 ))}
                             </div>
                         </div>
