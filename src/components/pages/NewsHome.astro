@@ -1,8 +1,43 @@
 ---
+import LeftRightTitle from "../news/LeftRightTitle.astro";
+import Details from "../news/Details.astro";
+import DatoImage from "../global/DatoImage.astro";
+
 const { data } = Astro.props;
 ---
 
-<div>
-    <h1>News Home</h1>
-    <p>Title: {data.title}</p>
+<div class="px-gutter flex min-h-dvh items-center justify-center">
+    <div class="w-full gap-25 pt-212 pb-80 md:w-4/12 md:py-112">
+        <ul class="flex flex-col gap-50 md:gap-100">
+            {
+                data.news?.map((newsItem: any) => (
+                    <li>
+                        <a
+                            href={`/${newsItem.slug}`}
+                            class="flex flex-col items-center gap-8 md:gap-10"
+                        >
+                            <div class="flex w-10/12 flex-col gap-9 md:w-6/8 md:gap-10">
+                                <LeftRightTitle
+                                    leftAlignedTitle={newsItem.leftAlignedTitle}
+                                    rightAlignedTitle={
+                                        newsItem.rightAlignedTitle
+                                    }
+                                />
+                                <Details
+                                    date={newsItem.date}
+                                    category={newsItem.category.category}
+                                />
+                            </div>
+                            <div class="relative aspect-square w-full">
+                                <DatoImage
+                                    data={newsItem.cover.responsiveImage}
+                                    imgClass="block absolute inset-0 size-full object-cover"
+                                />
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
 </div>

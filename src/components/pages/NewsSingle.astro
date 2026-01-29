@@ -2,22 +2,11 @@
 import DatoImage from "../global/DatoImage.astro";
 
 import LeftRightTitle from "../news/LeftRightTitle.astro";
+import Details from "../news/Details.astro";
 import Section from "../global/Section.astro";
 import EdgeGradient from "../global/EdgeGradient.astro";
 
 const { data } = Astro.props;
-
-const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = date
-        .toLocaleString("en-US", { month: "short" })
-        .toUpperCase();
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-};
-
-const formattedDate = data.date ? formatDate(data.date) : "";
 
 const aspectRatioClass =
     {
@@ -37,20 +26,7 @@ const aspectRatioClass =
                     leftAlignedTitle={data.leftAlignedTitle}
                     rightAlignedTitle={data.rightAlignedTitle}
                 />
-                <div
-                    class="text-caption flex flex-wrap justify-center gap-7 opacity-30 md:gap-10"
-                >
-                    {
-                        formattedDate && (
-                            <time datetime={data.date} itemprop="datePublished">
-                                {formattedDate}
-                            </time>
-                        )
-                    }
-                    <div>
-                        {data.category.category}
-                    </div>
-                </div>
+                <Details date={data.date} category={data.category.category} />
             </div>
             <div class={`relative w-full ${aspectRatioClass}`}>
                 <DatoImage
