@@ -35,6 +35,7 @@ export default `
             id
             wiredriveUrl
             poster {
+                url
                 ${responsiveImg}
             }
         }

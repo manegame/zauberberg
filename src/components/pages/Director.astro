@@ -23,6 +23,20 @@ const videos = [
     class="relative h-dvh overflow-hidden"
     style={{ "--director-color": data.color.hex }}
 >
+    <div class="absolute inset-0">
+        <video
+            id="director-background-video"
+            class="size-full object-cover"
+            autoplay
+            muted
+            loop
+            playsinline
+            poster={data.showcase.poster.url}
+            src={data.showcase.wiredriveUrl}
+        >
+        </video>
+    </div>
+
     <div id="director-overlay" class="absolute inset-0 cursor-pointer bg-black opacity-85"></div>
 
     <div
