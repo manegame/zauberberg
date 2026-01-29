@@ -6,9 +6,9 @@ const { data } = Astro.props;
 ---
 
 <div
-    class="px-gutter pointer-events-none fixed inset-0 z-10 flex h-dvh w-screen items-center justify-center pt-20 pb-30 md:py-0"
+    class="px-gutter pointer-events-none fixed inset-0 z-10 flex h-dvh w-screen items-center justify-center pt-20 pb-30 lg:py-0"
 >
-    <header class="flex h-full w-full flex-col items-center justify-between md:h-auto md:flex-row">
+    <header class="flex h-full w-full flex-col items-center justify-between lg:h-auto lg:flex-row">
         <a href="/" id="home-link" class="pointer-events-auto">
             <Logo class="h-100" />
         </a>
@@ -16,7 +16,7 @@ const { data } = Astro.props;
             {
                 data.links.map((link: any) => (
                     <DatoLink
-                        class="text-nav pointer-events-auto opacity-30"
+                        class="text-nav pointer-events-auto block opacity-30"
                         currentClass="opacity-100"
                         link={link}
                     />
