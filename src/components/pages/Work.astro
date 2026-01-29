@@ -1,8 +1,45 @@
 ---
+import DatoLink from "../global/DatoLink.astro";
+import EdgeGradient from "../global/EdgeGradient.astro";
+
 const { data } = Astro.props;
 ---
 
-<div>
-    <h1>Director</h1>
-    <p>Name: {data.name}</p>
+<div id="work" class="flex pt-200 lg:h-dvh lg:items-center lg:overflow-y-auto">
+    <div class="px-gutter">
+        <div
+            class="mx-auto grid w-full grid-cols-2 gap-x-20 gap-y-60 lg:w-18/24 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-195"
+        >
+            {
+                data.videos.map((video: any) => (
+                    <DatoLink class="relative col-span-1 block" link={{ internalLink: video }}>
+                        <div class="relative aspect-16/10 w-full">
+                            <video
+                                class="size-full object-cover"
+                                autoplay
+                                muted
+                                loop
+                                playsinline
+                                src={video.video.preview.wiredriveUrl}
+                                poster={video.video.preview.poster.url}
+                            />
+                            <div class="absolute inset-0 bg-black/30" />
+                        </div>
+                        <div class="text-caption mt-5 flex flex-col gap-2 lg:absolute lg:inset-0 lg:justify-center lg:px-15">
+                            <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                                <div>{video.video.client}</div>
+                                <div>&#8216;{video.video.name}&#8217;</div>
+                            </div>
+                            <div class="flex gap-2 overflow-hidden text-ellipsis whitespace-nowrap opacity-30">
+                                {video.video.directors.map((director: any, index: number) => (
+                                    <span>{director.name}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </DatoLink>
+                ))
+            }
+        </div>
+    </div>
+    <EdgeGradient top={0} topFade={0} bottom={0} bottomFade={80} />
 </div>
