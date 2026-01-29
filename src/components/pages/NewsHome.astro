@@ -1,17 +1,53 @@
 ---
+import { Icon } from "astro-icon/components";
+
 import LeftRightTitle from "../news/LeftRightTitle.astro";
 import Details from "../news/Details.astro";
 import DatoImage from "../global/DatoImage.astro";
 
 const { data } = Astro.props;
+
+// Get unique categories from news items
+const categories = [
+    "All",
+    ...new Set(data.news?.map((item: any) => item.category.category) || []),
+];
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
-    <div class="w-full gap-25 pt-212 pb-80 md:w-4/12 md:py-112">
-        <ul class="flex flex-col gap-50 md:gap-100">
+    <button
+        type="button"
+        class="text-body absolute top-100 px-23 py-16 md:hidden"
+        id="filters-toggle">Filters</button
+    >
+    <div
+        class="p-gutter bg-grey md:pt-1/2 absolute top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 md:pointer-events-none md:fixed md:inset-0 md:h-dvh md:w-screen md:items-end md:bg-transparent"
+        id="filters-panel"
+    >
+        <nav
+            class="text-nav flex flex-col items-start gap-9 md:relative md:-top-[0.55em] md:h-1/2 md:w-6/24 md:gap-8 md:pl-[12.5%]"
+        >
+            {
+                categories.map((category) => (
+                    <button
+                        type="button"
+                        class="text-left opacity-20 md:pointer-events-auto"
+                        data-category={category}
+                    >
+                        {category}
+                    </button>
+                ))
+            }
+        </nav>
+        <button type="button" class="flex-none md:hidden" id="filters-close">
+            <Icon name="cross" class="size-17" />
+        </button>
+    </div>
+    <div class="w-full gap-25 pt-212 pb-80 md:w-4/12 md:pt-240 md:pb-112">
+        <ul class="flex flex-col gap-50 md:gap-100" id="news-list">
             {
                 data.news?.map((newsItem: any) => (
-                    <li>
+                    <li data-news-category={newsItem.category.category}>
                         <a
                             href={`/${newsItem.slug}`}
                             class="flex flex-col items-center gap-8 md:gap-10"
@@ -41,3 +77,126 @@ const { data } = Astro.props;
         </ul>
     </div>
 </div>
+
+<script>
+    import { gsap } from "gsap";
+
+    function initNewsFilter() {
+        const categoryButtons = document.querySelectorAll("[data-category]");
+        const newsItems = document.querySelectorAll("[data-news-category]");
+        const filtersPanel = document.getElementById("filters-panel");
+
+        // Get initial category from URL
+        const url = new URL(window.location.href);
+        const initialCategory = url.searchParams.get("category") || "All";
+
+        // Filter function
+        function filterNews(category: string) {
+            // Update button states
+            categoryButtons.forEach((btn) => {
+                const btnCategory = (btn as HTMLElement).dataset.category;
+                if (btnCategory === category) {
+                    btn.classList.remove("opacity-20");
+                    btn.classList.add("opacity-100");
+                } else {
+                    btn.classList.remove("opacity-100");
+                    btn.classList.add("opacity-20");
+                }
+            });
+
+            // Show/hide news items
+            newsItems.forEach((item) => {
+                const itemCategory = (item as HTMLElement).dataset.newsCategory;
+                if (category === "All" || itemCategory === category) {
+                    (item as HTMLElement).style.display = "";
+                } else {
+                    (item as HTMLElement).style.display = "none";
+                }
+            });
+
+            // Update URL without reload
+            if (category === "All") {
+                url.searchParams.delete("category");
+            } else {
+                url.searchParams.set("category", category);
+            }
+            window.history.replaceState({}, "", url.toString());
+
+            // Close filters on mobile after selection
+            if (window.innerWidth < 768 && filtersPanel) {
+                gsap.to(filtersPanel, {
+                    yPercent: -100,
+                    duration: 0.4,
+                    ease: "power2.in",
+                });
+            }
+        }
+
+        // Apply initial filter
+        filterNews(initialCategory);
+
+        // Add click handlers
+        categoryButtons.forEach((button) => {
+            button.addEventListener("click", (e) => {
+                const category = (e.currentTarget as HTMLElement).dataset
+                    .category;
+                if (category) {
+                    filterNews(category);
+                }
+            });
+        });
+    }
+
+    initNewsFilter();
+
+    // Mobile filters toggle with GSAP
+    const filtersToggle = document.getElementById("filters-toggle");
+    const filtersClose = document.getElementById("filters-close");
+    const filtersPanel = document.getElementById("filters-panel");
+
+    if (filtersToggle && filtersClose && filtersPanel) {
+        // Set initial state for mobile only
+        const setInitialState = () => {
+            if (window.innerWidth < 768) {
+                gsap.set(filtersPanel, { yPercent: -100 });
+            } else {
+                gsap.set(filtersPanel, { yPercent: 0 });
+            }
+        };
+
+        setInitialState();
+
+        // Track breakpoint crossing with ResizeObserver
+        let wasMobile = window.innerWidth < 768;
+        const resizeObserver = new ResizeObserver(() => {
+            const isMobile = window.innerWidth < 768;
+            if (wasMobile !== isMobile) {
+                setInitialState();
+                wasMobile = isMobile;
+            }
+        });
+        resizeObserver.observe(document.body);
+
+        // Toggle open
+        filtersToggle.addEventListener("click", () => {
+            if (window.innerWidth < 768) {
+                gsap.to(filtersPanel, {
+                    yPercent: 0,
+                    duration: 0.4,
+                    ease: "power2.out",
+                });
+            }
+        });
+
+        // Toggle close
+        filtersClose.addEventListener("click", () => {
+            if (window.innerWidth < 768) {
+                gsap.to(filtersPanel, {
+                    yPercent: -100,
+                    duration: 0.4,
+                    ease: "power2.in",
+                });
+            }
+        });
+    }
+</script>

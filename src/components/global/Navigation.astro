@@ -8,9 +8,15 @@ const { data } = Astro.props;
 <div
     class="px-gutter pointer-events-none fixed inset-0 z-10 flex h-dvh w-screen items-center justify-center pt-20 pb-30 md:py-0"
 >
-    <header class="flex h-full w-full flex-col items-center justify-between md:h-auto md:flex-row">
-        <a href="/" id="home-link" class="pointer-events-auto">
-            <Logo class="h-100" />
+    <header
+        class="flex h-full w-full flex-col items-center justify-between md:h-auto md:flex-row"
+    >
+        <a
+            href="/"
+            id="home-link"
+            class="pointer-events-auto w-80 md:h-auto md:w-2/24"
+        >
+            <Logo class="w-full" />
         </a>
         <div class="flex items-center gap-10">
             {
