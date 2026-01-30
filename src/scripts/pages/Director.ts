@@ -86,6 +86,8 @@ export default class Director extends Page {
     }
 
     transitionIn() {
+        this.killCurrentSwap();
+
         const overlay = this.container.querySelector(
             "#director-overlay",
         ) as HTMLDivElement;
@@ -94,33 +96,39 @@ export default class Director extends Page {
             "#director-banner",
         ) as HTMLElement;
 
-        const tl = gsap.timeline({ paused: true });
+        this.swapTl = gsap.timeline({ paused: true });
 
-        tl.to(overlay, {
+        this.swapTl.to(overlay, {
             opacity: 0.85,
             duration: 0.4,
             ease: "power3.out",
         });
-        tl.to(banner, { yPercent: 0, duration: 0.4, ease: "power3.out" }, "<");
+        this.swapTl.to(
+            banner,
+            { yPercent: 0, duration: 0.4, ease: "power3.out" },
+            "<",
+        );
 
-        return tl.play();
+        return this.swapTl.play();
     }
 
     transitionOut() {
-        const tl = gsap.timeline({ paused: true });
+        this.killCurrentSwap();
 
-        tl.to(this.overlay, {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        this.swapTl.to(this.overlay, {
             opacity: 1,
             duration: 0.2,
             ease: "power3.out",
         });
-        tl.to(
+        this.swapTl.to(
             this.banner,
             { yPercent: -100, duration: 0.2, ease: "power3.out" },
             "<",
         );
 
-        return tl.play();
+        return this.swapTl.play();
     }
 
     prepareTransitionIn() {
