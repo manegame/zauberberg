@@ -10,32 +10,34 @@ const { data } = Astro.props;
 
 const aspectRatioClass =
     {
-        square: "aspect-square md:w-10/24",
-        classic: "aspect-[7/5] md:w-14/24",
-        wide: "aspect-[9/5] md:w-18/24",
-    }[data.coverSize as "square" | "classic" | "wide"] || "md:aspect-square";
+        square: "aspect-square lg:w-10/24",
+        classic: "aspect-[7/5] lg:w-14/24",
+        wide: "aspect-[9/5] lg:w-18/24",
+    }[data.coverSize as "square" | "classic" | "wide"] || "lg:aspect-square";
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
     <div
-        class="flex w-full flex-col items-center gap-25 pt-212 pb-80 md:gap-35 md:py-112"
+        class="flex w-full flex-col items-center gap-25 pt-212 pb-80 lg:gap-35 lg:py-112"
     >
-        <div class="flex w-full flex-col items-center gap-8 md:gap-15">
-            <div class="flex w-10/12 flex-col gap-9 md:w-6/24 md:gap-10">
+        <div class="flex w-full flex-col items-center gap-8 lg:gap-15">
+            <div
+                class="flex w-10/12 flex-col gap-9 md:w-8/12 lg:w-6/24 lg:gap-10"
+            >
                 <LeftRightTitle
                     leftAlignedTitle={data.leftAlignedTitle}
                     rightAlignedTitle={data.rightAlignedTitle}
                 />
                 <Details date={data.date} category={data.category.category} />
             </div>
-            <div class={`relative w-full ${aspectRatioClass}`}>
+            <div class={`relative w-full md:w-10/12 ${aspectRatioClass}`}>
                 <DatoImage
                     data={data.cover.responsiveImage}
                     imgClass="block absolute inset-0 size-full object-cover"
                 />
             </div>
         </div>
-        <div class="sections-wrapper md:w-4/12">
+        <div class="sections-wrapper md:w-10/12 lg:w-4/12">
             {
                 Array.isArray(data.content) &&
                     data.content.map((blok: any) => {
