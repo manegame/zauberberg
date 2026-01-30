@@ -17,21 +17,21 @@ const categories = [
 <div class="px-gutter flex min-h-dvh items-center justify-center">
     <button
         type="button"
-        class="text-body fixed top-100 z-20 px-23 py-16 md:hidden"
+        class="text-body fixed top-100 z-20 px-23 py-16 lg:hidden"
         id="filters-toggle">Filters</button
     >
     <div
-        class="p-gutter bg-grey fixed top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 md:pointer-events-none md:inset-0 md:h-dvh md:w-screen md:items-end md:bg-transparent"
+        class="p-gutter bg-grey fixed top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 lg:pointer-events-none lg:inset-0 lg:h-dvh lg:w-screen lg:items-end lg:bg-transparent"
         id="filters-panel"
     >
         <nav
-            class="text-nav flex flex-col items-start gap-9 md:relative md:-top-[0.55em] md:h-1/2 md:w-6/24 md:gap-8 md:pl-[12.5%]"
+            class="text-nav flex flex-col items-start gap-9 lg:relative lg:-top-[0.55em] lg:h-1/2 lg:w-6/24 lg:gap-8 lg:pl-[12.5%]"
         >
             {
                 categories.map((category) => (
                     <button
                         type="button"
-                        class="text-left opacity-20 md:pointer-events-auto"
+                        class="text-left opacity-20 lg:pointer-events-auto"
                         data-category={category}
                     >
                         {category}
@@ -39,20 +39,22 @@ const categories = [
                 ))
             }
         </nav>
-        <button type="button" class="flex-none md:hidden" id="filters-close">
+        <button type="button" class="flex-none lg:hidden" id="filters-close">
             <Icon name="cross" class="size-17" />
         </button>
     </div>
-    <div class="w-full gap-25 pt-212 pb-80 md:w-4/12 md:pt-240 md:pb-112">
-        <ul class="flex flex-col gap-50 md:gap-100" id="news-list">
+    <div
+        class="w-full gap-25 pt-212 pb-80 md:w-10/12 lg:w-4/12 lg:pt-240 lg:pb-112"
+    >
+        <ul class="flex flex-col gap-50 lg:gap-100" id="news-list">
             {
                 data.news?.map((newsItem: any) => (
                     <li data-news-category={newsItem.category.category}>
                         <a
                             href={`/${newsItem.slug}`}
-                            class="flex flex-col items-center gap-8 md:gap-10"
+                            class="flex flex-col items-center gap-8 lg:gap-10"
                         >
-                            <div class="flex w-10/12 flex-col gap-9 md:w-6/8 md:gap-10">
+                            <div class="flex w-10/12 flex-col gap-9 md:w-8/10 lg:w-6/8 lg:gap-10">
                                 <LeftRightTitle
                                     leftAlignedTitle={newsItem.leftAlignedTitle}
                                     rightAlignedTitle={
@@ -123,7 +125,7 @@ const categories = [
             window.history.replaceState({}, "", url.toString());
 
             // Close filters on mobile after selection
-            if (window.innerWidth < 768 && filtersPanel) {
+            if (window.innerWidth < 1024 && filtersPanel) {
                 gsap.to(filtersPanel, {
                     yPercent: -100,
                     duration: 0.4,
@@ -157,7 +159,7 @@ const categories = [
     if (filtersToggle && filtersClose && filtersPanel) {
         // Set initial state for mobile only
         const setInitialState = () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 gsap.set(filtersPanel, { yPercent: -100 });
             } else {
                 gsap.set(filtersPanel, { yPercent: 0 });
@@ -167,9 +169,9 @@ const categories = [
         setInitialState();
 
         // Track breakpoint crossing with ResizeObserver
-        let wasMobile = window.innerWidth < 768;
+        let wasMobile = window.innerWidth < 1024;
         const resizeObserver = new ResizeObserver(() => {
-            const isMobile = window.innerWidth < 768;
+            const isMobile = window.innerWidth < 1024;
             if (wasMobile !== isMobile) {
                 setInitialState();
                 wasMobile = isMobile;
@@ -179,7 +181,7 @@ const categories = [
 
         // Toggle open
         filtersToggle.addEventListener("click", () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 gsap.to(filtersPanel, {
                     yPercent: 0,
                     duration: 0.4,
@@ -190,7 +192,7 @@ const categories = [
 
         // Toggle close
         filtersClose.addEventListener("click", () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 gsap.to(filtersPanel, {
                     yPercent: -100,
                     duration: 0.4,
