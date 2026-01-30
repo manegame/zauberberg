@@ -1,15 +1,12 @@
 import Page from "./Page";
+import gsap from "gsap";
+
 import { navigate } from "astro:transitions/client";
 
 export default class Director extends Page {
     banner!: HTMLElement;
+    overlay!: HTMLElement;
     abortController!: AbortController;
-
-    constructor() {
-        super();
-
-        this.container = document.querySelector("#director") as HTMLElement;
-    }
 
     destroy() {
         this.abortController.abort();
@@ -19,7 +16,9 @@ export default class Director extends Page {
     async init() {
         if (!this.container) return;
 
-        this.banner = document.querySelector("#director-banner") as HTMLElement;
+        this.banner = this.container.querySelector("#director-banner")!;
+        this.overlay = this.container.querySelector("#director-overlay")!;
+
         this.abortController = new AbortController();
 
         if (this.banner) {
@@ -84,5 +83,56 @@ export default class Director extends Page {
             },
             { signal: this.abortController.signal },
         );
+    }
+
+    transitionIn() {
+        const overlay = this.container.querySelector(
+            "#director-overlay",
+        ) as HTMLDivElement;
+
+        const banner = this.container.querySelector(
+            "#director-banner",
+        ) as HTMLElement;
+
+        const tl = gsap.timeline({ paused: true });
+
+        tl.to(overlay, {
+            opacity: 0.85,
+            duration: 0.4,
+            ease: "power3.out",
+        });
+        tl.to(banner, { yPercent: 0, duration: 0.4, ease: "power3.out" }, "<");
+
+        return tl.play();
+    }
+
+    transitionOut() {
+        const tl = gsap.timeline({ paused: true });
+
+        tl.to(this.overlay, {
+            opacity: 1,
+            duration: 0.2,
+            ease: "power3.out",
+        });
+        tl.to(
+            this.banner,
+            { yPercent: -100, duration: 0.2, ease: "power3.out" },
+            "<",
+        );
+
+        return tl.play();
+    }
+
+    prepareTransitionIn() {
+        const overlay = this.container.querySelector(
+            "#director-overlay",
+        ) as HTMLDivElement;
+
+        const banner = this.container.querySelector(
+            "#director-banner",
+        ) as HTMLElement;
+
+        gsap.set(overlay, { opacity: 1 });
+        gsap.set(banner, { yPercent: -100 });
     }
 }

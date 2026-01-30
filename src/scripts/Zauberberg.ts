@@ -2,9 +2,9 @@ import DebugGrid from "./DebugGrid";
 import Loader from "./Loader";
 import SwapManager from "./SwapManager";
 import Scroll from "./Scroll";
-import DirectorsPage from "./pages/Directors";
 
-import getPageClass from "./pages";
+import { getPage } from "./pages";
+
 import type Page from "./pages/Page";
 
 export default class Zauberberg {
@@ -13,7 +13,6 @@ export default class Zauberberg {
     initialized!: boolean;
     loader!: Loader;
     scroll!: Scroll;
-    directorsPage!: DirectorsPage;
     page!: null | Page;
     debugGrid!: DebugGrid;
 
@@ -24,35 +23,20 @@ export default class Zauberberg {
         this.initialized = false;
 
         this.scroll = new Scroll();
-        this.directorsPage = new DirectorsPage();
         this.swapManager = new SwapManager();
         this.loader = new Loader();
         this.debugGrid = new DebugGrid();
 
         const initialTemplate =
-            document.querySelector<HTMLElement>("#page")!.dataset.template;
+            document.querySelector<HTMLElement>("#page")!.dataset.template ||
+            "";
 
-        this.page = this.getPage(initialTemplate);
+        const currentPage = getPage(initialTemplate);
+        this.setCurrentPage(currentPage!);
     }
 
-    getPage(template: string | undefined) {
-        const PageClass = getPageClass(template);
-        if (PageClass) {
-            return new PageClass();
-        }
-        return null;
-    }
-
-    switchPage() {
-        const newTemplate =
-            document.querySelector<HTMLElement>("#page")!.dataset.template;
-
-        if (this.page) {
-            this.page.destroy();
-        }
-
-        this.page = this.getPage(newTemplate);
-        this.page?.init();
+    setCurrentPage(page: Page) {
+        this.page = page;
     }
 
     async init() {

@@ -39,17 +39,13 @@ export default class DirectorsPage extends Page {
     scrollEndTimeout?: number;
     observer!: Observer;
 
-    constructor() {
-        super();
+    constructor(...args: ConstructorParameters<typeof Page>) {
+        super(...args);
 
         this.DELTA_MULTIPLIER = 1;
         this.ITEM_HEIGHT = 26;
         this.MAX_SCROLL_SPEED = 20;
         this.NUMBER_OF_DUPLICATES = 2;
-
-        this.container = document.querySelector(
-            "#directors-page",
-        ) as HTMLElement;
     }
 
     destroy() {
