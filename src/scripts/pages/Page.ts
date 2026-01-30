@@ -8,12 +8,24 @@ export default class Page {
     app: Zauberberg;
     template: string;
 
+    swapTl: gsap.core.Timeline | null;
+
     constructor(template: string, doc: Document = window.document) {
         this.app = new Zauberberg();
         this.template = template;
         this.container = doc.getElementById("page") as HTMLElement;
+        this.swapTl = null;
         this.initialized = false;
         this.destroyed = false;
+    }
+
+    killCurrentSwap() {
+        if (this.swapTl) {
+            console.log("killing tl");
+
+            this.swapTl.kill();
+            this.swapTl = null;
+        }
     }
 
     async init() {
@@ -29,26 +41,29 @@ export default class Page {
     }
 
     transitionIn(from: Page): Promise<any> | gsap.core.Timeline {
-        const tl = gsap.timeline({ paused: true });
+        this.killCurrentSwap();
 
-        tl.to(this.container, {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        this.swapTl.to(this.container, {
             opacity: 1,
             duration: 0.2,
             ease: "power2.out",
         });
 
-        return tl.play();
+        return this.swapTl.play();
     }
 
     transitionOut(to: Page): Promise<any> | gsap.core.Timeline {
-        const tl = gsap.timeline({ paused: true });
+        this.killCurrentSwap();
+        this.swapTl = gsap.timeline({ paused: true });
 
-        tl.to(this.container, {
+        this.swapTl.to(this.container, {
             opacity: 0,
             duration: 0,
             ease: "power2.out",
         });
 
-        return tl.play();
+        return this.swapTl.play();
     }
 }

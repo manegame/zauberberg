@@ -1,100 +1,39 @@
 import type { TransitionBeforeSwapEvent } from "astro/virtual-modules/transitions-events.js";
-import { swapFunctions } from "astro:transitions/client";
 import Zauberberg from "./Zauberberg";
-
-import { getPage } from "./pages";
-
+import Swap from "./Swap";
 import type Page from "./pages/Page";
 
 export default class SwapManager {
     app: Zauberberg;
-    restoreFocusFunction!: () => void;
-
+    currentSwap: null | Swap;
     page!: Page;
-    doc!: Document;
-
-    newPage!: Page;
-    newDoc!: Document;
 
     constructor() {
         this.app = new Zauberberg();
+        this.currentSwap = null;
     }
 
-    transfertStates() {
-        const loaderEl = this.newDoc.getElementById("loader");
-        if (loaderEl) loaderEl.setAttribute("data-finished", "true");
-    }
+    onBeforeSwapEvent(event: TransitionBeforeSwapEvent) {
+        console.log("[SWAP MANAGER] - New swap requested");
 
-    async execute(newDocument: Document) {
-        this.doc = document;
-        this.newDoc = newDocument;
-
-        const newTemplate =
-            this.newDoc.querySelector<HTMLElement>("#page")!.dataset.template ||
-            "";
-
-        this.page = this.app.page!;
-        this.newPage = getPage(newTemplate, this.newDoc);
-
-        console.log(
-            `executing swap: from ${this.page.template} to ${this.newPage.template}`,
-        );
-
-        this.beforeOut();
-        await this.page.transitionOut(this.page);
-        this.afterOut();
-
-        this.beforeIn();
-        await this.newPage.transitionIn(this.newPage);
-        this.afterIn();
-    }
-
-    beforeOut() {
-        console.log("[SWAP] - before out");
-
-        this.transfertStates();
-
-        swapFunctions.deselectScripts(this.newDoc);
-        console.log("1");
-
-        swapFunctions.swapRootAttributes(this.newDoc);
-        console.log("2");
-
-        swapFunctions.swapHeadElements(this.newDoc);
-        console.log("3");
-
-        this.restoreFocusFunction = swapFunctions.saveFocus();
-        console.log("4");
-    }
-
-    afterOut() {
-        console.log("[SWAP] - after out");
-        this.page?.destroy();
-    }
-
-    beforeIn() {
-        console.log("[SWAP] - before in");
-
-        if (this.newPage.prepareTransitionIn) {
-            this.newPage.prepareTransitionIn(this.page);
-        }
-
-        swapFunctions.swapBodyElement(this.newDoc.body, this.doc.body);
-        this.restoreFocusFunction();
-        this.newPage.init();
-    }
-
-    afterIn() {
-        console.log("[SWAP] - after in");
-        this.app.setCurrentPage(this.newPage);
+        const swap = new Swap(event.newDocument, this);
+        if (this.currentSwap) this.currentSwap.kill();
+        this.currentSwap = swap;
+        event.swap = () => swap.execute();
     }
 
     init() {
+        this.page = this.app.page!;
         document.addEventListener(
             "astro:before-swap",
             (event: TransitionBeforeSwapEvent) => {
-                event.swap = () => this.execute(event.newDocument);
+                this.onBeforeSwapEvent(event);
             },
         );
+    }
+
+    setCurrentPage(page: Page) {
+        this.page = page;
+        this.app.setCurrentPage(page);
     }
 }
