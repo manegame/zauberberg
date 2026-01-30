@@ -2,7 +2,9 @@
 const { data } = Astro.props;
 ---
 
-<section class="section-blockquote md:-ml-[12.5%] md:w-10/8">
+<section
+    class="section-blockquote md:-ml-[calc(1/20*100%)] md:w-22/20 lg:-ml-[calc(1/8*100%)] lg:w-10/8"
+>
     <blockquote>
         <p
             class={`text-quote text-center text-pretty before:content-['“_'] after:content-['”']`}
