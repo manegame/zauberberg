@@ -30,6 +30,10 @@ export default class SwapManager {
                 this.onBeforeSwapEvent(event);
             },
         );
+
+        document.addEventListener("astro:after-swap", () => {
+            this.app.scroll.reset();
+        });
     }
 
     setCurrentPage(page: Page) {

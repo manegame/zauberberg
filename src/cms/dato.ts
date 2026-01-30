@@ -19,8 +19,8 @@ const excecuteQuery = async (query: string, variables = {}) => {
 
     const json = await response.json();
 
-    if (json.errors) {
-        throw new Error(JSON.stringify(json.errors));
+    if (json.errors || !json.data) {
+        throw new Error(JSON.stringify(json.errors || json));
     }
 
     const data = json.data;

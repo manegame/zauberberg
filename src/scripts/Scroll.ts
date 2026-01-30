@@ -15,4 +15,8 @@ export default class Scroll {
 
         gsap.ticker.lagSmoothing(0);
     }
+
+    reset() {
+        this.lenis.scrollTo(0, { duration: 0, immediate: true });
+    }
 }
