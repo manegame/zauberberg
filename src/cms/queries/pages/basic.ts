@@ -1,4 +1,5 @@
 import sections from "../utils/sections";
+import link from "../utils/link";
 
 export default `
     id
@@ -7,5 +8,12 @@ export default `
     slug
     content {
         ${sections}
+    }
+    subnavigation {
+        blocks {
+            links {
+                ${link}
+            }
+        }
     }
 `;

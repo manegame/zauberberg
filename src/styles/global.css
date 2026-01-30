@@ -105,6 +105,12 @@
     --text-subtitle-mobile--letter-spacing: 0em;
     --text-subtitle-mobile--font-feature-settings: "ss07" on;
 
+    --text-credits: 1.1rem;
+    --text-credits--line-height: 1.2;
+    --text-credits--font-weight: 500;
+    --text-credits--letter-spacing: 0.03em;
+    --text-credits--font-feature-settings: "ss07" on;
+    
     --spacing: 0.1rem;
     --spacing-gutter: 3rem;
 
@@ -174,5 +180,16 @@
     }
     .wysiwyg-content {
         @apply [&_h4]:text-caption-mobile [&_h4]:md:text-caption-desktop [&_a]:underline [&_h2]:my-35 [&_h2]:underline [&_h2:first-child]:mt-0 [&_h2:last-child]:mb-0 [&_h3]:my-14 [&_h3:first-child]:mt-0 [&_h3:last-child]:mb-0 [&_h4]:my-14 [&_h4]:uppercase [&_h4:first-child]:mt-0 [&_h4:last-child]:mb-0;
+    }
+}
+
+@layer utilities {
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
     }
 }
