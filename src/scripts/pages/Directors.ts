@@ -75,7 +75,14 @@ export default class DirectorsPage extends Page {
             return this.preloadedVideoBlobs.get(videoUrl)!;
         }
 
-        const response = await fetch(videoUrl);
+        const response = await fetch("/api/getWiredriveVideo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ video: videoUrl }),
+        });
+
         if (!response.ok) {
             throw new Error(
                 `Failed to fetch ${videoUrl}: ${response.statusText}`,

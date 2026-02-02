@@ -1,4 +1,3 @@
-import responsiveImg from "../utils/responsiveImg";
 import seoMetaTags from "../utils/seoMetaTags";
 
 export default `
@@ -14,14 +13,7 @@ export default `
             slug
             name
             client
-            preview {
-                id
-                wiredriveUrl
-                poster {
-                    url
-                    ${responsiveImg}
-                }
-            }
+            previewRss
             directors {
                 id
                 name

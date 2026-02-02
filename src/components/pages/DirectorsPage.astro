@@ -1,9 +1,24 @@
 ---
 import DatoLink from "../global/DatoLink.astro";
 
+import { getDataFromRSS } from "../../utils/wiredrive";
+
 const { data } = Astro.props;
 
 const directors = data.directors || [];
+
+const rssVideoPromises: Promise<{ video: any; poster: any }>[] = [];
+
+directors.forEach((director: any) => {
+    if (director.showcaseRss) {
+        const rssPromise = getDataFromRSS(director.showcaseRss).then((showcase) => {
+            director.showcase = showcase;
+            return showcase;
+        });
+        rssVideoPromises.push(rssPromise);
+    }
+});
+await Promise.all(rssVideoPromises);
 
 const directorsWithDuplicate = [...directors, ...directors];
 ---
@@ -36,7 +51,7 @@ const directorsWithDuplicate = [...directors, ...directors];
                 {
                     directorsWithDuplicate.map((director, index) => (
                         <div
-                            data-video={director.showcase.wiredriveUrl}
+                            data-video={director.showcase.video.url}
                             data-poster={director.showcase.poster.url}
                             data-color={director.color.hex}
                             data-index={index % directors.length}

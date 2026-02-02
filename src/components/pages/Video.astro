@@ -1,7 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
 
+import { getDataFromRSS } from "../../utils/wiredrive";
+
 const { data } = Astro.props;
+
+const video = await getDataFromRSS(data.videoRss);
+data.video = video;
 ---
 
 <div id="video" class="relative h-dvh overflow-hidden">
@@ -11,7 +16,7 @@ const { data } = Astro.props;
             muted
             loop
             playsinline
-            src={data.video.wiredriveUrl}
+            src={data.video.video.url}
             poster={data.video.poster.url}
         >
         </video>

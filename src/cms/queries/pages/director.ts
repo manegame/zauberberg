@@ -25,22 +25,13 @@ export default `
     photo {
         ${responsiveImg}
     }
-    showcase {
-        ${video}
-    }
+    showcaseRss
     videos {
         _modelApiKey
         id
         slug
         name
         client
-        preview {
-            id
-            wiredriveUrl
-            poster {
-                url
-                ${responsiveImg}
-            }
-        }
+        previewRss
     }
 `;

@@ -1,5 +1,4 @@
 ---
-import DatoImage from "../global/DatoImage.astro";
 import DatoLink from "../global/DatoLink.astro";
 
 const { video } = Astro.props;
@@ -36,13 +35,13 @@ const { video } = Astro.props;
             loop
             playsinline
             poster={video.preview.poster.url}
-            src={video.preview.wiredriveUrl}
+            src={video.preview.video.url}
         >
         </video>
-        <DatoImage
-            pictureClass="video-poster transition-opacity duration-300 ease-in-out"
-            imgClass="absolute inset-0 size-full object-cover "
-            data={video.preview.poster.responsiveImage}
+        <img
+            class="video-poster absolute inset-0 size-full object-cover transition-opacity duration-300 ease-in-out"
+            src={video.preview.poster.url}
+            alt={video.name}
         />
     </div>
 </DatoLink>

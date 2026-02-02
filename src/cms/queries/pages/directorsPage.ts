@@ -14,8 +14,6 @@ export default `
         color {
             hex
         }
-        showcase {
-            ${video}
-        }
+        showcaseRss   
     }
 `;

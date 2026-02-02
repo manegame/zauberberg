@@ -14,20 +14,6 @@ export default `
         slug
         _modelApiKey
     }
-    video {
-        id
-        wiredriveUrl
-        poster {
-            url
-            ${responsiveImg}
-        }
-    }
-    preview {
-        id
-        wiredriveUrl
-        poster {
-            url
-            ${responsiveImg}
-        }
-    }
+    videoRss
+    previewRss
 `;

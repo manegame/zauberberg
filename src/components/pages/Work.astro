@@ -2,7 +2,23 @@
 import DatoLink from "../global/DatoLink.astro";
 import EdgeGradient from "../global/EdgeGradient.astro";
 
+import { getDataFromRSS } from "../../utils/wiredrive";
+
 const { data } = Astro.props;
+
+const videosPromises: Promise<any>[] = [];
+
+data.videos.forEach((video: any) => {
+    if (video.video.previewRss) {
+        const rssPromise = getDataFromRSS(video.video.previewRss).then((preview) => {
+            video.video.preview = preview;
+            return preview;
+        });
+        videosPromises.push(rssPromise);
+    }
+});
+
+await Promise.all(videosPromises);
 ---
 
 <div id="work" class="flex pt-200 lg:h-dvh lg:items-center lg:overflow-y-auto">
@@ -26,7 +42,7 @@ const { data } = Astro.props;
                                 muted
                                 loop
                                 playsinline
-                                src={video.video.preview.wiredriveUrl}
+                                src={video.video.preview.video.url}
                                 poster={video.video.preview.poster.url}
                             />
                             <div class="overlay absolute -inset-1 bg-black opacity-30 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
