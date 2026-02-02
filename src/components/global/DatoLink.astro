@@ -1,5 +1,5 @@
 ---
-const { link, class: className = "", currentClass = "" } = Astro.props;
+const { link, class: className = "", style = "", currentClass = "" } = Astro.props;
 
 const { label, externalLink, internalLink } = link;
 
@@ -23,6 +23,7 @@ const isExternal = !!externalLink;
 ---
 
 <a
+    style={style}
     href={linkUrl}
     draggable="false"
     class:list={[className, { [currentClass]: isCurrent }]}

@@ -85,7 +85,7 @@ export default class Director extends Page {
         );
     }
 
-    transitionIn() {
+    transitionIn(from: Page) {
         this.killCurrentSwap();
 
         const overlay = this.container.querySelector(
@@ -109,10 +109,26 @@ export default class Director extends Page {
             "<",
         );
 
+        if (from.template === "video") {
+            const navigationItems = document.querySelectorAll(
+                "#navigation .navigation-item",
+            );
+            this.swapTl.to(
+                navigationItems,
+                {
+                    yPercent: 0,
+                    stagger: 0.05,
+                    duration: 0.4,
+                    ease: "power3.inOut",
+                },
+                "<",
+            );
+        }
+
         return this.swapTl.play();
     }
 
-    transitionOut() {
+    transitionOut(to: Page) {
         this.killCurrentSwap();
 
         this.swapTl = gsap.timeline({ paused: true });
@@ -127,6 +143,22 @@ export default class Director extends Page {
             { yPercent: -100, duration: 0.2, ease: "power3.out" },
             "<",
         );
+
+        if (to.template === "video") {
+            const navigationItems = document.querySelectorAll(
+                "#navigation .navigation-item",
+            );
+            this.swapTl.to(
+                navigationItems,
+                {
+                    yPercent: -100,
+                    stagger: 0.02,
+                    duration: 0.2,
+                    ease: "power3.inOut",
+                },
+                "<",
+            );
+        }
 
         return this.swapTl.play();
     }

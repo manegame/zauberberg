@@ -47,11 +47,11 @@ export default class Swap {
         );
 
         this.beforeOut();
-        await this.page.transitionOut(this.page);
+        await this.page.transitionOut(this.newPage);
         this.afterOut();
 
         this.beforeIn();
-        await this.newPage.transitionIn(this.newPage);
+        await this.newPage.transitionIn(this.page);
         this.afterIn();
     }
 

@@ -1,12 +1,14 @@
 import DirectorsPage from "./Directors";
 import Director from "./Director";
 import Page from "./Page";
+import Video from "./Video";
 
 const DEFAULT_PAGE = Page;
 
 const PAGE_BY_TEMPLATE: Record<string, typeof Page> = {
     directors_page: DirectorsPage,
     director: Director,
+    video: Video,
 };
 
 export const getPageClass = (template: string) => {
