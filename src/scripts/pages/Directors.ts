@@ -30,7 +30,6 @@ export default class DirectorsPage extends Page {
 
     allVideos!: { video: string; index: number }[];
     videosToLoad!: { video: string; index: number }[];
-    preloadedVideoBlobs!: Map<string, string>;
 
     scrollTo!: any;
     ghostScrollTo!: any;
@@ -52,12 +51,6 @@ export default class DirectorsPage extends Page {
         super.destroy();
         if (this.observer) this.observer.kill();
         if (this.scrollEndTimeout) clearTimeout(this.scrollEndTimeout);
-
-        // Clean up blob URLs to free memory
-        this.preloadedVideoBlobs.forEach((blobUrl) => {
-            URL.revokeObjectURL(blobUrl);
-        });
-        this.preloadedVideoBlobs.clear();
     }
 
     async init() {
@@ -71,8 +64,8 @@ export default class DirectorsPage extends Page {
     }
 
     async fetchVideoAsBlob(videoUrl: string): Promise<string> {
-        if (this.preloadedVideoBlobs.has(videoUrl)) {
-            return this.preloadedVideoBlobs.get(videoUrl)!;
+        if (this.app.store.homeVideoBlobs.has(videoUrl)) {
+            return this.app.store.homeVideoBlobs.get(videoUrl)!;
         }
 
         const response = await fetch("/api/getWiredriveVideo", {
@@ -92,7 +85,7 @@ export default class DirectorsPage extends Page {
         const blob = await response.blob();
         const blobUrl = URL.createObjectURL(blob);
 
-        this.preloadedVideoBlobs.set(videoUrl, blobUrl);
+        this.app.store.homeVideoBlobs.set(videoUrl, blobUrl);
 
         this.videosToLoad = this.videosToLoad.filter(
             (vid) => vid.video !== videoUrl,
@@ -113,13 +106,13 @@ export default class DirectorsPage extends Page {
         this.activeVideoEl = this.videoEl1;
         this.inactiveVideoEl = this.videoEl2;
 
+        this.activeVideoEl.poster = this.currentDirector.dataset.poster!;
+        this.activeVideoEl.load();
         const firstVideoUrl = this.currentDirector.dataset.video!;
         await this.fetchVideoAsBlob(firstVideoUrl);
 
-        this.activeVideoEl.poster = this.currentDirector.dataset.poster!;
         this.activeVideoEl.src =
-            this.preloadedVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
-        this.activeVideoEl.load();
+            this.app.store.homeVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
 
         return new Promise<void>((resolve) => {
             this.activeVideoEl.addEventListener(
@@ -166,7 +159,7 @@ export default class DirectorsPage extends Page {
         });
 
         await Promise.allSettled(preloadPromises);
-        console.log(`Preloaded ${this.preloadedVideoBlobs.size} videos`);
+        console.log(`Preloaded ${this.app.store.homeVideoBlobs.size} videos`);
     }
 
     onScrollEvent(scroll: any) {
@@ -195,7 +188,8 @@ export default class DirectorsPage extends Page {
     setBackgroundVideo() {
         const videoUrl = this.currentDirector.dataset.video!;
         const videoPoster = this.currentDirector.dataset.poster!;
-        const srcToUse = this.preloadedVideoBlobs.get(videoUrl) || videoUrl;
+        const srcToUse =
+            this.app.store.homeVideoBlobs.get(videoUrl) || videoUrl;
 
         // decomment later, for now we have the same video for all directors so we want to see the transi
         // if (this.inactiveVideoEl.src === srcToUse) return;
@@ -310,7 +304,10 @@ export default class DirectorsPage extends Page {
             return allVideos.find((v) => v.video === video)!;
         });
 
-        this.preloadedVideoBlobs = new Map();
+        // persistent store between page swaps
+        if (!this.app.store.homeVideoBlobs) {
+            this.app.store.homeVideoBlobs = new Map();
+        }
 
         // Only when NUMBER_OF_DUPLICATES is 2
         // TODO: make it work for any number of duplicates

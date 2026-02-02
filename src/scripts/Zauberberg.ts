@@ -15,6 +15,7 @@ export default class Zauberberg {
     scroll!: Scroll;
     page!: null | Page;
     debugGrid!: DebugGrid;
+    store: Record<string, any> = {};
 
     constructor() {
         if (Zauberberg.instance) return Zauberberg.instance;
@@ -26,6 +27,7 @@ export default class Zauberberg {
         this.swapManager = new SwapManager();
         this.loader = new Loader();
         this.debugGrid = new DebugGrid();
+        this.store = {};
 
         const initialTemplate =
             document.querySelector<HTMLElement>("#page")!.dataset.template ||
