@@ -7,8 +7,9 @@ import { ClientRouter } from "astro:transitions";
 import Navigation from "../components/global/Navigation.astro";
 import Loader from "../components/global/Loader.astro";
 import Grid from "../components/global/Grid.astro";
+import Seo from "../components/global/Seo.astro";
 
-const { layout } = Astro.props;
+const { layout, seoMetaTags } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,7 +18,7 @@ const { layout } = Astro.props;
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <title>Zauberberg</title>
+        {seoMetaTags && <Seo data={seoMetaTags} />}
         <ClientRouter />
     </head>
     <body>
