@@ -8,7 +8,6 @@ const { data } = Astro.props;
     <div id="video-video" class="absolute inset-0">
         <video
             class="h-full w-full object-cover"
-            autoplay
             muted
             loop
             playsinline
@@ -17,44 +16,53 @@ const { data } = Astro.props;
         >
         </video>
         <div class="absolute inset-0 flex items-center justify-center bg-black/40">
-            <div id="video-info" class="flex flex-col items-center gap-5 lg:flex-row lg:gap-15">
+            <div
+                id="video-info"
+                class="flex flex-col items-center gap-5 overflow-hidden lg:flex-row lg:gap-15"
+            >
                 <div class="text-nav flex items-center gap-6">
                     {
                         data.directors.map((director: any) => {
-                            return <div>{director.name}</div>;
+                            return <div class="video-info">{director.name}</div>;
                         })
                     }
                 </div>
                 <div class="text-nav-kh flex items-center gap-6">
-                    <div>{data.name}</div>
-                    <div class="italic">{data.client}</div>
+                    <div class="video-info">{data.name}</div>
+                    <div class="video-info italic">{data.client}</div>
                 </div>
             </div>
         </div>
     </div>
     <div
         id="video-controls"
-        style={{ "--video-progress": 0.89 }}
+        style={{ "--video-progress": 0 }}
         class="px-gutter pointer-events-none absolute inset-0 flex items-center justify-center pb-60 lg:pb-0"
     >
         <div class="flex h-full w-full flex-col items-center justify-end lg:h-auto lg:flex-row">
-            <div class="text-nav pointer-events-auto flex items-center gap-10">
-                <button class="flex shrink-0 items-center gap-5">
+            <div class="text-nav pointer-events-auto flex items-center gap-10 overflow-hidden">
+                <button class="controls-item flex shrink-0 items-center gap-5">
                     <Icon name="cross" class="-mt-1 size-12" />
                     Close
                 </button>
-                <button class="flex shrink-0 items-center gap-5"> ← Prev </button>
-                <button class="flex shrink-0 items-center gap-5"> Next → </button>
-                <button class="flex shrink-0 items-center gap-5"> Sound </button>
-                <button class="flex shrink-0 items-center gap-5"> More ↓ </button>
+                <button class="controls-item flex shrink-0 items-center gap-5"> ← Prev </button>
+                <button class="controls-item flex shrink-0 items-center gap-5"> Next → </button>
+                <button
+                    id="btn-sound"
+                    data-muted="true"
+                    class="controls-item flex shrink-0 items-center gap-5 transition-opacity duration-150 ease-in-out data-[muted=true]:opacity-30"
+                >
+                    Sound
+                </button>
+                <button class="controls-item flex shrink-0 items-center gap-5"> More ↓ </button>
             </div>
         </div>
-        <div class="absolute right-0 bottom-0 left-0 flex flex-col pb-30">
+        <div class="absolute right-0 bottom-0 left-0 flex flex-col pb-30" id="video-timeline">
             <div class="translate-x-[calc(100%*var(--video-progress))] pb-17">
                 <div
                     id="video-controls-time"
                     class="hidden -translate-x-1/2 text-[1.2rem] font-medium tracking-[0.08em] uppercase tabular-nums lg:inline-block"
-                    >00:14</div
+                    >00:00</div
                 >
             </div>
             <div class="h-2 w-full bg-white/10">

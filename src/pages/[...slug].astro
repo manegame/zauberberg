@@ -20,6 +20,10 @@ if (isPreview()) {
 }
 ---
 
-<Layout layout={data.layout} seoMetaTags={data.page._seoMetaTags}>
+<Layout
+    layout={data.layout}
+    template={data.page._modelApiKey}
+    seoMetaTags={data.page._seoMetaTags}
+>
     <Page data={data.page} />
 </Layout>
