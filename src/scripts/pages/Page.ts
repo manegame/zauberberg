@@ -36,7 +36,7 @@ export default class Page {
         this.destroyed = true;
     }
 
-    prepareTransitionIn(from: Page) {
+    prepareTransitionIn(from: Page, prevUrl: string) {
         gsap.set(this.container, { opacity: 0 });
     }
 

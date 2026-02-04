@@ -8,6 +8,7 @@ export default class Swap {
     restoreFocusFunction!: () => void;
     killed: boolean;
 
+    previousUrl!: string;
     page!: Page;
     doc!: Document;
 
@@ -46,6 +47,8 @@ export default class Swap {
             `executing swap: from ${this.page.template} to ${this.newPage.template}`,
         );
 
+        this.previousUrl = window.location.pathname;
+
         this.beforeOut();
         await this.page.transitionOut(this.newPage);
         this.afterOut();
@@ -80,7 +83,7 @@ export default class Swap {
         console.log("[SWAP] - before in");
 
         if (this.newPage.prepareTransitionIn) {
-            this.newPage.prepareTransitionIn(this.page);
+            this.newPage.prepareTransitionIn(this.page, this.previousUrl);
         }
 
         swapFunctions.swapBodyElement(this.newDoc.body, this.doc.body);

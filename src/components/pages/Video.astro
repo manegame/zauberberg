@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 
 import { getDataFromRSS } from "../../utils/wiredrive";
+import DatoLink from "../global/DatoLink.astro";
 
 const { data } = Astro.props;
 
@@ -52,7 +53,12 @@ data.video = video;
                 </button>
                 <button class="controls-item flex shrink-0 items-center gap-5"> ← Prev </button>
                 <button class="controls-item flex shrink-0 items-center gap-5"> Next → </button>
-                <button class="controls-item flex shrink-0 items-center gap-5"> More ↓ </button>
+                <DatoLink
+                    class="controls-item flex shrink-0 items-center gap-5"
+                    link={{ internalLink: data.directors?.[0] }}
+                >
+                    More ↓
+                </DatoLink>
             </div>
         </div>
         <div

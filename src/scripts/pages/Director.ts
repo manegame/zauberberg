@@ -6,6 +6,7 @@ import { navigate } from "astro:transitions/client";
 export default class Director extends Page {
     banner!: HTMLElement;
     overlay!: HTMLElement;
+    wrapper!: HTMLElement;
     abortController!: AbortController;
 
     destroy() {
@@ -16,6 +17,7 @@ export default class Director extends Page {
     async init() {
         if (!this.container) return;
 
+        this.wrapper = this.container.querySelector("#director")!;
         this.banner = this.container.querySelector("#director-banner")!;
         this.overlay = this.container.querySelector("#director-overlay")!;
 
@@ -56,7 +58,7 @@ export default class Director extends Page {
     }
 
     close() {
-        const backLink = this.container.dataset.back || "/";
+        const backLink = this.wrapper.dataset.back || "/";
         navigate(backLink);
     }
 
@@ -163,7 +165,7 @@ export default class Director extends Page {
         return this.swapTl.play();
     }
 
-    prepareTransitionIn() {
+    prepareTransitionIn(from: Page, prevUrl: string) {
         const overlay = this.container.querySelector(
             "#director-overlay",
         ) as HTMLDivElement;
@@ -171,6 +173,9 @@ export default class Director extends Page {
         const banner = this.container.querySelector(
             "#director-banner",
         ) as HTMLElement;
+
+        const wrapper = this.container.querySelector("#director");
+        wrapper?.setAttribute("data-back", prevUrl);
 
         gsap.set(overlay, { opacity: 1 });
         gsap.set(banner, { yPercent: -100 });
