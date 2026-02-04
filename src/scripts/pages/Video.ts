@@ -6,8 +6,11 @@ export default class Video extends Page {
     video!: HTMLVideoElement | null;
     controls!: HTMLElement | null;
     btnSound!: HTMLElement | null;
+    btnPlay!: HTMLElement | null;
+    timeline!: HTMLElement | null;
     progressTl!: gsap.core.Timeline;
     muted!: boolean;
+    play!: boolean;
     isSetup!: boolean;
 
     destroy() {
@@ -21,6 +24,7 @@ export default class Video extends Page {
         this.video = this.container.querySelector("#video-video video")!;
         this.abortController = new AbortController();
         this.muted = true;
+        this.play = true;
         this.isSetup = false;
 
         if (this.video?.readyState >= 2) this.setupVideoControls();
@@ -66,6 +70,25 @@ export default class Video extends Page {
         }
     }
 
+    onPlayClick() {
+        if (!this.video) return;
+        this.play = !this.play;
+        if (this.play) {
+            this.video.play();
+            this.progressTl.play();
+        } else {
+            this.video.pause();
+            this.progressTl.pause();
+        }
+
+        if (this.btnPlay) {
+            this.btnPlay.setAttribute(
+                "data-play",
+                this.play ? "true" : "false",
+            );
+        }
+    }
+
     setupTimeline() {
         if (!this.video || !this.controls) return;
 
@@ -86,15 +109,46 @@ export default class Video extends Page {
         );
     }
 
+    onTimelineClick(e: MouseEvent) {
+        if (!this.video || !this.timeline) return;
+
+        const rect = this.timeline.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickRatio = clickX / rect.width;
+        const newTime = this.video.duration * clickRatio;
+
+        this.video.currentTime = newTime;
+        this.onTimeUpdate();
+
+        this.progressTl.seek(this.video.currentTime);
+    }
+
     setupButtons() {
         if (!this.video) return;
 
         this.btnSound = this.container.querySelector("#btn-sound");
+        this.btnPlay = this.container.querySelector("#btn-play");
+        this.timeline = this.container.querySelector("#video-timeline");
+
+        this.timeline?.addEventListener(
+            "click",
+            (e) => {
+                this.onTimelineClick(e);
+            },
+            { signal: this.abortController.signal },
+        );
 
         this.btnSound?.addEventListener(
             "click",
             () => {
                 this.onSoundClick();
+            },
+            { signal: this.abortController.signal },
+        );
+        this.btnPlay?.addEventListener(
+            "click",
+            () => {
+                this.onPlayClick();
             },
             { signal: this.abortController.signal },
         );
