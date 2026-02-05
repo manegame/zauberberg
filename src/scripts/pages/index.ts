@@ -2,6 +2,8 @@ import DirectorsPage from "./Directors";
 import Director from "./Director";
 import Page from "./Page";
 import Video from "./Video";
+import NewsHome from "./NewsHome";
+import NewsSingle from "./NewsSingle";
 
 const DEFAULT_PAGE = Page;
 
@@ -9,6 +11,8 @@ const PAGE_BY_TEMPLATE: Record<string, typeof Page> = {
     directors_page: DirectorsPage,
     director: Director,
     video: Video,
+    news_home: NewsHome,
+    news_single: NewsSingle,
 };
 
 export const getPageClass = (template: string) => {
@@ -20,9 +24,8 @@ export const getPage = (
     template: string,
     doc?: Document,
     previousUrl: string = "/",
+    previousPage?: Page,
 ) => {
-    console.log(doc);
-
     const PageClass = getPageClass(template);
-    return new PageClass(template, doc, previousUrl);
+    return new PageClass(template, doc, previousUrl, previousPage);
 };

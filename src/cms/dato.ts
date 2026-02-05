@@ -31,10 +31,13 @@ const excecuteQuery = async (query: string, variables = {}) => {
 export const generateStaticPaths = async () => {
     const data = await getAllPagesAndLayout();
 
+    const slugToModelApiKeyMap = pagesSlugToModelApiKeyMap(data.pages);
+
     const staticPaths = Object.values(data.pages).map((page) => {
         return {
             params: { slug: page.slug },
             props: {
+                slugToModelApiKeyMap,
                 data: {
                     page,
                     layout: data.layout,
@@ -94,6 +97,27 @@ export const getAllPagesAndLayout = async () => {
             navigation,
         },
     };
+};
+
+export const pagesSlugToModelApiKeyMap = (pagesData: any) => {
+    const slugMap = Object.values(pagesData).reduce(
+        (acc: { [key: string]: any }, page) => {
+            if (!page) return acc;
+
+            const pageIsSingle = !Array.isArray(page);
+
+            if (pageIsSingle) page = [page];
+
+            (page as any[]).forEach((p: any) => {
+                acc[p.slug || "/"] = p._modelApiKey;
+            });
+
+            return acc;
+        },
+        {},
+    );
+
+    return slugMap;
 };
 
 export const pagesDataToSlugMap = (pagesData: any) => {

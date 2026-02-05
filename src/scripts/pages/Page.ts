@@ -8,6 +8,7 @@ export default class Page {
     app: Zauberberg;
     template: string;
     previousUrl: string;
+    previousPage?: Page;
 
     swapTl: gsap.core.Timeline | null;
 
@@ -15,6 +16,7 @@ export default class Page {
         template: string,
         doc: Document = window.document,
         previousUrl: string = "/",
+        previousPage?: Page,
     ) {
         this.app = new Zauberberg();
         this.template = template;
@@ -23,15 +25,7 @@ export default class Page {
         this.initialized = false;
         this.destroyed = false;
         this.previousUrl = previousUrl;
-    }
-
-    killCurrentSwap() {
-        if (this.swapTl) {
-            console.log("killing tl");
-
-            this.swapTl.kill();
-            this.swapTl = null;
-        }
+        this.previousPage = previousPage;
     }
 
     async init() {
@@ -42,13 +36,15 @@ export default class Page {
         this.destroyed = true;
     }
 
-    prepareTransitionIn(from: Page) {
+    beforeTransitionOut(): Promise<any> | gsap.core.Timeline {
+        return Promise.resolve();
+    }
+
+    prepareTransitionIn() {
         gsap.set(this.container, { opacity: 0 });
     }
 
-    transitionIn(from: Page): Promise<any> | gsap.core.Timeline {
-        this.killCurrentSwap();
-
+    transitionIn(): Promise<any> | gsap.core.Timeline {
         this.swapTl = gsap.timeline({ paused: true });
 
         this.swapTl.to(this.container, {
@@ -60,13 +56,18 @@ export default class Page {
         return this.swapTl.play();
     }
 
-    transitionOut(to: Page): Promise<any> | gsap.core.Timeline {
-        this.killCurrentSwap();
+    transitionOut({
+        sourceElement,
+        to,
+    }: {
+        sourceElement: HTMLElement;
+        to: string;
+    }): Promise<any> | gsap.core.Timeline {
         this.swapTl = gsap.timeline({ paused: true });
 
         this.swapTl.to(this.container, {
             opacity: 0,
-            duration: 0,
+            duration: 0.2,
             ease: "power2.out",
         });
 

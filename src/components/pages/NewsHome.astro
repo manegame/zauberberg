@@ -4,14 +4,12 @@ import { Icon } from "astro-icon/components";
 import LeftRightTitle from "../news/LeftRightTitle.astro";
 import Details from "../news/Details.astro";
 import DatoImage from "../global/DatoImage.astro";
+import DatoLink from "../global/DatoLink.astro";
 
 const { data } = Astro.props;
 
 // Get unique categories from news items
-const categories = [
-    "All",
-    ...new Set(data.news?.map((item: any) => item.category.category) || []),
-];
+const categories = ["All", ...new Set(data.news?.map((item: any) => item.category.category) || [])];
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
@@ -43,36 +41,50 @@ const categories = [
             <Icon name="cross" class="size-17" />
         </button>
     </div>
-    <div
-        class="w-full gap-25 pt-212 pb-80 md:w-10/12 lg:w-4/12 lg:pt-240 lg:pb-112"
-    >
+    <div class="w-full gap-25 pt-212 pb-80 md:w-10/12 lg:w-4/12 lg:pt-240 lg:pb-112">
         <ul class="flex flex-col gap-50 lg:gap-100" id="news-list">
             {
                 data.news?.map((newsItem: any) => (
-                    <li data-news-category={newsItem.category.category}>
-                        <a
-                            href={`/${newsItem.slug}`}
+                    <li
+                        class="news-item"
+                        data-news-id={newsItem.id}
+                        data-news-category={newsItem.category.category}
+                    >
+                        <DatoLink
                             class="flex flex-col items-center gap-8 lg:gap-10"
+                            link={{ internalLink: newsItem }}
                         >
-                            <div class="flex w-10/12 flex-col gap-9 sm:w-8/12 md:w-8/10 lg:w-6/8 lg:gap-10">
-                                <LeftRightTitle
-                                    leftAlignedTitle={newsItem.leftAlignedTitle}
-                                    rightAlignedTitle={
-                                        newsItem.rightAlignedTitle
-                                    }
-                                />
-                                <Details
-                                    date={newsItem.date}
-                                    category={newsItem.category.category}
-                                />
+                            <div class="w-10/12 sm:w-8/12 md:w-8/10 lg:w-6/8">
+                                <div
+                                    data-flip-id={`${newsItem.id}-details`}
+                                    transition:persist={`${newsItem.id}-details`}
+                                    data-details-id={newsItem.id}
+                                    class="flex w-full flex-col gap-9 lg:gap-10"
+                                >
+                                    <LeftRightTitle
+                                        leftAlignedTitle={newsItem.leftAlignedTitle}
+                                        rightAlignedTitle={newsItem.rightAlignedTitle}
+                                    />
+                                    <Details
+                                        date={newsItem.date}
+                                        category={newsItem.category.category}
+                                    />
+                                </div>
                             </div>
-                            <div class="relative aspect-square w-full">
-                                <DatoImage
-                                    data={newsItem.cover.responsiveImage}
-                                    imgClass="block absolute inset-0 size-full object-cover"
-                                />
+                            <div class="aspect-square w-full">
+                                <div
+                                    class="relative size-full"
+                                    data-flip-id={`${newsItem.id}-image`}
+                                    transition:persist={`${newsItem.id}-image`}
+                                    data-image-id={newsItem.id}
+                                >
+                                    <DatoImage
+                                        data={newsItem.cover.responsiveImage}
+                                        imgClass="block absolute inset-0 size-full object-cover"
+                                    />
+                                </div>
                             </div>
-                        </a>
+                        </DatoLink>
                     </li>
                 ))
             }
@@ -140,8 +152,7 @@ const categories = [
         // Add click handlers
         categoryButtons.forEach((button) => {
             button.addEventListener("click", (e) => {
-                const category = (e.currentTarget as HTMLElement).dataset
-                    .category;
+                const category = (e.currentTarget as HTMLElement).dataset.category;
                 if (category) {
                     filterNews(category);
                 }

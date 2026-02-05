@@ -8,6 +8,13 @@ import EdgeGradient from "../global/EdgeGradient.astro";
 
 const { data } = Astro.props;
 
+const dataImageAspect =
+    {
+        square: "1/1",
+        classic: "7/5",
+        wide: "9/5",
+    }[data.coverSize as "square" | "classic" | "wide"] || "1/1";
+
 const aspectRatioClass =
     {
         square: "aspect-square lg:w-10/24",
@@ -17,24 +24,34 @@ const aspectRatioClass =
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
-    <div
-        class="flex w-full flex-col items-center gap-25 pt-212 pb-80 lg:gap-35 lg:py-112"
-    >
+    <div class="flex w-full flex-col items-center gap-25 pt-212 pb-80 lg:gap-35 lg:py-112">
         <div class="flex w-full flex-col items-center gap-8 lg:gap-15">
-            <div
-                class="flex w-10/12 flex-col gap-9 sm:w-8/12 md:w-8/12 lg:w-6/24 lg:gap-10"
-            >
-                <LeftRightTitle
-                    leftAlignedTitle={data.leftAlignedTitle}
-                    rightAlignedTitle={data.rightAlignedTitle}
-                />
-                <Details date={data.date} category={data.category.category} />
+            <div class="w-10/12 sm:w-8/12 md:w-8/12 lg:w-6/24">
+                <div
+                    class="flex w-full flex-col gap-9 lg:gap-10"
+                    data-flip-id={`${data.id}-details`}
+                    transition:persist={`${data.id}-details`}
+                    data-details-id={data.id}
+                >
+                    <LeftRightTitle
+                        leftAlignedTitle={data.leftAlignedTitle}
+                        rightAlignedTitle={data.rightAlignedTitle}
+                    />
+                    <Details date={data.date} category={data.category.category} />
+                </div>
             </div>
-            <div class={`relative w-full md:w-10/12 ${aspectRatioClass}`}>
-                <DatoImage
-                    data={data.cover.responsiveImage}
-                    imgClass="block absolute inset-0 size-full object-cover"
-                />
+            <div class={`w-full md:w-10/12 ${aspectRatioClass}`}>
+                <div
+                    class="relative size-full"
+                    data-flip-id={`${data.id}-image`}
+                    transition:persist={`${data.id}-image`}
+                    data-image-id={data.id}
+                >
+                    <DatoImage
+                        data={data.cover.responsiveImage}
+                        imgClass="block absolute inset-0 size-full object-cover"
+                    />
+                </div>
             </div>
         </div>
         <div class="sections-wrapper md:w-10/12 lg:w-4/12">

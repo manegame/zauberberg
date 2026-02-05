@@ -86,9 +86,7 @@ export default class Director extends Page {
         );
     }
 
-    transitionIn(from: Page) {
-        this.killCurrentSwap();
-
+    transitionIn() {
         const overlay = this.container.querySelector(
             "#director-overlay",
         ) as HTMLDivElement;
@@ -110,7 +108,7 @@ export default class Director extends Page {
             "<",
         );
 
-        if (from.template === "video") {
+        if (this.previousPage?.template === "video") {
             const navigationItems = document.querySelectorAll(
                 "#navigation .navigation-item",
             );
@@ -129,9 +127,7 @@ export default class Director extends Page {
         return this.swapTl.play();
     }
 
-    transitionOut(to: Page) {
-        this.killCurrentSwap();
-
+    transitionOut({ to }: { to: string }) {
         this.swapTl = gsap.timeline({ paused: true });
 
         this.swapTl.to(this.overlay, {
@@ -145,7 +141,7 @@ export default class Director extends Page {
             "<",
         );
 
-        if (to.template === "video") {
+        if (to === "video") {
             const navigationItems = document.querySelectorAll(
                 "#navigation .navigation-item",
             );
@@ -164,7 +160,7 @@ export default class Director extends Page {
         return this.swapTl.play();
     }
 
-    prepareTransitionIn(from: Page) {
+    prepareTransitionIn() {
         const overlay = this.container.querySelector(
             "#director-overlay",
         ) as HTMLDivElement;

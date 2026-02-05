@@ -165,8 +165,6 @@ export default class Video extends Page {
     }
 
     transitionIn() {
-        this.killCurrentSwap();
-
         const videosInfos = this.container.querySelectorAll(".video-info");
         const videoTimeline =
             this.container.querySelectorAll("#video-timeline");

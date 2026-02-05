@@ -1,43 +1,103 @@
-import type { TransitionBeforeSwapEvent } from "astro/virtual-modules/transitions-events.js";
+import type {
+    TransitionBeforePreparationEvent,
+    TransitionBeforeSwapEvent,
+} from "astro/virtual-modules/transitions-events.js";
 import Zauberberg from "./Zauberberg";
-import Swap from "./Swap";
 import type Page from "./pages/Page";
+
+import { getPage } from "./pages";
 
 export default class SwapManager {
     app: Zauberberg;
-    currentSwap: null | Swap;
     page!: Page;
+    newPage!: Page;
 
     constructor() {
         this.app = new Zauberberg();
-        this.currentSwap = null;
+    }
+
+    transfertStates(newDoc: Document) {
+        const loaderEl = newDoc.getElementById("loader");
+        if (loaderEl) loaderEl.setAttribute("data-finished", "true");
+    }
+
+    onBeforePreparationEvent(event: TransitionBeforePreparationEvent) {
+        console.log("[SWAP MANAGER] - Before preparation");
+        const originalLoader = event.loader;
+
+        let toSlug: string = "/";
+
+        if (event.to.pathname !== "/") {
+            toSlug = event.to.pathname.replace(/^\/+/, "");
+        }
+
+        const to = this.app.store.slugToModelApiKeyMap[toSlug];
+
+        event.loader = async () => {
+            await this.page.beforeTransitionOut();
+            await this.page.transitionOut({
+                to,
+                sourceElement: event.sourceElement as HTMLElement,
+            });
+            await originalLoader();
+        };
     }
 
     onBeforeSwapEvent(event: TransitionBeforeSwapEvent) {
-        console.log("[SWAP MANAGER] - New swap requested");
+        console.log("[SWAP MANAGER] - Before swap");
 
-        const swap = new Swap(event.newDocument, this);
-        if (this.currentSwap) this.currentSwap.kill();
-        this.currentSwap = swap;
-        event.swap = () => swap.execute();
+        const newTemplate =
+            event.newDocument.querySelector<HTMLElement>("#page")!.dataset
+                .template || "";
+
+        this.newPage = getPage(
+            newTemplate,
+            event.newDocument,
+            window.location.pathname,
+            this.page,
+        )!;
+
+        this.transfertStates(event.newDocument);
+
+        const scrollTop = this.app.scroll.getScroll();
+
+        this.page.container.style.position = "fixed";
+        this.page.container.style.top = `-${scrollTop}px`;
+        this.page.container.style.width = "100%";
+        this.page.container.style.zIndex = "1000";
+
+        this.newPage.prepareTransitionIn();
+
+        this.page.container.style.position = "";
+        this.page.container.style.top = "";
+        this.page.container.style.width = "";
+        this.page.container.style.zIndex = "";
+    }
+
+    async onAfterSwapEvent(event: Event) {
+        console.log("[SWAP MANAGER] - After swap");
+        this.page.destroy();
+        this.page = this.newPage;
+        this.newPage = undefined as any;
+        this.app.setCurrentPage(this.page);
+        await this.page.init();
+
+        this.page.transitionIn();
     }
 
     init() {
         this.page = this.app.page!;
-        document.addEventListener(
-            "astro:before-swap",
-            (event: TransitionBeforeSwapEvent) => {
-                this.onBeforeSwapEvent(event);
-            },
-        );
 
-        document.addEventListener("astro:after-swap", () => {
-            this.app.scroll.reset();
+        document.addEventListener("astro:before-preparation", (event) => {
+            this.onBeforePreparationEvent(event);
         });
-    }
 
-    setCurrentPage(page: Page) {
-        this.page = page;
-        this.app.setCurrentPage(page);
+        document.addEventListener("astro:after-swap", (event) => {
+            this.onAfterSwapEvent(event);
+        });
+
+        document.addEventListener("astro:before-swap", (event) => {
+            this.onBeforeSwapEvent(event);
+        });
     }
 }

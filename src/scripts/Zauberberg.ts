@@ -27,7 +27,8 @@ export default class Zauberberg {
         this.swapManager = new SwapManager();
         this.loader = new Loader();
         this.debugGrid = new DebugGrid();
-        this.store = {};
+
+        this.store = this.getDataFromServer();
 
         const initialTemplate =
             document.querySelector<HTMLElement>("#page")!.dataset.template ||
@@ -39,6 +40,12 @@ export default class Zauberberg {
 
     setCurrentPage(page: Page) {
         this.page = page;
+    }
+
+    getDataFromServer() {
+        const dataElement = document.getElementById("data");
+        const data = JSON.parse(dataElement?.dataset.data || "{}");
+        return data;
     }
 
     async init() {

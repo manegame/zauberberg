@@ -28,6 +28,7 @@ const isExternal = !!externalLink;
     draggable="false"
     class:list={[className, { [currentClass]: isCurrent }]}
     target={target}
+    data-template={internalLink?._modelApiKey}
 >
     <slot>{label}</slot>
 </a>

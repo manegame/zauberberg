@@ -9,11 +9,11 @@ import Loader from "../components/global/Loader.astro";
 import Grid from "../components/global/Grid.astro";
 import Seo from "../components/global/Seo.astro";
 
-const { layout, template, seoMetaTags } = Astro.props;
+const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html transition:name="root" transition:animate="none" lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -26,14 +26,16 @@ const { layout, template, seoMetaTags } = Astro.props;
         <slot />
         <Loader />
         <Grid />
+        <div
+            id="data"
+            class="pointer-events-none hidden"
+            data-data={JSON.stringify({ slugToModelApiKeyMap })}></div>
     </body></html
 >
 
 <script>
     import Zauberberg from "../scripts/Zauberberg";
 
-    console.log("layout loaded");
     const app = new Zauberberg();
-    console.log("is app initialized : ", app.initialized);
     app.init();
 </script>
