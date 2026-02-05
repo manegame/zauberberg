@@ -27,11 +27,13 @@ export default class Swap {
 
         this.page = this.manager.page;
 
+        this.previousUrl = window.location.pathname;
+
         const newTemplate =
             this.newDoc.querySelector<HTMLElement>("#page")!.dataset.template ||
             "";
 
-        this.newPage = getPage(newTemplate, this.newDoc)!;
+        this.newPage = getPage(newTemplate, this.newDoc, this.previousUrl)!;
     }
 
     kill() {
@@ -46,8 +48,6 @@ export default class Swap {
         console.log(
             `executing swap: from ${this.page.template} to ${this.newPage.template}`,
         );
-
-        this.previousUrl = window.location.pathname;
 
         this.beforeOut();
         await this.page.transitionOut(this.newPage);

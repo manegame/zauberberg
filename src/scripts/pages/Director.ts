@@ -58,8 +58,7 @@ export default class Director extends Page {
     }
 
     close() {
-        const backLink = this.wrapper.dataset.back || "/";
-        navigate(backLink);
+        navigate(this.previousUrl);
     }
 
     setupMobileTabs() {
@@ -165,7 +164,7 @@ export default class Director extends Page {
         return this.swapTl.play();
     }
 
-    prepareTransitionIn(from: Page, prevUrl: string) {
+    prepareTransitionIn(from: Page) {
         const overlay = this.container.querySelector(
             "#director-overlay",
         ) as HTMLDivElement;
@@ -173,9 +172,6 @@ export default class Director extends Page {
         const banner = this.container.querySelector(
             "#director-banner",
         ) as HTMLElement;
-
-        const wrapper = this.container.querySelector("#director");
-        wrapper?.setAttribute("data-back", prevUrl);
 
         gsap.set(overlay, { opacity: 1 });
         gsap.set(banner, { yPercent: -100 });

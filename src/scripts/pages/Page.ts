@@ -7,16 +7,22 @@ export default class Page {
     destroyed: boolean;
     app: Zauberberg;
     template: string;
+    previousUrl: string;
 
     swapTl: gsap.core.Timeline | null;
 
-    constructor(template: string, doc: Document = window.document) {
+    constructor(
+        template: string,
+        doc: Document = window.document,
+        previousUrl: string = "/",
+    ) {
         this.app = new Zauberberg();
         this.template = template;
         this.container = doc.getElementById("page") as HTMLElement;
         this.swapTl = null;
         this.initialized = false;
         this.destroyed = false;
+        this.previousUrl = previousUrl;
     }
 
     killCurrentSwap() {
@@ -36,7 +42,7 @@ export default class Page {
         this.destroyed = true;
     }
 
-    prepareTransitionIn(from: Page, prevUrl: string) {
+    prepareTransitionIn(from: Page) {
         gsap.set(this.container, { opacity: 0 });
     }
 

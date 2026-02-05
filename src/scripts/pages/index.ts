@@ -16,9 +16,13 @@ export const getPageClass = (template: string) => {
     return PageClass;
 };
 
-export const getPage = (template: string, doc?: Document) => {
+export const getPage = (
+    template: string,
+    doc?: Document,
+    previousUrl: string = "/",
+) => {
     console.log(doc);
 
     const PageClass = getPageClass(template);
-    return new PageClass(template, doc);
+    return new PageClass(template, doc, previousUrl);
 };
