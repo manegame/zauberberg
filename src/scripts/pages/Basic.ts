@@ -20,6 +20,7 @@ export default class Basic extends Page {
         this.ghostSubnavigation = this.container.querySelector(
             "#ghost-subnavigation",
         );
+        this.content = this.container.querySelector("#basic-content")!;
         this.abortController = new AbortController();
 
         if (!this.prevHasSameSubnav) this.setupNavActive();
@@ -74,10 +75,10 @@ export default class Basic extends Page {
             ) === subnavigation?.getAttribute("data-subnav-id") &&
             !!linkInSubnav;
 
-        this.content = this.container.querySelector("#basic-content")!;
+        const content = this.container.querySelector("#basic-content")!;
 
         if (this.prevHasSameSubnav) {
-            gsap.set(this.content, { opacity: 0 });
+            gsap.set(content, { opacity: 0 });
         } else {
             gsap.set(this.container, { opacity: 0 });
         }

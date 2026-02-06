@@ -24,7 +24,7 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
     <body>
         {layout?.navigation && <Navigation template={template} data={layout.navigation} />}
         <slot />
-        <!-- <Loader /> -->
+        <Loader />
         <Grid />
         <div
             id="data"
