@@ -10,6 +10,8 @@ export default class NewsHome extends Page {
     categoryButtons!: NodeListOf<HTMLButtonElement>;
     newsItems!: NodeListOf<HTMLElement>;
     filtersPanel!: HTMLElement;
+    filtersPanelList!: HTMLElement;
+    filtersGhostList!: HTMLElement;
     filtersToggle!: HTMLElement;
     filtersClose!: HTMLElement;
     currentCategory!: string;
@@ -32,6 +34,21 @@ export default class NewsHome extends Page {
 
     changeCategory(category: string) {
         if (category === this.currentCategory) return;
+
+        // translate filter panel list to keep the active button in place
+        const activeButton = this.filtersPanelList.querySelector(
+            `button[data-category="${category}"]`,
+        ) as HTMLElement;
+
+        if (activeButton) {
+            const offset = activeButton.offsetTop;
+
+            gsap.to([this.filtersPanelList, this.filtersGhostList], {
+                y: -offset,
+                duration: 0.8,
+                ease: "power3.out",
+            });
+        }
 
         // update filters panel active state
         this.categoryButtons.forEach((button) => {
@@ -73,6 +90,12 @@ export default class NewsHome extends Page {
         );
         this.newsItems = this.container.querySelectorAll(".news-item");
         this.filtersPanel = this.container.querySelector("#filters-panel")!;
+        this.filtersPanelList = this.container.querySelector(
+            "#filters-panel-list",
+        )!;
+        this.filtersGhostList = this.container.querySelector(
+            "#filters-ghost-list",
+        )!;
         this.filtersToggle = this.container.querySelector("#filters-toggle")!;
         this.filtersClose = this.container.querySelector("#filters-close")!;
 
