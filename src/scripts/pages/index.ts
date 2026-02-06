@@ -4,6 +4,7 @@ import Page from "./Page";
 import Video from "./Video";
 import NewsHome from "./NewsHome";
 import NewsSingle from "./NewsSingle";
+import Basic from "./Basic";
 
 const DEFAULT_PAGE = Page;
 
@@ -13,6 +14,7 @@ const PAGE_BY_TEMPLATE: Record<string, typeof Page> = {
     video: Video,
     news_home: NewsHome,
     news_single: NewsSingle,
+    basic: Basic,
 };
 
 export const getPageClass = (template: string) => {

@@ -14,26 +14,51 @@ const hasSubnavigation =
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
     <div
+        transition:persist
         class="fixed top-116 right-0 left-0 z-20 flex items-start justify-between gap-10 lg:pointer-events-none lg:inset-0 lg:h-dvh lg:w-screen lg:items-end lg:bg-transparent"
     >
-        <div
-            class="flex w-full justify-center lg:relative lg:-top-[0.55em] lg:h-1/2 lg:w-6/24 lg:flex-col lg:justify-between lg:pb-20 lg:pl-[12.5%]"
-        >
+        <div class="w-full lg:relative lg:-top-[0.55em] lg:h-1/2 lg:w-6/24 lg:pb-20 lg:pl-[12.5%]">
             {
                 hasSubnavigation && (
-                    <nav class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth lg:flex-col lg:gap-28 lg:px-0">
-                        {hasSubnavigation &&
-                            data.subnavigation.blocks.map((block: any) => (
+                    <div class="relative flex size-full justify-center lg:flex-col lg:justify-between">
+                        <nav
+                            id="subnavigation"
+                            data-subnav-id={data.subnavigation.id}
+                            class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth lg:flex-col lg:gap-28 lg:px-0"
+                        >
+                            {data.subnavigation.blocks.map((block: any) => (
                                 <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">
                                     {Array.isArray(block.links) &&
                                         block.links.map((link: any) => (
                                             <div class="pointer-events-auto shrink-0">
-                                                <DatoLink link={link} />
+                                                <DatoLink
+                                                    currentClass="max-lg:opacity-100"
+                                                    class="opacity-30"
+                                                    link={link}
+                                                />
                                             </div>
                                         ))}
                                 </div>
                             ))}
-                    </nav>
+                        </nav>
+                        <div class="px-gutter text-nav pointer-events-none absolute top-0 left-0 hidden h-18 overflow-hidden lg:block lg:px-0">
+                            <div
+                                id="ghost-subnavigation"
+                                class="flex flex-col items-baseline gap-28"
+                            >
+                                {data.subnavigation.blocks.map((block: any) => (
+                                    <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">
+                                        {Array.isArray(block.links) &&
+                                            block.links.map((link: any) => (
+                                                <div class="shrink-0">
+                                                    <div>{link.label}</div>
+                                                </div>
+                                            ))}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 )
             }
             <div class="pointer-events-auto hidden lg:mt-auto lg:block">
@@ -43,6 +68,7 @@ const hasSubnavigation =
     </div>
 
     <div
+        id="basic-content"
         class="flex w-full flex-col gap-100 pt-212 pb-80 md:w-10/12 lg:w-4/12 lg:py-112"
     >
         <div class="sections-wrapper">
