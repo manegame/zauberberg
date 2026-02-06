@@ -132,12 +132,12 @@ export default class Director extends Page {
 
         this.swapTl.to(this.overlay, {
             opacity: 1,
-            duration: 0.2,
+            duration: 0.4,
             ease: "power3.out",
         });
         this.swapTl.to(
             this.banner,
-            { yPercent: -100, duration: 0.2, ease: "power3.out" },
+            { yPercent: -100, duration: 0.4, ease: "power3.out" },
             "<",
         );
 

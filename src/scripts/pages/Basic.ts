@@ -55,7 +55,7 @@ export default class Basic extends Page {
         } else {
             this.swapTl.to(this.container, {
                 opacity: 1,
-                duration: 2,
+                duration: 0.4,
                 ease: "power2.out",
             });
         }
@@ -115,7 +115,7 @@ export default class Basic extends Page {
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
-                duration: 0.2,
+                duration: 0.4,
                 ease: "power2.out",
             });
         }

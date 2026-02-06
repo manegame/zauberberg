@@ -149,7 +149,7 @@ export default class NewsHome extends Page {
 
             this.swapTl.to(otherNewsItems, {
                 opacity: 0,
-                duration: 0.2,
+                duration: 0.4,
                 ease: "power2.out",
             });
             this.swapTl.to(
@@ -157,7 +157,7 @@ export default class NewsHome extends Page {
                 {
                     opacity: 0,
                     x: -20,
-                    duration: 0.2,
+                    duration: 0.4,
                     ease: "power2.out",
                 },
                 "<",
@@ -165,7 +165,7 @@ export default class NewsHome extends Page {
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
-                duration: 0.2,
+                duration: 0.4,
                 ease: "power2.out",
             });
         }
