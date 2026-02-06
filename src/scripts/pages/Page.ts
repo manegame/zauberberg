@@ -73,4 +73,6 @@ export default class Page {
 
         return this.swapTl.play();
     }
+
+    resize() {}
 }

@@ -55,8 +55,15 @@ export default class Zauberberg {
         this.swapManager.init();
         this.page?.init();
         this.debugGrid.init();
+        this.setupResize();
         this.initialized = true;
 
         this.loader.end();
+    }
+
+    setupResize() {
+        window.addEventListener("resize", () => {
+            this.page?.resize();
+        });
     }
 }

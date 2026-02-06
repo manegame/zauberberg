@@ -7,6 +7,7 @@ export default `
     ${seoMetaTags}
     videos {
         id
+        featured
         video {
             _modelApiKey
             id

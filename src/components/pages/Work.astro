@@ -18,10 +18,28 @@ data.videos.forEach((video: any) => {
     }
 });
 
+// find the video index at the center of the grid
+// video has a weight of 1 and featured videos have a weight of 3
+const totalWeight = data.videos.reduce((acc: number, video: any) => {
+    return acc + (video.featured ? 3 : 1);
+}, 0);
+
+let weightSum = 0;
+let indexOnCenterLine = 0;
+
+for (let i = 0; i < data.videos.length; i++) {
+    const video = data.videos[i];
+    weightSum += video.featured ? 3 : 1;
+    if (weightSum >= totalWeight / 2 && !video.featured) {
+        indexOnCenterLine = i;
+        break;
+    }
+}
+
 await Promise.all(videosPromises);
 ---
 
-<div id="work" class="flex pt-200 lg:h-dvh lg:items-center lg:overflow-y-auto">
+<div id="work" data-center={indexOnCenterLine} class="flex pt-200 pb-100 lg:pb-200">
     <div class="px-gutter">
         <div
             class="group pointer-events-none mx-auto grid w-full grid-cols-2 gap-x-20 gap-y-60 lg:w-18/24 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-195"
@@ -32,6 +50,9 @@ await Promise.all(videosPromises);
                         class:list={[
                             "video-item pointer-events-auto relative col-span-1 block",
                             "lg:hover:[&_.overlay]:opacity-30 lg:hover:[&_.video-text]:opacity-100",
+                            {
+                                "lg:col-span-3": video.featured,
+                            },
                         ]}
                         link={{ internalLink: video.video }}
                     >
