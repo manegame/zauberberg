@@ -40,7 +40,7 @@ export default class Page {
         return Promise.resolve();
     }
 
-    prepareTransitionIn() {
+    prepareTransitionIn(sourceElement?: HTMLElement): void {
         gsap.set(this.container, { opacity: 0 });
     }
 

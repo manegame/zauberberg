@@ -66,7 +66,7 @@ export default class SwapManager {
         this.page.container.style.width = "100%";
         this.page.container.style.zIndex = "1000";
 
-        this.newPage.prepareTransitionIn();
+        this.newPage.prepareTransitionIn(event.sourceElement as HTMLElement);
 
         this.page.container.style.position = "";
         this.page.container.style.top = "";

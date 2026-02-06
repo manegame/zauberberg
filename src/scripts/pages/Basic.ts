@@ -21,7 +21,8 @@ export default class Basic extends Page {
             "#ghost-subnavigation",
         );
         this.abortController = new AbortController();
-        // this.setupNavActive();
+
+        if (!this.prevHasSameSubnav) this.setupNavActive();
 
         await super.init();
     }
@@ -53,7 +54,7 @@ export default class Basic extends Page {
         } else {
             this.swapTl.to(this.container, {
                 opacity: 1,
-                duration: 0.2,
+                duration: 2,
                 ease: "power2.out",
             });
         }
@@ -61,11 +62,17 @@ export default class Basic extends Page {
         return this.swapTl.play();
     }
 
-    prepareTransitionIn() {
+    prepareTransitionIn(sourceElement?: HTMLElement) {
+        const subnavigation = this.container.querySelector("#subnavigation");
+
+        const linkInSubnav =
+            sourceElement && sourceElement.closest("#subnavigation");
+
         this.prevHasSameSubnav =
             (this.previousPage as Basic)?.subnavigation?.getAttribute(
                 "data-subnav-id",
-            ) === this.subnavigation?.getAttribute("data-subnav-id");
+            ) === subnavigation?.getAttribute("data-subnav-id") &&
+            !!linkInSubnav;
 
         this.content = this.container.querySelector("#basic-content")!;
 
@@ -85,9 +92,10 @@ export default class Basic extends Page {
     }) {
         this.swapTl = gsap.timeline({ paused: true });
 
-        const toIsInSubnav = sourceElement.closest("#subnavigation");
+        const nextHasSameSubnav =
+            to === "basic" && sourceElement.closest("#subnavigation");
 
-        if (to === "basic" && toIsInSubnav) {
+        if (nextHasSameSubnav) {
             this.swapTl.to([this.subnavigation, this.ghostSubnavigation], {
                 y: -sourceElement.offsetTop,
                 duration: 0.6,
