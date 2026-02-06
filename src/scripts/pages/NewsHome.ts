@@ -6,9 +6,108 @@ import { Flip } from "gsap/Flip";
 gsap.registerPlugin(Flip);
 
 export default class NewsHome extends Page {
+    abortController!: AbortController;
+    categoryButtons!: NodeListOf<HTMLButtonElement>;
+    newsItems!: NodeListOf<HTMLElement>;
+    filtersPanel!: HTMLElement;
+    filtersToggle!: HTMLElement;
+    filtersClose!: HTMLElement;
+    currentCategory!: string;
+    isMobile!: boolean;
+
+    destroy() {
+        this.abortController.abort();
+        super.destroy();
+    }
+
     async init() {
         if (!this.container) return;
+
+        this.abortController = new AbortController();
+
+        this.setupFilters();
+
         await super.init();
+    }
+
+    changeCategory(category: string) {
+        if (category === this.currentCategory) return;
+
+        // update filters panel active state
+        this.categoryButtons.forEach((button) => {
+            const buttonCategory = button.getAttribute("data-category");
+            const isActive = buttonCategory === category;
+            button.setAttribute("data-active", isActive ? "true" : "false");
+        });
+
+        // update items visibility
+        this.newsItems.forEach((item) => {
+            const itemCategory = item.getAttribute("data-news-category");
+            const shouldShow = category === "All" || itemCategory === category;
+            item.setAttribute("data-hidden", shouldShow ? "false" : "true");
+        });
+
+        // update URL params without reloading
+        const url = new URL(window.location.href);
+        if (category === "All") {
+            url.searchParams.delete("category");
+        } else {
+            url.searchParams.set("category", category);
+        }
+        window.history.replaceState({}, "", url.toString());
+
+        // close filters panel on mobile
+        this.filtersPanel.setAttribute("data-open", "false");
+
+        this.currentCategory = category;
+    }
+
+    onCategoryClick(button: HTMLElement) {
+        const category = button.getAttribute("data-category") || "All";
+        this.changeCategory(category);
+    }
+
+    setupFilters() {
+        this.categoryButtons = this.container.querySelectorAll(
+            "button[data-category]",
+        );
+        this.newsItems = this.container.querySelectorAll(".news-item");
+        this.filtersPanel = this.container.querySelector("#filters-panel")!;
+        this.filtersToggle = this.container.querySelector("#filters-toggle")!;
+        this.filtersClose = this.container.querySelector("#filters-close")!;
+
+        // initial category from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialCategory = urlParams.get("category") || "All";
+        this.changeCategory(initialCategory);
+
+        this.categoryButtons.forEach((button) => {
+            button.addEventListener(
+                "click",
+                () => {
+                    this.onCategoryClick(button);
+                },
+                {
+                    signal: this.abortController.signal,
+                },
+            );
+        });
+
+        this.filtersToggle.addEventListener(
+            "click",
+            () => {
+                this.filtersPanel.setAttribute("data-open", "true");
+            },
+            { signal: this.abortController.signal },
+        );
+
+        this.filtersClose.addEventListener(
+            "click",
+            () => {
+                this.filtersPanel.setAttribute("data-open", "false");
+            },
+            { signal: this.abortController.signal },
+        );
     }
 
     transitionOut({
@@ -25,15 +124,13 @@ export default class NewsHome extends Page {
                 this.container.querySelectorAll(".news-item"),
             ).filter((item) => !item.contains(sourceElement));
 
-            const filters = this.container.querySelectorAll("#filters-panel");
-
             this.swapTl.to(otherNewsItems, {
                 opacity: 0,
                 duration: 0.2,
                 ease: "power2.out",
             });
             this.swapTl.to(
-                filters,
+                this.filtersPanel,
                 {
                     opacity: 0,
                     x: -20,

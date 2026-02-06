@@ -1,6 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
 
+import EdgeGradient from "../global/EdgeGradient.astro";
+
 import LeftRightTitle from "../news/LeftRightTitle.astro";
 import Details from "../news/Details.astro";
 import DatoImage from "../global/DatoImage.astro";
@@ -19,17 +21,19 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
         id="filters-toggle">Filters</button
     >
     <div
-        class="p-gutter bg-grey fixed top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 lg:pointer-events-none lg:inset-0 lg:h-dvh lg:w-screen lg:items-end lg:bg-transparent"
+        data-open="false"
+        class="p-gutter bg-grey fixed top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 data-[open=false]:-translate-y-full max-lg:transition-transform max-lg:duration-300 max-lg:ease-in-out lg:pointer-events-none lg:inset-0 lg:h-dvh lg:w-screen lg:translate-y-0! lg:items-end lg:bg-transparent"
         id="filters-panel"
     >
         <nav
             class="text-nav flex flex-col items-start gap-9 lg:relative lg:-top-[0.55em] lg:h-1/2 lg:w-6/24 lg:gap-8 lg:pl-[12.5%]"
         >
             {
-                categories.map((category) => (
+                categories.map((category, index) => (
                     <button
                         type="button"
-                        class="text-left opacity-20 lg:pointer-events-auto"
+                        data-active={index === 0}
+                        class="text-left opacity-20 data-[active=true]:opacity-100 lg:pointer-events-auto"
                         data-category={category}
                     >
                         {category}
@@ -46,7 +50,8 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
             {
                 data.news?.map((newsItem: any) => (
                     <li
-                        class="news-item"
+                        class="news-item data-[hidden=true]:hidden"
+                        data-hidden="false"
                         data-news-id={newsItem.id}
                         data-news-category={newsItem.category.category}
                     >
@@ -90,126 +95,5 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
             }
         </ul>
     </div>
+    <EdgeGradient top={0} topFade={0} />
 </div>
-
-<script>
-    import { gsap } from "gsap";
-
-    function initNewsFilter() {
-        const categoryButtons = document.querySelectorAll("[data-category]");
-        const newsItems = document.querySelectorAll("[data-news-category]");
-        const filtersPanel = document.getElementById("filters-panel");
-
-        // Get initial category from URL
-        const url = new URL(window.location.href);
-        const initialCategory = url.searchParams.get("category") || "All";
-
-        // Filter function
-        function filterNews(category: string) {
-            // Update button states
-            categoryButtons.forEach((btn) => {
-                const btnCategory = (btn as HTMLElement).dataset.category;
-                if (btnCategory === category) {
-                    btn.classList.remove("opacity-20");
-                    btn.classList.add("opacity-100");
-                } else {
-                    btn.classList.remove("opacity-100");
-                    btn.classList.add("opacity-20");
-                }
-            });
-
-            // Show/hide news items
-            newsItems.forEach((item) => {
-                const itemCategory = (item as HTMLElement).dataset.newsCategory;
-                if (category === "All" || itemCategory === category) {
-                    (item as HTMLElement).style.display = "";
-                } else {
-                    (item as HTMLElement).style.display = "none";
-                }
-            });
-
-            // Update URL without reload
-            if (category === "All") {
-                url.searchParams.delete("category");
-            } else {
-                url.searchParams.set("category", category);
-            }
-            window.history.replaceState({}, "", url.toString());
-
-            // Close filters on mobile after selection
-            if (window.innerWidth < 1024 && filtersPanel) {
-                gsap.to(filtersPanel, {
-                    yPercent: -100,
-                    duration: 0.4,
-                    ease: "power2.in",
-                });
-            }
-        }
-
-        // Apply initial filter
-        filterNews(initialCategory);
-
-        // Add click handlers
-        categoryButtons.forEach((button) => {
-            button.addEventListener("click", (e) => {
-                const category = (e.currentTarget as HTMLElement).dataset.category;
-                if (category) {
-                    filterNews(category);
-                }
-            });
-        });
-    }
-
-    initNewsFilter();
-
-    // Mobile filters toggle with GSAP
-    const filtersToggle = document.getElementById("filters-toggle");
-    const filtersClose = document.getElementById("filters-close");
-    const filtersPanel = document.getElementById("filters-panel");
-
-    if (filtersToggle && filtersClose && filtersPanel) {
-        // Set initial state for mobile only
-        const setInitialState = () => {
-            if (window.innerWidth < 1024) {
-                gsap.set(filtersPanel, { yPercent: -100 });
-            } else {
-                gsap.set(filtersPanel, { yPercent: 0 });
-            }
-        };
-
-        setInitialState();
-
-        // Track breakpoint crossing with ResizeObserver
-        let wasMobile = window.innerWidth < 1024;
-        const resizeObserver = new ResizeObserver(() => {
-            const isMobile = window.innerWidth < 1024;
-            if (wasMobile !== isMobile) {
-                setInitialState();
-                wasMobile = isMobile;
-            }
-        });
-        resizeObserver.observe(document.body);
-
-        // Toggle open
-        filtersToggle.addEventListener("click", () => {
-            if (window.innerWidth < 1024) {
-                gsap.to(filtersPanel, {
-                    yPercent: 0,
-                    duration: 0.4,
-                    ease: "power2.out",
-                });
-            }
-        });
-
-        // Toggle close
-        filtersClose.addEventListener("click", () => {
-            if (window.innerWidth < 1024) {
-                gsap.to(filtersPanel, {
-                    yPercent: -100,
-                    duration: 0.4,
-                    ease: "power2.in",
-                });
-            }
-        });
-    }
-</script>
