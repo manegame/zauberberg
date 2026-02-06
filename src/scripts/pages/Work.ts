@@ -18,7 +18,7 @@ export default class Work extends Page {
 
         this.isMobile = window.innerWidth < 1024;
 
-        if (!this.isMobile) this.setupInitialScroll();
+        if (!this.isMobile && !this.previousPage) this.setupInitialScroll();
 
         await super.init();
     }
@@ -42,10 +42,21 @@ export default class Work extends Page {
             videoOnCenterLine.offsetHeight / 2 -
             window.innerHeight / 2;
 
-        this.app.scroll.lenis.scrollTo(initialScroll, {
-            duration: 0,
-            immediate: true,
+        window.scrollTo(0, initialScroll);
+    }
+
+    transitionIn() {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        if (!this.isMobile) this.setupInitialScroll();
+
+        this.swapTl.to(this.container, {
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.out",
         });
+
+        return this.swapTl.play();
     }
 
     resize() {

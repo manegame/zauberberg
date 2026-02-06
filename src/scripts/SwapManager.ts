@@ -75,6 +75,7 @@ export default class SwapManager {
     }
 
     async onAfterSwapEvent(event: Event) {
+        // if (!this.newPage) return;
         console.log("[SWAP MANAGER] - After swap");
         this.page.destroy();
         this.page = this.newPage;
@@ -95,6 +96,10 @@ export default class SwapManager {
         document.addEventListener("astro:after-swap", (event) => {
             this.onAfterSwapEvent(event);
         });
+
+        // document.addEventListener("astro:page-load", (event) => {
+        //     this.onAfterSwapEvent(event);
+        // });
 
         document.addEventListener("astro:before-swap", (event) => {
             this.onBeforeSwapEvent(event);

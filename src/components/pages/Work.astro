@@ -40,7 +40,7 @@ await Promise.all(videosPromises);
 ---
 
 <div id="work" data-center={indexOnCenterLine} class="flex pt-200 pb-100 lg:pb-200">
-    <div class="px-gutter">
+    <div class="px-gutter w-full">
         <div
             class="group pointer-events-none mx-auto grid w-full grid-cols-2 gap-x-20 gap-y-60 lg:w-18/24 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-195"
         >
@@ -48,7 +48,7 @@ await Promise.all(videosPromises);
                 data.videos.map((video: any) => (
                     <DatoLink
                         class:list={[
-                            "video-item pointer-events-auto relative col-span-1 block",
+                            "video-item pointer-events-auto relative col-span-1 block aspect-16/10",
                             "lg:hover:[&_.overlay]:opacity-30 lg:hover:[&_.video-text]:opacity-100",
                             {
                                 "lg:col-span-3": video.featured,
