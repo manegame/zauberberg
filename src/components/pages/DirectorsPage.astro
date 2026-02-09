@@ -11,10 +11,12 @@ const rssVideoPromises: Promise<{ video: any; poster: any }>[] = [];
 
 directors.forEach((director: any) => {
     if (director.showcaseRss) {
-        const rssPromise = getDataFromRSS(director.showcaseRss).then((showcase) => {
-            director.showcase = showcase;
-            return showcase;
-        });
+        const rssPromise = getDataFromRSS(director.showcaseRss).then(
+            (showcase) => {
+                director.showcase = showcase;
+                return showcase;
+            },
+        );
         rssVideoPromises.push(rssPromise);
     }
 });
@@ -23,7 +25,10 @@ await Promise.all(rssVideoPromises);
 const directorsWithDuplicate = [...directors, ...directors];
 ---
 
-<div id="directors-page" class="relative h-dvh overflow-hidden overscroll-none select-none">
+<div
+    id="directors-page"
+    class="relative h-dvh touch-none overflow-hidden overscroll-none select-none"
+>
     <div class="pointer-events-none absolute inset-0 z-0">
         <div class="absolute inset-0 z-3 bg-black/40"></div>
         <video
@@ -47,7 +52,10 @@ const directorsWithDuplicate = [...directors, ...directors];
     </div>
     <div class="absolute inset-0 z-1 max-lg:mask-(--masking-edge-gradient)">
         <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
-            <div id="directors-list" class="text-nav flex w-full flex-col items-center">
+            <div
+                id="directors-list"
+                class="text-nav flex w-full flex-col items-center"
+            >
                 {
                     directorsWithDuplicate.map((director, index) => (
                         <div
@@ -58,7 +66,10 @@ const directorsWithDuplicate = [...directors, ...directors];
                             data-director={director.name}
                             class="director-item mb-8 h-18"
                         >
-                            <DatoLink class="relative h-18" link={{ internalLink: director }}>
+                            <DatoLink
+                                class="relative h-18"
+                                link={{ internalLink: director }}
+                            >
                                 <span class="opacity-20">{director.name}</span>
                             </DatoLink>
                         </div>
@@ -69,7 +80,10 @@ const directorsWithDuplicate = [...directors, ...directors];
         <div
             class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
         >
-            <div id="directors-ghost-list" class="text-nav flex w-full flex-col items-center">
+            <div
+                id="directors-ghost-list"
+                class="text-nav flex w-full flex-col items-center"
+            >
                 {
                     directorsWithDuplicate.map((director) => (
                         <span class="mb-8 h-18">{director.name}</span>
