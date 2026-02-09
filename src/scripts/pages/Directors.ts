@@ -343,4 +343,30 @@ export default class DirectorsPage extends Page {
             },
         });
     }
+
+    transitionOut({
+        sourceElement,
+        to,
+    }: {
+        sourceElement: HTMLElement;
+        to: string;
+    }): Promise<any> | gsap.core.Timeline {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        if (to === "work") {
+            this.swapTl.to([this.list, this.ghostList], {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        } else {
+            this.swapTl.to(this.container, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        }
+
+        return this.swapTl.play();
+    }
 }

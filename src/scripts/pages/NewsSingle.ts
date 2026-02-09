@@ -18,15 +18,14 @@ export default class NewsSingle extends Page {
     transitionIn(): Promise<any> | gsap.core.Timeline {
         this.swapTl = gsap.timeline({ paused: true });
 
-        const duration = 0.6;
-
         if (this.previousPage?.template === "news_home") {
             const sections =
                 this.container.querySelectorAll(".sections-wrapper");
             this.swapTl.to(sections, {
                 opacity: 1,
-                duration: duration,
-                ease: "power2.inOut",
+                duration: 0.8,
+                y: 0,
+                ease: "power3.inOut",
             });
 
             if (this.previousThumbnailState) {
@@ -34,9 +33,9 @@ export default class NewsSingle extends Page {
                     Flip.from(this.previousThumbnailState, {
                         targets:
                             this.container.querySelector("[data-image-id]"),
-                        duration: duration,
+                        duration: 0.8,
                         absolute: true,
-                        ease: "power2.inOut",
+                        ease: "power3.inOut",
                     }),
                     "<",
                 );
@@ -46,8 +45,8 @@ export default class NewsSingle extends Page {
                     Flip.from(this.previousDetailsState, {
                         targets:
                             this.container.querySelector("[data-details-id]"),
-                        duration: duration,
-                        ease: "power2.inOut",
+                        duration: 0.8,
+                        ease: "power3.inOut",
                     }),
                     "<",
                 );
@@ -55,7 +54,7 @@ export default class NewsSingle extends Page {
         } else {
             this.swapTl.to(this.container, {
                 opacity: 1,
-                duration: duration,
+                duration: 0.4,
                 ease: "power2.out",
             });
         }
@@ -84,7 +83,7 @@ export default class NewsSingle extends Page {
             this.previousThumbnailState = Flip.getState(previousThumbnail);
             this.previousDetailsState = Flip.getState(previousDetails);
 
-            gsap.set(sections, { opacity: 0 });
+            gsap.set(sections, { opacity: 0, y: 100 });
         } else {
             gsap.set(this.container, { opacity: 0 });
         }
