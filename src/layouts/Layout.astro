@@ -18,13 +18,20 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link
+            rel="preload"
+            as="font"
+            type="font/woff2"
+            href="/fonts/TWKLausanne-500.woff2"
+            crossorigin
+        />
         {seoMetaTags && <Seo data={seoMetaTags} />}
         <ClientRouter />
     </head>
     <body>
         {layout?.navigation && <Navigation template={template} data={layout.navigation} />}
         <slot />
-        <!-- <Loader /> -->
+        <Loader />
         <Grid />
         <div
             id="data"
