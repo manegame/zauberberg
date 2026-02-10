@@ -13,6 +13,11 @@ export default `
         name
         slug
         _modelApiKey
+        videos {
+            _modelApiKey
+            id
+            slug
+        }
     }
     videoRss
     previewRss

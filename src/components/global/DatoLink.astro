@@ -1,5 +1,5 @@
 ---
-const { link, class: className = "", style = "", currentClass = "" } = Astro.props;
+const { link, class: className = "", style = "", currentClass = "", ...props } = Astro.props;
 
 const { label, externalLink, internalLink } = link;
 
@@ -19,7 +19,6 @@ if (pathName !== "/" && pathName.endsWith("/")) pathName = pathName.slice(0, -1)
 const isCurrent = internalLink && linkUrl === pathName;
 
 const target = link.externalLink ? "_blank" : "_self";
-const isExternal = !!externalLink;
 ---
 
 <a
@@ -29,6 +28,7 @@ const isExternal = !!externalLink;
     class:list={[className, { [`${currentClass} link-current`]: isCurrent }]}
     target={target}
     data-template={internalLink?._modelApiKey}
+    {...props}
 >
     <slot>{label}</slot>
 </a>

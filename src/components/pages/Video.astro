@@ -8,6 +8,27 @@ const { data } = Astro.props;
 
 const video = await getDataFromRSS(data.videoRss);
 data.video = video;
+
+const directorsVideos = data.directors?.[0]?.videos || [];
+
+const getNextPrevVideos = (sourceVideos: any[]) => {
+    let prevVideoIndex = -1;
+    let nextVideoIndex = -1;
+
+    const currentIndex = sourceVideos.findIndex((v: any) => v.id === data.id);
+
+    if (currentIndex >= 0) {
+        prevVideoIndex = (currentIndex - 1 + sourceVideos.length) % sourceVideos.length;
+        nextVideoIndex = (currentIndex + 1) % sourceVideos.length;
+    }
+
+    return {
+        prevVideo: sourceVideos[prevVideoIndex],
+        nextVideo: sourceVideos[nextVideoIndex],
+    };
+};
+
+const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
 ---
 
 <div id="video" class="relative h-dvh overflow-hidden">
@@ -47,12 +68,31 @@ data.video = video;
     >
         <div class="flex h-full w-full flex-col items-center justify-end lg:h-auto lg:flex-row">
             <div class="text-nav pointer-events-auto flex items-center gap-10 overflow-hidden">
-                <button class="controls-item flex shrink-0 items-center gap-5">
+                <DatoLink
+                    id="close-video-link"
+                    link={{ internalLink: { slug: undefined } }}
+                    class="controls-item flex shrink-0 items-center gap-5"
+                >
                     <Icon name="cross" class="-mt-1 size-12" />
                     Close
-                </button>
-                <button class="controls-item flex shrink-0 items-center gap-5"> ← Prev </button>
-                <button class="controls-item flex shrink-0 items-center gap-5"> Next → </button>
+                </DatoLink>
+
+                <DatoLink
+                    id="prev-video-link"
+                    link={{ internalLink: prevVideo }}
+                    class="controls-item flex shrink-0 items-center gap-5"
+                >
+                    ← Prev
+                </DatoLink>
+
+                <DatoLink
+                    id="next-video-link"
+                    link={{ internalLink: nextVideo }}
+                    class="controls-item flex shrink-0 items-center gap-5"
+                >
+                    Next →
+                </DatoLink>
+
                 <DatoLink
                     class="controls-item flex shrink-0 items-center gap-5"
                     link={{ internalLink: data.directors?.[0] }}

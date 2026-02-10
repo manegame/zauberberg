@@ -12,6 +12,8 @@ export default class Video extends Page {
     muted!: boolean;
     play!: boolean;
     isSetup!: boolean;
+    prevVideoLink!: string | null;
+    nextVideoLink!: string | null;
 
     destroy() {
         this.abortController.abort();
@@ -28,6 +30,10 @@ export default class Video extends Page {
         this.isSetup = false;
 
         if (this.video?.readyState >= 2) this.setupVideoControls();
+
+        if (this.previousPage?.template === "work") {
+            this.setClosePrevNextVideosLinks();
+        }
 
         this.video.addEventListener(
             "loadedmetadata",
@@ -164,6 +170,32 @@ export default class Video extends Page {
         this.setupButtons();
     }
 
+    createClosePrevNextVideosLinks(sourceElement: HTMLElement) {
+        const dataPrev = sourceElement.getAttribute("data-prev");
+        const dataNext = sourceElement.getAttribute("data-next");
+
+        this.prevVideoLink = dataPrev || null;
+        this.nextVideoLink = dataNext || null;
+    }
+
+    setClosePrevNextVideosLinks() {
+        const nextLinkEl = this.container.querySelector("#next-video-link");
+        const prevLinkEl = this.container.querySelector("#prev-video-link");
+        const closeLinkEl = this.container.querySelector("#close-video-link");
+
+        if (closeLinkEl) {
+            closeLinkEl.setAttribute("href", this.previousUrl || "/");
+        }
+
+        if (nextLinkEl && this.nextVideoLink) {
+            nextLinkEl.setAttribute("href", this.nextVideoLink);
+        }
+
+        if (prevLinkEl && this.prevVideoLink) {
+            prevLinkEl.setAttribute("href", this.prevVideoLink);
+        }
+    }
+
     transitionIn() {
         const videosInfos = this.container.querySelectorAll(".video-info");
         const videoTimeline =
@@ -215,7 +247,7 @@ export default class Video extends Page {
         return this.swapTl.play();
     }
 
-    prepareTransitionIn() {
+    prepareTransitionIn(sourceElement: HTMLElement) {
         const videosInfos = this.container.querySelectorAll(".video-info");
         const videoTimeline =
             this.container.querySelectorAll("#video-timeline");
@@ -228,5 +260,9 @@ export default class Video extends Page {
         gsap.set(videoTimeline, { opacity: 0 });
         gsap.set(controlsItems, { yPercent: 100 });
         gsap.set(videosInfos, { yPercent: 100 });
+
+        if (this.previousPage?.template === "work") {
+            this.createClosePrevNextVideosLinks(sourceElement);
+        }
     }
 }
