@@ -57,6 +57,7 @@ await Promise.all(videosPromises);
 <div id="work" data-center={centerVideoIndex} class="lg:h-dvh lg:overflow-hidden">
     <div
         id="work-wrapper"
+        data-lenis-prevent
         class="px-gutter size-full scroll-smooth will-change-transform lg:overflow-y-auto"
     >
         <div
@@ -89,9 +90,9 @@ await Promise.all(videosPromises);
                             <div class="overlay absolute -inset-1 bg-black opacity-30 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
                         </div>
                         <div class="text-caption mt-5 flex flex-col gap-2 lg:absolute lg:inset-0 lg:justify-center lg:px-15">
-                            <div class="video-text flex flex-col gap-2 transition-opacity duration-300 ease-in-out lg:flex-row lg:items-center lg:justify-between lg:opacity-0">
-                                <div>{video.video.client}</div>
+                            <div class="video-text flex flex-col gap-2 transition-opacity duration-300 ease-in-out lg:opacity-0">
                                 <div>&#8216;{video.video.name}&#8217;</div>
+                                <div>{video.video.client}</div>
                             </div>
                             <div class="video-text flex gap-2 overflow-hidden text-ellipsis whitespace-nowrap transition-opacity duration-300 ease-in-out lg:opacity-0">
                                 {video.video.directors.map((director: any, index: number) => (
