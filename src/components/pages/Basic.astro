@@ -26,7 +26,7 @@ const hasSubnavigation =
                         <nav
                             id="subnavigation"
                             data-subnav-id={data.subnavigation.id}
-                            class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth lg:flex-col lg:gap-28 lg:px-0"
+                            class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth max-lg:transform-[translate(0)]! lg:flex-col lg:gap-28 lg:px-0"
                         >
                             {data.subnavigation.blocks.map((block: any) => (
                                 <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">
@@ -34,8 +34,7 @@ const hasSubnavigation =
                                         block.links.map((link: any) => (
                                             <div class="pointer-events-auto shrink-0">
                                                 <DatoLink
-                                                    currentClass="max-lg:opacity-100"
-                                                    class="opacity-30"
+                                                    class="subnavigation-item opacity-30 [&.link-current]:max-lg:opacity-100"
                                                     link={link}
                                                 />
                                             </div>
@@ -46,7 +45,7 @@ const hasSubnavigation =
                         <div class="px-gutter text-nav pointer-events-none absolute top-0 left-0 hidden h-18 overflow-hidden lg:block lg:px-0">
                             <div
                                 id="ghost-subnavigation"
-                                class="flex flex-col items-baseline gap-28"
+                                class="flex flex-col items-baseline gap-28 max-lg:transform-[translate(0)]!"
                             >
                                 {data.subnavigation.blocks.map((block: any) => (
                                     <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">

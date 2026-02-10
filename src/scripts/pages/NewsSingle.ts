@@ -59,7 +59,7 @@ export default class NewsSingle extends Page {
             });
         }
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
 
         return this.swapTl.play();
     }

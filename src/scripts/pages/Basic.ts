@@ -7,6 +7,7 @@ export default class Basic extends Page {
     ghostSubnavigation!: HTMLElement | null;
     content!: HTMLElement;
     prevHasSameSubnav: boolean = false;
+    isMobile!: boolean;
 
     destroy() {
         this.abortController.abort();
@@ -22,6 +23,8 @@ export default class Basic extends Page {
         );
         this.content = this.container.querySelector("#basic-content")!;
         this.abortController = new AbortController();
+
+        this.isMobile = window.innerWidth < 1024;
 
         if (!this.prevHasSameSubnav) this.setupNavActive();
 
@@ -60,7 +63,8 @@ export default class Basic extends Page {
             });
         }
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
+        this.updateSubnavActiveItem();
 
         return this.swapTl.play();
     }
@@ -123,5 +127,32 @@ export default class Basic extends Page {
         }
 
         return this.swapTl.play();
+    }
+
+    updateSubnavActiveItem() {
+        if (!this.subnavigation) return;
+        const items = this.subnavigation.querySelectorAll(
+            ".subnavigation-item",
+        );
+
+        items.forEach((item) => {
+            const itemPath = item.getAttribute("href");
+            const currentPath = window.location.pathname;
+
+            if (itemPath === currentPath) {
+                item.classList.add("link-current");
+            } else {
+                item.classList.remove("link-current");
+            }
+        });
+    }
+
+    resize() {
+        const wasMobile = this.isMobile;
+        this.isMobile = window.innerWidth < 1024;
+
+        if (wasMobile !== this.isMobile && !this.isMobile) {
+            this.setupNavActive();
+        }
     }
 }

@@ -53,7 +53,7 @@ export default class Page {
             ease: "power2.out",
         });
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
 
         return this.swapTl.play();
     }
@@ -78,10 +78,7 @@ export default class Page {
 
     resize() {}
 
-    updateHeaderItemsVisibility() {
-        const navigation = document.getElementById("navigation");
-        if (!navigation) return;
-
+    updateHeaderItemsVisibility(navigation: HTMLElement) {
         const items = navigation.querySelectorAll(".navigation-item");
 
         const hideOn =
@@ -100,5 +97,27 @@ export default class Page {
                 ease: "power3.out",
             });
         }
+    }
+
+    updateHeaderActiveItem(navigation: HTMLElement) {
+        const items = navigation.querySelectorAll(".navigation-item");
+
+        items.forEach((item) => {
+            const src = item.getAttribute("href");
+            const currentPath = window.location.pathname;
+            if (src === currentPath) {
+                item.classList.add("link-current");
+            } else {
+                item.classList.remove("link-current");
+            }
+        });
+    }
+
+    updateHeaderItems() {
+        const navigation = document.getElementById("navigation");
+        if (!navigation) return;
+
+        this.updateHeaderItemsVisibility(navigation);
+        this.updateHeaderActiveItem(navigation);
     }
 }

@@ -1,5 +1,5 @@
 ---
-const { link, class: className = "", style = "", currentClass = "", ...props } = Astro.props;
+const { link, class: className = "", style = "", ...props } = Astro.props;
 
 const { label, externalLink, internalLink } = link;
 
@@ -25,7 +25,7 @@ const target = link.externalLink ? "_blank" : "_self";
     style={style}
     href={linkUrl}
     draggable="false"
-    class:list={[className, { [`${currentClass} link-current`]: isCurrent }]}
+    class:list={[className, { "link-current": isCurrent }]}
     target={target}
     data-template={internalLink?._modelApiKey}
     {...props}

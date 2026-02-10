@@ -36,8 +36,6 @@ export default class Work extends Page {
             this.initialScroll = this.getInitialScroll();
         }
 
-        console.log(this.initialScroll);
-
         if (this.initialScroll && this.wrapper) {
             this.wrapper.style.scrollBehavior = "auto";
             this.wrapper.scrollTop = this.initialScroll;
@@ -112,7 +110,7 @@ export default class Work extends Page {
             });
         }
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
 
         return this.swapTl.play();
     }

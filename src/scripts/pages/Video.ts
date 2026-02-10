@@ -243,7 +243,7 @@ export default class Video extends Page {
                 "<",
             );
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
 
         return this.swapTl.play();
     }

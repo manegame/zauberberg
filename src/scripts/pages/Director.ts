@@ -108,7 +108,7 @@ export default class Director extends Page {
             "<",
         );
 
-        this.updateHeaderItemsVisibility();
+        this.updateHeaderItems();
 
         return this.swapTl.play();
     }
