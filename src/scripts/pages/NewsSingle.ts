@@ -58,6 +58,9 @@ export default class NewsSingle extends Page {
                 ease: "power2.out",
             });
         }
+
+        this.updateHeaderItemsVisibility();
+
         return this.swapTl.play();
     }
 

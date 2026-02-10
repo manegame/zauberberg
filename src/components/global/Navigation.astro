@@ -4,7 +4,7 @@ import Logo from "./Logo.astro";
 
 const { data, template } = Astro.props;
 
-const TEMPLATES_WITH_HIDDEN_NAVIGATION = ["video"];
+const TEMPLATES_WITH_HIDDEN_NAVIGATION = ["video", "news_single"];
 
 const initialHide = TEMPLATES_WITH_HIDDEN_NAVIGATION.includes(template);
 ---
@@ -12,6 +12,8 @@ const initialHide = TEMPLATES_WITH_HIDDEN_NAVIGATION.includes(template);
 <div
     id="navigation"
     transition:persist
+    data-hide-items={initialHide}
+    data-hide-on={TEMPLATES_WITH_HIDDEN_NAVIGATION.join(",")}
     class="px-gutter pointer-events-none fixed inset-0 z-10 flex h-dvh w-screen items-center justify-center pt-20 pb-30 lg:py-0"
 >
     <header class="flex h-full w-full flex-col items-center justify-between lg:h-auto lg:flex-row">

@@ -66,7 +66,10 @@ export default class Work extends Page {
     }
 
     prepareTransitionIn(sourceElement?: HTMLElement): void {
-        if (this.previousPage?.template !== "directors_page") {
+        if (
+            this.previousPage?.template !== "directors_page" ||
+            window.innerWidth < 1024
+        ) {
             gsap.set(this.container, { opacity: 0 });
         }
     }
@@ -76,36 +79,31 @@ export default class Work extends Page {
 
         this.initialScroll = this.getInitialScroll();
 
-        if (this.previousPage?.template === "directors_page") {
+        if (
+            this.previousPage?.template === "directors_page" &&
+            window.innerWidth >= 1024
+        ) {
             const grid = this.container?.querySelector("#work-wrapper");
-            const items = this.container?.querySelectorAll(
-                ".video-item:not(.center-video)",
-            );
+            const items = this.container?.querySelectorAll(".video-item");
 
             //TODO: smooth transition from previous full screen video
-
             const scale = window.innerHeight / this.centerVideo!.offsetHeight;
 
             gsap.set(grid, {
                 scale: scale,
             });
-            gsap.set(items, { scale: 0.5 });
+
+            gsap.set(items, {
+                pointerEvents: "none",
+            });
 
             this.swapTl
                 .to(grid, {
                     scale: 1,
-                    duration: 1.6,
-                    ease: "power4.inOut",
+                    duration: 1.2,
+                    ease: "power3.inOut",
                 })
-                .to(
-                    items,
-                    {
-                        scale: 1,
-                        duration: 1.6,
-                        ease: "power4.inOut",
-                    },
-                    "<",
-                );
+                .set(items, { pointerEvents: "auto" });
         } else {
             this.swapTl.to(this.container, {
                 opacity: 1,
@@ -113,6 +111,8 @@ export default class Work extends Page {
                 ease: "power2.out",
             });
         }
+
+        this.updateHeaderItemsVisibility();
 
         return this.swapTl.play();
     }

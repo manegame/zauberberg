@@ -53,6 +53,8 @@ export default class Page {
             ease: "power2.out",
         });
 
+        this.updateHeaderItemsVisibility();
+
         return this.swapTl.play();
     }
 
@@ -75,4 +77,28 @@ export default class Page {
     }
 
     resize() {}
+
+    updateHeaderItemsVisibility() {
+        const navigation = document.getElementById("navigation");
+        if (!navigation) return;
+
+        const items = navigation.querySelectorAll(".navigation-item");
+
+        const hideOn =
+            navigation.getAttribute("data-hide-on")?.split(",") || [];
+
+        if (hideOn.includes(this.template)) {
+            gsap.to(items, {
+                y: "-100%",
+                duration: 0.4,
+                ease: "power3.out",
+            });
+        } else {
+            gsap.to(items, {
+                y: "0%",
+                duration: 0.4,
+                ease: "power3.out",
+            });
+        }
+    }
 }

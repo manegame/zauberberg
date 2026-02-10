@@ -108,21 +108,7 @@ export default class Director extends Page {
             "<",
         );
 
-        if (this.previousPage?.template === "video") {
-            const navigationItems = document.querySelectorAll(
-                "#navigation .navigation-item",
-            );
-            this.swapTl.to(
-                navigationItems,
-                {
-                    yPercent: 0,
-                    stagger: 0.05,
-                    duration: 0.4,
-                    ease: "power3.inOut",
-                },
-                "<",
-            );
-        }
+        this.updateHeaderItemsVisibility();
 
         return this.swapTl.play();
     }
@@ -140,22 +126,6 @@ export default class Director extends Page {
             { yPercent: -100, duration: 0.4, ease: "power3.out" },
             "<",
         );
-
-        if (to === "video") {
-            const navigationItems = document.querySelectorAll(
-                "#navigation .navigation-item",
-            );
-            this.swapTl.to(
-                navigationItems,
-                {
-                    yPercent: -100,
-                    stagger: 0.02,
-                    duration: 0.2,
-                    ease: "power3.inOut",
-                },
-                "<",
-            );
-        }
 
         return this.swapTl.play();
     }

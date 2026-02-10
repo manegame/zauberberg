@@ -220,7 +220,7 @@ export default class Video extends Page {
                     yPercent: 0,
                     stagger: 0.05,
                     duration: 0.8,
-                    ease: "power3.inOut",
+                    ease: "power2.inOut",
                 },
                 "<",
             )
@@ -228,8 +228,7 @@ export default class Video extends Page {
                 controlsItems,
                 {
                     yPercent: 0,
-                    stagger: 0.05,
-                    duration: 0.8,
+                    duration: 0.4,
                     ease: "power3.inOut",
                 },
                 "<+=0.2",
@@ -243,6 +242,8 @@ export default class Video extends Page {
                 },
                 "<",
             );
+
+        this.updateHeaderItemsVisibility();
 
         return this.swapTl.play();
     }

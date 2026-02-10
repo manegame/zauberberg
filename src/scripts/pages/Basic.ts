@@ -60,6 +60,8 @@ export default class Basic extends Page {
             });
         }
 
+        this.updateHeaderItemsVisibility();
+
         return this.swapTl.play();
     }
 
