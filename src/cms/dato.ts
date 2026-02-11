@@ -84,12 +84,30 @@ export const getPageBySlugAndLayout = async (slug: string | undefined) => {
     };
 };
 
+const updatePagesData = (pages: any) => {
+    // add newsHome.news to all the newsSingles, to manage prev and next links
+    if (pages.newsHome && pages.allNewsSingles) {
+        const newsHome = pages.newsHome;
+
+        pages.allNewsSingles = pages.allNewsSingles.map((newsSingle: any) => {
+            return {
+                ...newsSingle,
+                newsHome,
+            };
+        });
+    }
+
+    return pages as any;
+};
+
 export const getAllPagesAndLayout = async () => {
     const data = await excecuteQuery(allPagesAndLayout);
 
     const { navigation, ...pages } = data;
 
-    const allPages = pagesDataToSlugMap(pages);
+    const updatedPages = updatePagesData(pages);
+
+    const allPages = pagesDataToSlugMap(updatedPages);
 
     return {
         pages: allPages,

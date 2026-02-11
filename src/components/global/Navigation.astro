@@ -24,7 +24,7 @@ const initialHide = TEMPLATES_WITH_HIDDEN_NAVIGATION.includes(template);
             {
                 data.links.map((link: any) => (
                     <DatoLink
-                        style={{ transform: initialHide ? "translateY(100%)" : "translateY(0)" }}
+                        style={{ transform: initialHide ? "translateY(-100%)" : "translateY(0)" }}
                         class="text-nav-mobile navigation-item xl:text-nav-desktop pointer-events-auto block opacity-30 transition-opacity duration-150 [&.link-current]:opacity-100"
                         link={link}
                     />

@@ -1,5 +1,7 @@
 ---
 import DatoImage from "../global/DatoImage.astro";
+import DatoLink from "../global/DatoLink.astro";
+import { Icon } from "astro-icon/components";
 
 import LeftRightTitle from "../news/LeftRightTitle.astro";
 import Details from "../news/Details.astro";
@@ -8,23 +10,32 @@ import EdgeGradient from "../global/EdgeGradient.astro";
 
 const { data } = Astro.props;
 
-const dataImageAspect =
-    {
-        square: "1/1",
-        classic: "7/5",
-        wide: "9/5",
-    }[data.coverSize as "square" | "classic" | "wide"] || "1/1";
-
 const aspectRatioClass =
     {
         square: "aspect-square lg:w-10/24",
         classic: "aspect-[7/5] lg:w-14/24",
         wide: "aspect-[9/5] lg:w-18/24",
     }[data.coverSize as "square" | "classic" | "wide"] || "lg:aspect-square";
+
+// get next and prev news singles based on newsHome.news
+let prevArticleIndex = -1;
+let nextArticleIndex = -1;
+
+const currentIndex = data.newsHome.news.findIndex((n: any) => n.id === data.id);
+if (currentIndex >= 0) {
+    prevArticleIndex = (currentIndex - 1 + data.newsHome.news.length) % data.newsHome.news.length;
+    nextArticleIndex = (currentIndex + 1) % data.newsHome.news.length;
+}
+
+const prevArticle = data.newsHome.news[prevArticleIndex];
+const nextArticle = data.newsHome.news[nextArticleIndex];
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
-    <div class="flex w-full flex-col items-center gap-25 pt-212 pb-80 lg:gap-35 lg:py-112">
+    <div
+        id="article-content"
+        class="flex w-full flex-col items-center gap-25 pt-212 pb-80 lg:gap-35 lg:py-112"
+    >
         <div class="flex w-full flex-col items-center gap-8 lg:gap-15">
             <div class="w-10/12 sm:w-8/12 md:w-8/12 lg:w-6/24">
                 <div
@@ -61,6 +72,36 @@ const aspectRatioClass =
                         return <Section data={blok} />;
                     })
             }
+        </div>
+    </div>
+    <div
+        class="px-gutter pointer-events-none fixed inset-0 flex items-center justify-center pb-80 lg:pb-0"
+    >
+        <div class="flex h-full w-full flex-col items-center justify-end lg:h-auto lg:flex-row">
+            <div class="text-nav pointer-events-auto flex items-center gap-10 overflow-hidden">
+                <DatoLink
+                    link={{ internalLink: data.newsHome }}
+                    class="article-nav-item flex shrink-0 items-center gap-5"
+                >
+                    <Icon name="cross" class="-mt-1 size-12" />
+                    Close
+                </DatoLink>
+
+                <DatoLink
+                    link={{ internalLink: prevArticle }}
+                    class="article-nav-item flex shrink-0 items-center gap-5"
+                >
+                    ← Prev
+                </DatoLink>
+
+                <DatoLink
+                    link={{ internalLink: nextArticle }}
+                    class="article-nav-item flex shrink-0 items-center gap-5"
+                >
+                    Next →
+                </DatoLink>
+                <button class="article-nav-item flex shrink-0 items-center gap-5">Share</button>
+            </div>
         </div>
     </div>
     <EdgeGradient top={0} topFade={0} />

@@ -18,6 +18,9 @@ export default class NewsSingle extends Page {
     transitionIn(): Promise<any> | gsap.core.Timeline {
         this.swapTl = gsap.timeline({ paused: true });
 
+        const articleNavItems =
+            this.container.querySelectorAll(".article-nav-item");
+
         if (this.previousPage?.template === "news_home") {
             const sections =
                 this.container.querySelectorAll(".sections-wrapper");
@@ -51,12 +54,37 @@ export default class NewsSingle extends Page {
                     "<",
                 );
             }
+            this.swapTl.to(
+                articleNavItems,
+                {
+                    yPercent: 0,
+                    duration: 0.4,
+                    ease: "power3.inOut",
+                },
+                "<+=0.2",
+            );
+        } else if (this.previousPage?.template === "news_single") {
+            const content = this.container.querySelector("#article-content");
+            this.swapTl.to(content, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out",
+            });
         } else {
             this.swapTl.to(this.container, {
                 opacity: 1,
                 duration: 0.4,
                 ease: "power2.out",
             });
+            this.swapTl.to(
+                articleNavItems,
+                {
+                    yPercent: 0,
+                    duration: 0.4,
+                    ease: "power3.inOut",
+                },
+                "<+=0.2",
+            );
         }
 
         this.updateHeaderItems();
@@ -66,6 +94,8 @@ export default class NewsSingle extends Page {
 
     prepareTransitionIn(): void {
         const sections = this.container.querySelectorAll(".sections-wrapper");
+        const articleNavItems =
+            this.container.querySelectorAll(".article-nav-item");
 
         if (this.previousPage?.template === "news_home") {
             const currentThumbnail =
@@ -86,9 +116,35 @@ export default class NewsSingle extends Page {
             this.previousThumbnailState = Flip.getState(previousThumbnail);
             this.previousDetailsState = Flip.getState(previousDetails);
 
+            gsap.set(articleNavItems, { yPercent: 100 });
             gsap.set(sections, { opacity: 0, y: 100 });
+        } else if (this.previousPage?.template === "news_single") {
+            const content = this.container.querySelector("#article-content");
+            gsap.set(content, { opacity: 0, y: 100 });
         } else {
+            gsap.set(articleNavItems, { yPercent: 100 });
             gsap.set(this.container, { opacity: 0 });
         }
+    }
+
+    transitionOut({ to }: { to: string }) {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        if (to === "news_single") {
+            const content = this.container.querySelector("#article-content");
+            this.swapTl.to(content, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        } else {
+            this.swapTl.to(this.container, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        }
+
+        return this.swapTl.play();
     }
 }
