@@ -42,7 +42,10 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
             poster={data.video.poster.url}
         >
         </video>
-        <div class="absolute inset-0 flex items-center justify-center bg-black/40">
+        <div
+            id="overlay"
+            class="absolute inset-0 flex items-center justify-center bg-black opacity-40"
+        >
             <div
                 id="video-info"
                 class="flex flex-col items-center gap-5 overflow-hidden lg:flex-row lg:gap-15"
@@ -102,6 +105,7 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
             </div>
         </div>
         <div
+            id="video-player"
             class="lg:px-gutter pointer-events-auto absolute right-0 bottom-0 left-0 flex flex-col pb-20 lg:flex-row-reverse lg:items-center lg:gap-12"
         >
             <div

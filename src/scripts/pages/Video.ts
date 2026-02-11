@@ -196,10 +196,56 @@ export default class Video extends Page {
         }
     }
 
+    transitionOut({ to }: { to: string }) {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        if (to === "director") {
+            const videosInfos = this.container.querySelectorAll(".video-info");
+            const videoPlayer =
+                this.container.querySelectorAll("#video-player");
+            const controlsItems = this.container.querySelectorAll(
+                "#video-controls .controls-item",
+            );
+
+            this.swapTl
+                .to([videosInfos], {
+                    yPercent: 100,
+                    stagger: 0.05,
+                    duration: 0.4,
+                    ease: "power2.inOut",
+                })
+                .to(
+                    controlsItems,
+                    {
+                        yPercent: 100,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                )
+                .to(
+                    videoPlayer,
+                    {
+                        opacity: 0,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                );
+        } else {
+            this.swapTl.to(this.container, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        }
+
+        return this.swapTl.play();
+    }
+
     transitionIn() {
         const videosInfos = this.container.querySelectorAll(".video-info");
-        const videoTimeline =
-            this.container.querySelectorAll("#video-timeline");
+        const videoPlayer = this.container.querySelectorAll("#video-player");
         const controlsItems = this.container.querySelectorAll(
             "#video-controls .controls-item",
         );
@@ -208,12 +254,15 @@ export default class Video extends Page {
 
         this.swapTl = gsap.timeline({ paused: true });
 
-        this.swapTl
-            .to(video, {
+        if (this.previousPage?.template !== "director") {
+            this.swapTl.to(video, {
                 opacity: 1,
-                duration: 0.8,
+                duration: 0.4,
                 ease: "power2.out",
-            })
+            });
+        }
+
+        this.swapTl
             .to(
                 videosInfos,
                 {
@@ -234,7 +283,7 @@ export default class Video extends Page {
                 "<+=0.2",
             )
             .to(
-                videoTimeline,
+                videoPlayer,
                 {
                     opacity: 1,
                     duration: 0.5,
@@ -250,15 +299,18 @@ export default class Video extends Page {
 
     prepareTransitionIn(sourceElement: HTMLElement) {
         const videosInfos = this.container.querySelectorAll(".video-info");
-        const videoTimeline =
-            this.container.querySelectorAll("#video-timeline");
+        const videoPlayer = this.container.querySelectorAll("#video-player");
         const controlsItems = this.container.querySelectorAll(
             "#video-controls .controls-item",
         );
         const video = this.container.querySelector("#video-video");
 
-        gsap.set(video, { opacity: 0 });
-        gsap.set(videoTimeline, { opacity: 0 });
+        if (this.previousPage?.template !== "director") {
+            gsap.set(video, { opacity: 0 });
+        } else {
+        }
+
+        gsap.set(videoPlayer, { opacity: 0 });
         gsap.set(controlsItems, { yPercent: 100 });
         gsap.set(videosInfos, { yPercent: 100 });
 

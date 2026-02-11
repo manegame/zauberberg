@@ -28,7 +28,7 @@ const directorsWithDuplicate = [...directors, ...directors];
     class="relative h-dvh touch-none overflow-hidden overscroll-none select-none"
 >
     <div class="pointer-events-none absolute inset-0 z-0">
-        <div class="absolute inset-0 z-3 bg-black/40"></div>
+        <div id="overlay" class="absolute inset-0 z-3 bg-black opacity-40"></div>
         <video
             id="director-video-1"
             class="absolute inset-0 h-full w-full object-cover"

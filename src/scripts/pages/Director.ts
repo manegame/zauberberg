@@ -118,7 +118,7 @@ export default class Director extends Page {
 
         if (to === "directors_page" || to === "video") {
             this.swapTl.to(this.overlay, {
-                opacity: 0,
+                opacity: 0.4,
                 duration: 0.4,
                 ease: "power3.out",
             });
@@ -148,8 +148,11 @@ export default class Director extends Page {
             "#director-banner",
         ) as HTMLElement;
 
-        if (this.previousPage?.template === "directors_page") {
-            gsap.set(overlay, { opacity: 0 });
+        if (
+            this.previousPage?.template === "directors_page" ||
+            this.previousPage?.template === "video"
+        ) {
+            gsap.set(overlay, { opacity: 0.4 });
         } else {
             gsap.set(overlay, { opacity: 1 });
         }

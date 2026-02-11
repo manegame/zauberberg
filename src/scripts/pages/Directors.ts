@@ -37,6 +37,7 @@ export default class DirectorsPage extends Page {
 
     scrollEndTimeout?: number;
     observer!: Observer;
+    abortController!: AbortController;
 
     constructor(...args: ConstructorParameters<typeof Page>) {
         super(...args);
@@ -55,6 +56,8 @@ export default class DirectorsPage extends Page {
 
     async init() {
         if (!this.container) return;
+
+        this.abortController = new AbortController();
 
         this.setupInfiniteScroll();
         await this.loadAndSetFirstVideo();
@@ -353,6 +356,22 @@ export default class DirectorsPage extends Page {
                 this.onScrollEvent(self);
             },
         });
+
+        this.directors.forEach((director) => {
+            director.addEventListener(
+                "click",
+                (e) => {
+                    this.onDirectorClick(director);
+                },
+                { signal: this.abortController.signal },
+            );
+        });
+    }
+
+    onDirectorClick(director: HTMLElement) {
+        const index = parseInt(director.dataset.index!);
+        this.setCurrentDirectorByIndex(index);
+        this.setBackgroundVideo();
     }
 
     transitionOut({
