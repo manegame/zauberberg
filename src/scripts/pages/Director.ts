@@ -116,11 +116,20 @@ export default class Director extends Page {
     transitionOut({ to }: { to: string }) {
         this.swapTl = gsap.timeline({ paused: true });
 
-        this.swapTl.to(this.overlay, {
-            opacity: 1,
-            duration: 0.4,
-            ease: "power3.out",
-        });
+        if (to === "directors_page" || to === "video") {
+            this.swapTl.to(this.overlay, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power3.out",
+            });
+        } else {
+            this.swapTl.to(this.overlay, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power3.out",
+            });
+        }
+
         this.swapTl.to(
             this.banner,
             { yPercent: -100, duration: 0.4, ease: "power3.out" },
@@ -139,7 +148,12 @@ export default class Director extends Page {
             "#director-banner",
         ) as HTMLElement;
 
-        gsap.set(overlay, { opacity: 1 });
+        if (this.previousPage?.template === "directors_page") {
+            gsap.set(overlay, { opacity: 0 });
+        } else {
+            gsap.set(overlay, { opacity: 1 });
+        }
+
         gsap.set(banner, { yPercent: -100 });
     }
 }

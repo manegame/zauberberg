@@ -270,15 +270,26 @@ export default class DirectorsPage extends Page {
     }
 
     setInitialDirector() {
-        const randomIndex = Math.floor(Math.random() * this.totalItems);
+        let index = -1;
 
-        const initialOffset =
-            (randomIndex + this.totalItems) * -this.ITEM_HEIGHT;
+        if (this.previousPage?.template === "director") {
+            const directorIndex = Array.from(this.directors).findIndex(
+                (dir) => `/${dir.dataset.slug}` === this.previousUrl,
+            );
+            index = directorIndex;
+        }
+
+        if (index === -1) {
+            const randomIndex = Math.floor(Math.random() * this.totalItems);
+            index = randomIndex;
+        }
+
+        const initialOffset = (index + this.totalItems) * -this.ITEM_HEIGHT;
 
         this.y = this.wrap(initialOffset);
         gsap.set([this.list, this.ghostList], { y: this.y });
 
-        this.setCurrentDirectorByIndex(randomIndex);
+        this.setCurrentDirectorByIndex(index);
     }
 
     setupInfiniteScroll() {
@@ -359,6 +370,12 @@ export default class DirectorsPage extends Page {
                 duration: 0.4,
                 ease: "power2.out",
             });
+        } else if (to === "director") {
+            this.swapTl.to([this.list, this.ghostList], {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.out",
+            });
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
@@ -368,5 +385,41 @@ export default class DirectorsPage extends Page {
         }
 
         return this.swapTl.play();
+    }
+
+    transitionIn() {
+        this.swapTl = gsap.timeline({ paused: true });
+
+        if (this.previousPage?.template === "director") {
+            const lists = this.container.querySelectorAll(
+                "#directors-list, #directors-ghost-list",
+            );
+            this.swapTl.to(lists, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        } else {
+            this.swapTl.to(this.container, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out",
+            });
+        }
+
+        this.updateHeaderItems();
+
+        return this.swapTl.play();
+    }
+
+    prepareTransitionIn() {
+        if (this.previousPage?.template === "director") {
+            const lists = this.container.querySelectorAll(
+                "#directors-list, #directors-ghost-list",
+            );
+            gsap.set(lists, { opacity: 0 });
+        } else {
+            gsap.set(this.container, { opacity: 0 });
+        }
     }
 }
