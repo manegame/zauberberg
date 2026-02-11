@@ -17,9 +17,20 @@ export default `
         id
         title
         items {
-            id
-            label
-            link
+            ... on SidebarLinkRecord {
+                id
+                label
+                link
+            }
+            ... on SidebarPdfRecord {
+                id
+                pdf {
+                    id
+                    url
+                    title
+                    filename
+                }
+            }
         }
     }
     photo {
