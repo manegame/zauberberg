@@ -8,11 +8,37 @@ gsap.registerPlugin(Flip);
 export default class NewsSingle extends Page {
     previousThumbnailState!: Flip.FlipState | null;
     previousDetailsState!: Flip.FlipState | null;
+    abortController!: AbortController;
 
     async init() {
         if (!this.container) return;
 
+        this.abortController = new AbortController();
+        this.setupShareBtn();
+
         await super.init();
+    }
+
+    setupShareBtn() {
+        if (!this.container) return;
+        const shareBtn = this.container.querySelector("#share-button");
+
+        shareBtn?.addEventListener(
+            "click",
+            () => {
+                if (navigator.share) {
+                    navigator
+                        .share({
+                            title: document.title,
+                            url: window.location.href,
+                        })
+                        .catch((error) =>
+                            console.error("Error sharing:", error),
+                        );
+                }
+            },
+            { signal: this.abortController.signal },
+        );
     }
 
     transitionIn(): Promise<any> | gsap.core.Timeline {

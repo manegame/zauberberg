@@ -54,9 +54,7 @@ const videos = [
         </video>
     </div>
 
-    <div
-        id="director-overlay"
-        class="absolute inset-0 cursor-pointer bg-black opacity-85"></div>
+    <div id="director-overlay" class="absolute inset-0 cursor-pointer bg-black opacity-85"></div>
 
     <div
         id="director-banner"
@@ -69,9 +67,7 @@ const videos = [
         </button>
         <div class="h-auto pt-30">
             <div class="flex h-full flex-col">
-                <div
-                    class="px-gutter mb-35 flex shrink-0 flex-col items-start gap-2 md:hidden"
-                >
+                <div class="px-gutter mb-35 flex shrink-0 flex-col items-start gap-2 md:hidden">
                     <button
                         id="director-work-btn"
                         class="opacity-20 in-data-[selected='work']:opacity-100"
@@ -89,16 +85,12 @@ const videos = [
                 <div
                     class="px-gutter flex grow items-start justify-between overflow-hidden md:flex-row-reverse md:items-stretch lg:justify-start"
                 >
-                    <div
-                        class="hidden w-3/12 flex-col pb-30 md:flex lg:w-2/12 xl:w-3/24"
-                    >
+                    <div class="hidden w-3/12 flex-col pb-30 md:flex lg:w-2/12 xl:w-3/24">
                         {
                             data.sidebar.map((item: any) => (
                                 <div class="mb-15 first:mb-auto last:mb-0">
                                     {item.title && (
-                                        <div class="text-caption mb-5">
-                                            {item.title}
-                                        </div>
+                                        <div class="text-caption mb-5">{item.title}</div>
                                     )}
                                     {item.items.map((subitem: any) => {
                                         if (subitem.pdf) {
@@ -117,10 +109,7 @@ const videos = [
                                             );
                                         } else if (subitem.link) {
                                             return (
-                                                <a
-                                                    target="_blank"
-                                                    href={subitem.link}
-                                                >
+                                                <a target="_blank" href={subitem.link}>
                                                     {subitem.label}
                                                 </a>
                                             );
@@ -133,14 +122,14 @@ const videos = [
                         }
                     </div>
                     <div
-                        class="h-full max-h-400 w-8/12 overflow-y-auto pb-20 md:w-5/12 md:pb-30 lg:mr-[12.5%] lg:ml-auto 2xl:w-6/24"
+                        class="scrollbar-hide h-full max-h-400 w-8/12 overflow-y-auto pb-20 md:w-5/12 md:pb-30 lg:mr-[12.5%] lg:ml-auto 2xl:w-6/24"
                     >
                         <div
-                            class="hidden w-full overflow-y-auto in-data-[selected='work']:block md:mb-20 md:block [&>p+p]:mt-20"
+                            class="scrollbar-hide hidden w-full overflow-y-auto in-data-[selected='work']:block md:mb-20 md:block [&>p+p]:mt-20"
                             set:html={data.introduction}
                         />
                         <div
-                            class="hidden w-full overflow-y-auto in-data-[selected='bio']:block md:block [&>p+p]:mt-20"
+                            class="scrollbar-hide hidden w-full overflow-y-auto in-data-[selected='bio']:block md:block [&>p+p]:mt-20"
                             set:html={data.biography}
                         />
                     </div>
@@ -148,9 +137,7 @@ const videos = [
                         class="flex w-3/12 flex-col items-end justify-between pb-30 md:w-2/12 md:items-start xl:w-1/12"
                     >
                         <div class="hidden md:block">{data.name}</div>
-                        <div
-                            class="aspect-75/100 w-full max-w-120 md:max-w-150"
-                        >
+                        <div class="aspect-75/100 w-full max-w-120 md:max-w-150">
                             <DatoImage
                                 pictureClass="block size-full object-cover"
                                 imgClass="size-full object-cover"

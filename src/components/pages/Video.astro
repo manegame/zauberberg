@@ -53,7 +53,11 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
                 <div class="text-nav flex items-center gap-6">
                     {
                         data.directors.map((director: any) => {
-                            return <div class="video-info">{director.name}</div>;
+                            return (
+                                <DatoLink class="video-info" link={{ internalLink: director }}>
+                                    {director.name}
+                                </DatoLink>
+                            );
                         })
                     }
                 </div>
