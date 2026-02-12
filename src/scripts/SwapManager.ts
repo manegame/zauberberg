@@ -61,6 +61,8 @@ export default class SwapManager {
 
         const scrollTop = this.app.scroll.getScroll();
 
+        this.app.scroll.lenis.stop();
+
         this.page.container.style.position = "fixed";
         this.page.container.style.top = `-${scrollTop}px`;
         this.page.container.style.width = "100%";
@@ -81,6 +83,8 @@ export default class SwapManager {
         this.page = this.newPage;
         this.newPage = undefined as any;
         this.app.setCurrentPage(this.page);
+        this.app.scroll.lenis.start();
+
         await this.page.init();
 
         this.page.transitionIn();
