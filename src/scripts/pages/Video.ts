@@ -5,15 +5,22 @@ export default class Video extends Page {
     abortController!: AbortController;
     video!: HTMLVideoElement | null;
     controls!: HTMLElement | null;
+    navItems!: NodeListOf<HTMLElement>;
     btnSound!: HTMLElement | null;
     btnPlay!: HTMLElement | null;
     timeline!: HTMLElement | null;
+    overlay!: HTMLElement | null;
+    infos!: NodeListOf<HTMLElement>;
+    overlayTimeout!: ReturnType<typeof setTimeout>;
+    overlayTl!: gsap.core.Timeline;
     progressTl!: gsap.core.Timeline;
     muted!: boolean;
     play!: boolean;
     isSetup!: boolean;
     prevVideoLink!: string | null;
     nextVideoLink!: string | null;
+    OVERLAY_TIME!: number;
+    showOverlay!: boolean;
 
     destroy() {
         this.abortController.abort();
@@ -28,6 +35,8 @@ export default class Video extends Page {
         this.muted = true;
         this.play = true;
         this.isSetup = false;
+        this.showOverlay = true;
+        this.OVERLAY_TIME = 1000;
 
         if (this.video?.readyState >= 2) this.setupVideoControls();
 
@@ -168,6 +177,59 @@ export default class Video extends Page {
         this.video?.play();
         this.setupTimeline();
         this.setupButtons();
+        this.setupOverlay();
+    }
+
+    setupOverlay() {
+        this.overlay = this.container.querySelector("#overlay");
+        this.infos = this.container.querySelectorAll(".video-info");
+        this.navItems = this.container.querySelectorAll(
+            "#video-controls .controls-item",
+        );
+        if (!this.overlay) return;
+
+        // 3 seconds for the inital load
+        this.overlayTimeout = setTimeout(() => {
+            this.toggleOverlay(false);
+        }, 3000);
+
+        this.container.addEventListener(
+            "mousemove",
+            () => {
+                clearTimeout(this.overlayTimeout);
+                this.toggleOverlay(true);
+                this.overlayTimeout = setTimeout(() => {
+                    this.toggleOverlay(false);
+                }, this.OVERLAY_TIME);
+            },
+            { signal: this.abortController.signal },
+        );
+    }
+
+    toggleOverlay(show: boolean) {
+        if (show === this.showOverlay) return;
+        this.showOverlay = show;
+
+        if (this.overlayTl) this.overlayTl.kill();
+
+        this.overlayTl = gsap.timeline();
+
+        this.overlayTl
+            .to([this.infos, this.navItems], {
+                yPercent: show ? 0 : 100,
+                stagger: 0.03,
+                duration: 0.4,
+                ease: "power2.inOut",
+            })
+            .to(
+                this.overlay,
+                {
+                    opacity: show ? 0.4 : 0,
+                    duration: 0.4,
+                    ease: "power2.out",
+                },
+                "<",
+            );
     }
 
     createClosePrevNextVideosLinks(sourceElement: HTMLElement) {
