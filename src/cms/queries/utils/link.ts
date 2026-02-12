@@ -9,6 +9,22 @@ export default `
         ... on BasicRecord {
             _modelApiKey
             slug
+            subnavigation {
+                id
+                blocks {
+                    links {
+                        id
+                        label
+                        externalLink
+                        internalLink {
+                            ... on BasicRecord {
+                                _modelApiKey
+                                slug
+                            }
+                        }
+                    }
+                }
+            }
         }
         ... on DirectorRecord {
             _modelApiKey

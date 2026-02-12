@@ -121,7 +121,6 @@ export default class DirectorsPage extends Page {
             this.activeVideoEl.addEventListener(
                 "loadeddata",
                 () => {
-                    console.log(`Video ready: ${firstVideoUrl}`);
                     resolve();
                 },
                 { once: true },
@@ -147,22 +146,15 @@ export default class DirectorsPage extends Page {
 
         const videosToPreload = [...this.videosToLoad];
 
-        console.log(
-            "Videos to preload in order:",
-            videosToPreload.map((v) => v.index),
-        );
-
         const preloadPromises = videosToPreload.map(async ({ video }) => {
             try {
                 await this.fetchVideoAsBlob(video);
-                console.log(`Preloaded: ${video}`);
             } catch (error) {
                 console.error(`Failed to preload ${video}:`, error);
             }
         });
 
         await Promise.allSettled(preloadPromises);
-        console.log(`Preloaded ${this.app.store.homeVideoBlobs.size} videos`);
     }
 
     onScrollEvent(scroll: any) {
@@ -268,7 +260,6 @@ export default class DirectorsPage extends Page {
             this.y = roundedY;
             this.scrollTo(this.y);
             this.ghostScrollTo(this.y);
-            console.log("snapping", this.y);
         }
     }
 

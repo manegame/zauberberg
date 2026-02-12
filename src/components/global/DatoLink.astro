@@ -18,6 +18,23 @@ if (pathName !== "/" && pathName.endsWith("/")) pathName = pathName.slice(0, -1)
 
 const isCurrent = internalLink && linkUrl === pathName;
 
+let subnavItemIsCurrent = false;
+let internalSubnavSlugs;
+
+if (internalLink?.subnavigation) {
+    internalSubnavSlugs = internalLink.subnavigation.blocks.reduce((acc: any[], cur: any) => {
+        if (cur.links) {
+            const subnavLinks = cur.links
+                .filter((link: any) => link.internalLink && link.internalLink.slug)
+                .map((link: any) => `/${link.internalLink.slug}`);
+            acc.push(...subnavLinks);
+        }
+        return acc;
+    }, []);
+
+    subnavItemIsCurrent = internalSubnavSlugs.some((link: any) => link === pathName);
+}
+
 const target = link.externalLink ? "_blank" : "_self";
 ---
 
@@ -25,9 +42,10 @@ const target = link.externalLink ? "_blank" : "_self";
     style={style}
     href={linkUrl}
     draggable="false"
-    class:list={[className, { "link-current": isCurrent }]}
+    class:list={[className, { "link-current": isCurrent || subnavItemIsCurrent }]}
     target={target}
     data-template={internalLink?._modelApiKey}
+    data-subslugs={internalSubnavSlugs ? internalSubnavSlugs.join(",") : undefined}
     {...props}
 >
     <slot>{label}</slot>

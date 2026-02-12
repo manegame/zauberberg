@@ -147,21 +147,35 @@ export default class NewsHome extends Page {
                 this.container.querySelectorAll(".news-item"),
             ).filter((item) => !item.contains(sourceElement));
 
+            const filtersNav = this.filtersPanel.querySelector(
+                "nav",
+            ) as HTMLElement;
+
             this.swapTl.to(otherNewsItems, {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.out",
             });
-            this.swapTl.to(
-                this.filtersPanel,
-                {
-                    opacity: 0,
-                    x: -20,
-                    duration: 0.4,
-                    ease: "power2.out",
-                },
-                "<",
-            );
+            this.swapTl
+                .to(
+                    filtersNav,
+                    {
+                        opacity: 0,
+                        x: -20,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                )
+                .to(
+                    this.filtersToggle,
+                    {
+                        opacity: 0,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                );
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,

@@ -104,8 +104,16 @@ export default class Page {
 
         items.forEach((item) => {
             const src = item.getAttribute("href");
+            const subslugs =
+                item.getAttribute("data-subslugs")?.split(",") || [];
             const currentPath = window.location.pathname;
-            if (src === currentPath) {
+
+            const isCurrent = src === currentPath;
+            const isSubslugCurrent = subslugs.some(
+                (slug) => slug === currentPath,
+            );
+
+            if (isCurrent || isSubslugCurrent) {
                 item.classList.add("link-current");
             } else {
                 item.classList.remove("link-current");
