@@ -8,6 +8,12 @@ export default class Work extends Page {
     initialScroll!: number;
     centerVideo!: HTMLElement | null;
     isMobile!: boolean;
+    shouldLoadVideosOnInit!: boolean;
+
+    constructor(...args: ConstructorParameters<typeof Page>) {
+        super(...args);
+        this.shouldLoadVideosOnInit = true;
+    }
 
     destroy() {
         this.abortController.abort();
@@ -24,6 +30,8 @@ export default class Work extends Page {
         this.isMobile = window.innerWidth < 1024;
 
         if (!this.isMobile) this.setupInitialScroll();
+
+        if (this.shouldLoadVideosOnInit) this.loadVideos();
 
         await super.init();
     }
@@ -63,28 +71,42 @@ export default class Work extends Page {
         return initialScroll;
     }
 
+    loadVideos() {
+        const videos = this.container?.querySelectorAll(".work-video");
+        videos?.forEach((video) => {
+            const src = video.getAttribute("data-src");
+            if (src) video.setAttribute("src", src);
+        });
+    }
+
     prepareTransitionIn(sourceElement?: HTMLElement): void {
         if (
             this.previousPage?.template !== "directors_page" ||
             window.innerWidth < 1024
         ) {
             gsap.set(this.container, { opacity: 0 });
+        } else {
+            this.shouldLoadVideosOnInit = false;
         }
     }
 
     transitionIn() {
-        this.swapTl = gsap.timeline({ paused: true });
-
         this.initialScroll = this.getInitialScroll();
+        this.swapTl = gsap.timeline({
+            paused: true,
+        });
 
         if (
             this.previousPage?.template === "directors_page" &&
             window.innerWidth >= 1024
         ) {
+            this.swapTl.eventCallback("onComplete", () => {
+                this.loadVideos();
+            });
+
             const grid = this.container?.querySelector("#work-wrapper");
             const items = this.container?.querySelectorAll(".video-item");
 
-            //TODO: smooth transition from previous full screen video
             const scale = window.innerHeight / this.centerVideo!.offsetHeight;
 
             gsap.set(grid, {

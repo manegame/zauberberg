@@ -91,12 +91,12 @@ const getNextVideoSlug = (index: number) => {
                     >
                         <div class="relative aspect-16/10 w-full">
                             <video
-                                class="size-full object-cover"
+                                class="work-video size-full object-cover"
                                 autoplay
                                 muted
                                 loop
                                 playsinline
-                                src={video.video.preview.video.url}
+                                data-src={video.video.preview.video.url}
                                 poster={video.video.preview.poster.url}
                             />
                             <div class="overlay absolute -inset-1 bg-black opacity-30 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
