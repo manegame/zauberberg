@@ -74,7 +74,21 @@ export const getPageBySlugAndLayout = async (slug: string | undefined) => {
 
     const { navigation, ...pageData } = data;
 
-    const page = Object.values(pagesDataToSlugMap(pageData))[0];
+    let page = Object.values(pagesDataToSlugMap(pageData))[0];
+
+    let additionalData: any = {};
+
+    if (page._modelApiKey === "news_single") {
+        const newsHomeData = await excecuteQuery(pageBySlugAndLayout("news"), {
+            slug: "news",
+        });
+        additionalData.newsHome = newsHomeData.newsHome;
+    }
+
+    page = {
+        ...page,
+        ...additionalData,
+    };
 
     return {
         page,
