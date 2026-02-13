@@ -1,3 +1,4 @@
+import img from "../utils/img";
 import seoMetaTags from "../utils/seoMetaTags";
 
 export default `
@@ -20,6 +21,9 @@ export default `
                 name
                 slug
                 _modelApiKey
+            }
+            awardIcon {
+                ${img}
             }
         }
     }

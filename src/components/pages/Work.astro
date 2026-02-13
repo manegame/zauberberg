@@ -79,7 +79,7 @@ const getNextVideoSlug = (index: number) => {
                     <DatoLink
                         class:list={[
                             "video-item pointer-events-auto relative col-span-1 block aspect-16/10 will-change-transform backface-hidden",
-                            "lg:hover:[&_.overlay]:opacity-30 lg:hover:[&_.video-text]:opacity-100",
+                            "lg:hover:[&_.overlay]:opacity-0 lg:hover:[&_.video-text]:opacity-100",
                             {
                                 "lg:col-span-3": video.featured,
                                 "center-video": index === centerVideoIndex,
@@ -99,9 +99,17 @@ const getNextVideoSlug = (index: number) => {
                                 data-src={video.video.preview.video.url}
                                 poster={video.video.preview.poster.url}
                             />
-                            <div class="overlay absolute -inset-1 bg-black opacity-30 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
+                            <div class="absolute -inset-1 z-1 bg-black opacity-30" />
+                            {video.video.awardIcon && (
+                                <img
+                                    src={video.video.awardIcon.url}
+                                    alt={video.video.awardIcon.alt}
+                                    class="absolute right-15 bottom-10 z-2 h-30 w-auto"
+                                />
+                            )}
+                            <div class="overlay absolute -inset-1 z-3 bg-black opacity-0 transition-opacity duration-300 ease-in-out lg:group-hover:opacity-80" />
                         </div>
-                        <div class="text-caption mt-5 flex flex-col gap-2 lg:absolute lg:inset-0 lg:justify-center lg:px-15">
+                        <div class="text-caption z-4 mt-5 flex flex-col gap-2 lg:absolute lg:inset-0 lg:justify-center lg:px-15">
                             <div class="video-text flex flex-col gap-2 transition-opacity duration-300 ease-in-out lg:opacity-0">
                                 <div>&#8216;{video.video.name}&#8217;</div>
                                 <div>{video.video.client}</div>
