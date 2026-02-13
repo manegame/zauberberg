@@ -1,6 +1,6 @@
-import video from "../utils/video";
 import responsiveImg from "../utils/responsiveImg";
 import seoMetaTags from "../utils/seoMetaTags";
+import img from "../utils/img";
 
 export default `
     id
@@ -44,5 +44,8 @@ export default `
         name
         client
         previewRss
+        awardIcon {
+            ${img}
+        }
     }
 `;

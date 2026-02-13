@@ -7,7 +7,7 @@ const { video } = Astro.props;
 <DatoLink
     class:list={[
         "relative flex w-220 shrink-0 flex-col gap-5 select-none md:w-340",
-        "md:hover:[&_.overlay]:opacity-40 md:hover:[&_.video-poster]:opacity-0 md:hover:[&_.video-text]:translate-y-0 md:hover:[&_.video-text]:opacity-100",
+        "md:hover:[&_.overlay]:opacity-0 md:hover:[&_.video-poster]:opacity-0 md:hover:[&_.video-text]:translate-y-0 md:hover:[&_.video-text]:opacity-100",
     ]}
     link={{ internalLink: video }}
 >
@@ -26,8 +26,9 @@ const { video } = Astro.props;
     </div>
     <div class="relative aspect-16/10 w-full">
         <div
-            class="overlay absolute inset-0 z-1 bg-black opacity-40 transition-opacity duration-300 ease-in-out md:group-hover:opacity-80"
+            class="overlay absolute inset-0 z-3 bg-black opacity-0 transition-opacity duration-300 ease-in-out md:group-hover:opacity-80"
         ></div>
+        <div class="absolute inset-0 z-1 bg-black opacity-40"></div>
         <video
             class="absolute inset-0 hidden size-full object-cover md:block"
             autoplay
@@ -43,5 +44,14 @@ const { video } = Astro.props;
             src={video.preview.poster.url}
             alt={video.name}
         />
+        {
+            video.awardIcon && (
+                <img
+                    src={video.awardIcon.url}
+                    alt={video.awardIcon.alt}
+                    class="absolute right-15 bottom-10 z-2 h-30 w-auto"
+                />
+            )
+        }
     </div>
 </DatoLink>
