@@ -244,12 +244,6 @@ export default class DirectorsPage extends Page {
     setCurrentDirectorByIndex(index: number) {
         this.currentIndex = index;
         this.currentDirector = this.directors[index];
-
-        console.log(
-            "setting director: ",
-            index,
-            this.directors[index].dataset.director,
-        );
     }
 
     snapToGrid() {

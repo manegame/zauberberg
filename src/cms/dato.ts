@@ -51,9 +51,19 @@ export const generateStaticPaths = async () => {
 
 export const getPreviewData = async (params: { slug: any }) => {
     const slug = params?.slug;
-    const data = await getPageBySlugAndLayout(slug);
 
-    return data;
+    const data = await getAllPagesAndLayout();
+    const slugToModelApiKeyMap = pagesSlugToModelApiKeyMap(data.pages);
+
+    const page = data.pages[slug] || data.pages["undefined"] || null;
+
+    return {
+        data: {
+            page,
+            layout: data.layout,
+        },
+        slugToModelApiKeyMap,
+    };
 };
 
 export const isDraft = () => {
