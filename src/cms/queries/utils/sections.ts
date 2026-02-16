@@ -51,4 +51,17 @@ export default `
         id
         content
     }
+    ... on EmbedVideoRecord {
+        _modelApiKey
+        id
+        externalVideo {
+            height
+            provider
+            providerUid
+            thumbnailUrl
+            title
+            url
+            width
+        }
+    }
 `;
