@@ -30,8 +30,7 @@ const placeholderStyle =
 
 const { width } = data;
 
-const height =
-    data.height ?? Math.round(data.aspectRatio ? width / data.aspectRatio : 0);
+const height = data.height ?? Math.round(data.aspectRatio ? width / data.aspectRatio : 0);
 
 const sizingStyle = {
     aspectRatio: `${width} / ${height}`,
@@ -49,9 +48,7 @@ const sizingStyle = {
         )
     }
     <source
-        srcset={data.srcSet ??
-            buildSrcSet(data.src, data.width, srcSetCandidates) ??
-            null}
+        srcset={data.srcSet ?? buildSrcSet(data.src, data.width, srcSetCandidates) ?? null}
         sizes={sizes ?? data.sizes ?? null}
     />
     {
@@ -95,9 +92,7 @@ const sizingStyle = {
             if (imgEl.complete) {
                 removeBackgroundStyles(imgEl);
             } else {
-                imgEl.addEventListener("load", () =>
-                    removeBackgroundStyles(imgEl),
-                );
+                imgEl.addEventListener("load", () => removeBackgroundStyles(imgEl));
             }
         }
     }

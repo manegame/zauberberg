@@ -58,10 +58,14 @@ const nextArticle = data.newsHome.news[nextArticleIndex];
                     transition:persist={`${data.id}-image`}
                     data-image-id={data.id}
                 >
-                    <DatoImage
-                        data={data.cover.responsiveImage}
-                        imgClass="block absolute inset-0 size-full object-cover"
-                    />
+                    {
+                        data.cover && (
+                            <DatoImage
+                                data={data.cover.responsiveImage}
+                                imgClass="block absolute inset-0 size-full object-cover"
+                            />
+                        )
+                    }
                 </div>
             </div>
         </div>

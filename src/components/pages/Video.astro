@@ -38,8 +38,8 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
             muted
             loop
             playsinline
-            src={data.video.video.url}
-            poster={data.video.poster.url}
+            src={data.video.video?.url}
+            poster={data.video.poster?.url}
         >
         </video>
         <div class="absolute inset-0 flex items-center justify-center">

@@ -9,6 +9,7 @@ import VideoItem from "../director/VideoItem.astro";
 const { data } = Astro.props;
 
 const showcase = await getDataFromRSS(data.showcaseRss);
+
 data.showcase = showcase;
 
 const videoPromises: Promise<any>[] = [];
@@ -24,14 +25,7 @@ data.videos.forEach((video: any) => {
 });
 await Promise.all(videoPromises);
 
-const videos = [
-    ...data.videos,
-    ...data.videos,
-    ...data.videos,
-    ...data.videos,
-    ...data.videos,
-    ...data.videos,
-];
+const videos = [...data.videos];
 ---
 
 <div
@@ -48,8 +42,8 @@ const videos = [
             muted
             loop
             playsinline
-            poster={data.showcase.poster.url}
-            src={data.showcase.video.url}
+            poster={data.showcase.poster?.url}
+            src={data.showcase.video?.url}
         >
         </video>
     </div>
@@ -138,11 +132,15 @@ const videos = [
                     >
                         <div class="hidden md:block">{data.name}</div>
                         <div class="aspect-75/100 w-full max-w-120 md:max-w-150">
-                            <DatoImage
-                                pictureClass="block size-full object-cover"
-                                imgClass="size-full object-cover"
-                                data={data.photo.responsiveImage}
-                            />
+                            {
+                                data.photo?.responsiveImage && (
+                                    <DatoImage
+                                        pictureClass="block size-full object-cover"
+                                        imgClass="size-full object-cover"
+                                        data={data.photo.responsiveImage}
+                                    />
+                                )
+                            }
                         </div>
                     </div>
                 </div>

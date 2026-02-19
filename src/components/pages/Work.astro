@@ -96,8 +96,8 @@ const getNextVideoSlug = (index: number) => {
                                 muted
                                 loop
                                 playsinline
-                                data-src={video.video.preview.video.url}
-                                poster={video.video.preview.poster.url}
+                                data-src={video.video.preview.video?.url}
+                                poster={video.video.preview.poster?.url}
                             />
                             <div class="absolute -inset-1 z-1 bg-black opacity-30" />
                             {video.video.awardIcon && (

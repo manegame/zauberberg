@@ -99,10 +99,12 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
                                     transition:persist={`${newsItem.id}-image`}
                                     data-image-id={newsItem.id}
                                 >
-                                    <DatoImage
-                                        data={newsItem.cover.responsiveImage}
-                                        imgClass="block absolute inset-0 size-full object-cover"
-                                    />
+                                    {newsItem.cover && (
+                                        <DatoImage
+                                            data={newsItem.cover.responsiveImage}
+                                            imgClass="block absolute inset-0 size-full object-cover"
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </DatoLink>

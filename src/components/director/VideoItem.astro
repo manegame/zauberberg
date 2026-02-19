@@ -35,8 +35,8 @@ const { video } = Astro.props;
             muted
             loop
             playsinline
-            poster={video.preview.poster.url}
-            src={video.preview.video.url}
+            poster={video.preview.poster?.url}
+            src={video.preview.video?.url}
         >
         </video>
         <img
