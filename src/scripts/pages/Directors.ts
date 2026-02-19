@@ -318,16 +318,16 @@ export default class DirectorsPage extends Page {
         this.setInitialDirector();
 
         this.scrollTo = gsap.quickTo(this.list, "y", {
-            ease: "power3",
-            duration: 1.2,
+            ease: "power2",
+            duration: 0.6,
             modifiers: {
                 y: gsap.utils.unitize(this.wrap),
             },
         });
 
         this.ghostScrollTo = gsap.quickTo(this.ghostList, "y", {
-            ease: "power3",
-            duration: 1.2,
+            ease: "power2",
+            duration: 0.6,
             modifiers: {
                 y: gsap.utils.unitize(this.wrap),
             },
