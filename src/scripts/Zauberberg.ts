@@ -58,7 +58,9 @@ export default class Zauberberg {
         this.setupResize();
         this.initialized = true;
 
-        this.loader.end();
+        await this.loader.end();
+
+        this.page?.reveal();
     }
 
     setupResize() {

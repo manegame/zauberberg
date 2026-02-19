@@ -32,7 +32,7 @@ export default class Loader {
         this.startAnimation = startTl.play();
     }
     async end() {
-        if (!this.element || !this.letters) return;
+        if (!this.element || !this.letters) return Promise.resolve();
         await this.startAnimation;
 
         const endTl = gsap.timeline({
@@ -61,5 +61,7 @@ export default class Loader {
             );
 
         endTl.play();
+
+        return Promise.resolve();
     }
 }

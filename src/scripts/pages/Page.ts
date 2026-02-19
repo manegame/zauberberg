@@ -36,6 +36,9 @@ export default class Page {
         this.destroyed = true;
     }
 
+    // Trigger after loader animation, on initial page load
+    reveal() {}
+
     beforeTransitionOut(): Promise<any> | gsap.core.Timeline {
         return Promise.resolve();
     }

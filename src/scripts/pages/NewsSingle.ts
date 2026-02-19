@@ -10,6 +10,11 @@ export default class NewsSingle extends Page {
     previousDetailsState!: Flip.FlipState | null;
     abortController!: AbortController;
 
+    destroy() {
+        this.abortController.abort();
+        super.destroy();
+    }
+
     async init() {
         if (!this.container) return;
 

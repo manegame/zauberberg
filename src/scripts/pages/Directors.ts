@@ -12,15 +12,17 @@ export default class DirectorsPage extends Page {
     ITEM_HEIGHT: number;
     MAX_SCROLL_SPEED: number;
     NUMBER_OF_DUPLICATES: number;
+    ITEM_TOP_PADDING: number;
 
     y!: number;
 
     videoEl!: HTMLVideoElement;
     list!: HTMLElement;
-    ghostList!: HTMLElement;
+    listWrapper!: HTMLElement;
     directors!: NodeListOf<HTMLElement>;
     totalItems!: number;
-
+    centerIndex!: number;
+    centerDirector!: HTMLElement;
     currentIndex!: number;
     currentDirector!: HTMLElement;
 
@@ -28,12 +30,12 @@ export default class DirectorsPage extends Page {
     videosToLoad!: { video: string; index: number }[];
 
     scrollTo!: any;
-    ghostScrollTo!: any;
     wrap!: (index: number) => number;
 
     scrollEndTimeout?: number;
     observer!: Observer;
     abortController!: AbortController;
+    preventHover: boolean = false;
 
     constructor(...args: ConstructorParameters<typeof Page>) {
         super(...args);
@@ -42,9 +44,11 @@ export default class DirectorsPage extends Page {
         this.ITEM_HEIGHT = 26;
         this.MAX_SCROLL_SPEED = 20;
         this.NUMBER_OF_DUPLICATES = 2;
+        this.ITEM_TOP_PADDING = 4;
     }
 
     destroy() {
+        this.abortController.abort();
         super.destroy();
         if (this.observer) this.observer.kill();
         if (this.scrollEndTimeout) clearTimeout(this.scrollEndTimeout);
@@ -157,16 +161,23 @@ export default class DirectorsPage extends Page {
         this.y += deltaY * this.DELTA_MULTIPLIER;
 
         this.scrollTo(this.y);
-        this.ghostScrollTo(this.y);
 
         this.scrollEndTimeout = setTimeout(() => {
             this.onScrollEnd();
         }, 100) as any;
+
+        if (this.centerDirector) {
+            this.centerDirector.dataset.center = "false";
+        }
+        if (this.currentDirector) {
+            this.currentDirector.dataset.selected = "false";
+        }
     }
 
     onScrollEnd() {
         this.snapToGrid();
         this.selectCurrentDirectorFromScroll();
+        this.setBackgroundVideo();
     }
 
     setBackgroundVideo() {
@@ -175,6 +186,8 @@ export default class DirectorsPage extends Page {
         const srcToUse =
             this.app.store.homeVideoBlobs.get(videoUrl) || videoUrl;
 
+        if (srcToUse === this.videoEl.src) return;
+
         this.videoEl.src = srcToUse;
         this.videoEl.poster = videoPoster;
         this.videoEl.load();
@@ -182,28 +195,39 @@ export default class DirectorsPage extends Page {
 
     selectCurrentDirectorFromScroll() {
         const wrappedY = this.wrap(this.y);
-        const centerIndex =
-            Math.round(-wrappedY / this.ITEM_HEIGHT) % this.totalItems;
+        const centerIndex = Math.round(-wrappedY / this.ITEM_HEIGHT);
 
-        if (centerIndex === this.currentIndex) return;
+        this.setCenterDirectorByIndex(centerIndex);
+    }
 
-        this.setCurrentDirectorByIndex(centerIndex);
-        this.setBackgroundVideo();
+    setCenterDirectorByIndex(index: number) {
+        if (this.centerDirector) {
+            this.centerDirector.dataset.center = "false";
+        }
+        this.centerIndex = index;
+        this.centerDirector = this.directors[index];
+        this.setCurrentDirectorByIndex(this.centerIndex);
+        this.centerDirector.dataset.center = "true";
     }
 
     setCurrentDirectorByIndex(index: number) {
+        if (this.currentDirector) {
+            this.currentDirector.dataset.selected = "false";
+        }
+
         this.currentIndex = index;
         this.currentDirector = this.directors[index];
+        this.currentDirector.dataset.selected = "true";
     }
 
     snapToGrid() {
         const roundedY =
-            Math.round(this.y / this.ITEM_HEIGHT) * this.ITEM_HEIGHT;
+            Math.round(this.y / this.ITEM_HEIGHT) * this.ITEM_HEIGHT -
+            this.ITEM_TOP_PADDING;
 
         if (Math.abs(this.y - roundedY) > 0.1) {
             this.y = roundedY;
             this.scrollTo(this.y);
-            this.ghostScrollTo(this.y);
         }
     }
 
@@ -222,24 +246,29 @@ export default class DirectorsPage extends Page {
             index = randomIndex;
         }
 
-        const initialOffset = (index + this.totalItems) * -this.ITEM_HEIGHT;
+        const initialOffset =
+            (index + this.totalItems) * -this.ITEM_HEIGHT -
+            this.ITEM_TOP_PADDING;
 
         this.y = this.wrap(initialOffset);
-        gsap.set([this.list, this.ghostList], { y: this.y });
+        gsap.set(this.list, { y: this.y });
 
-        this.setCurrentDirectorByIndex(index);
+        this.selectCurrentDirectorFromScroll();
     }
 
     setupInfiniteScroll() {
         this.list = this.container.querySelector(
             "#directors-list",
         ) as HTMLElement;
-        this.ghostList = this.container.querySelector(
-            "#directors-ghost-list",
+
+        this.listWrapper = this.container.querySelector(
+            "#directors-wrapper",
         ) as HTMLElement;
 
         this.directors = this.list.querySelectorAll(".director-item");
         this.totalItems = this.directors.length / this.NUMBER_OF_DUPLICATES;
+
+        this.preventHover = false;
 
         const allVideos = Array.from(this.directors).map((dir) => ({
             video: dir.dataset.video!,
@@ -275,14 +304,6 @@ export default class DirectorsPage extends Page {
             },
         });
 
-        this.ghostScrollTo = gsap.quickTo(this.ghostList, "y", {
-            ease: "power2",
-            duration: 0.6,
-            modifiers: {
-                y: gsap.utils.unitize(this.wrap),
-            },
-        });
-
         this.observer = Observer.create({
             target: this.container,
             type: "wheel,touch,pointer",
@@ -300,13 +321,54 @@ export default class DirectorsPage extends Page {
                 },
                 { signal: this.abortController.signal },
             );
+            director.addEventListener(
+                "mouseenter",
+                () => {
+                    this.onDirectorEnter(director);
+                },
+                { signal: this.abortController.signal },
+            );
+
+            director.addEventListener(
+                "mouseleave",
+                () => {
+                    this.onDirectorLeave(director);
+                },
+                { signal: this.abortController.signal },
+            );
         });
     }
 
     onDirectorClick(director: HTMLElement) {
+        this.preventHover = true;
         const index = parseInt(director.dataset.index!);
         this.setCurrentDirectorByIndex(index);
         this.setBackgroundVideo();
+    }
+
+    onDirectorEnter(director: HTMLElement) {
+        if (this.preventHover) return;
+        const index = parseInt(director.dataset.index!);
+        if (index === this.currentIndex) return;
+        this.setCurrentDirectorByIndex(index);
+        this.setBackgroundVideo();
+    }
+
+    onDirectorLeave(director: HTMLElement) {
+        if (this.preventHover) return;
+        const index = parseInt(director.dataset.index!);
+        if (index === this.centerIndex) return;
+        this.setCurrentDirectorByIndex(this.centerIndex);
+        this.setBackgroundVideo();
+    }
+
+    reveal() {
+        gsap.from(this.listWrapper, {
+            y: 100,
+            duration: 1.2,
+            delay: 0.5,
+            ease: "power2.out",
+        });
     }
 
     transitionOut({
@@ -319,13 +381,13 @@ export default class DirectorsPage extends Page {
         this.swapTl = gsap.timeline({ paused: true });
 
         if (to === "work") {
-            this.swapTl.to([this.list, this.ghostList], {
+            this.swapTl.to(this.list, {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.out",
             });
         } else if (to === "director") {
-            this.swapTl.to([this.list, this.ghostList], {
+            this.swapTl.to(this.list, {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.out",
@@ -345,10 +407,8 @@ export default class DirectorsPage extends Page {
         this.swapTl = gsap.timeline({ paused: true });
 
         if (this.previousPage?.template === "director") {
-            const lists = this.container.querySelectorAll(
-                "#directors-list, #directors-ghost-list",
-            );
-            this.swapTl.to(lists, {
+            const list = this.container.querySelectorAll("#directors-list");
+            this.swapTl.to(list, {
                 opacity: 1,
                 duration: 0.4,
                 ease: "power2.out",
@@ -360,6 +420,15 @@ export default class DirectorsPage extends Page {
                 ease: "power2.out",
             });
         }
+        this.swapTl.to(
+            this.listWrapper,
+            {
+                y: 0,
+                duration: 1.2,
+                ease: "power2.out",
+            },
+            "<",
+        );
 
         this.updateHeaderItems();
 
@@ -367,13 +436,15 @@ export default class DirectorsPage extends Page {
     }
 
     prepareTransitionIn() {
+        const listWrapper = this.container.querySelector(
+            "#directors-wrapper",
+        ) as HTMLElement;
         if (this.previousPage?.template === "director") {
-            const lists = this.container.querySelectorAll(
-                "#directors-list, #directors-ghost-list",
-            );
-            gsap.set(lists, { opacity: 0 });
+            const list = this.container.querySelectorAll("#directors-list");
+            gsap.set(list, { opacity: 0 });
         } else {
             gsap.set(this.container, { opacity: 0 });
         }
+        gsap.set(listWrapper, { y: 100 });
     }
 }

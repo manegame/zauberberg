@@ -9,6 +9,8 @@ import Loader from "../components/global/Loader.astro";
 import Grid from "../components/global/Grid.astro";
 import Seo from "../components/global/Seo.astro";
 
+import isPreview from "../utils/isPreview";
+
 const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 ---
 
@@ -19,11 +21,7 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-        />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link
             rel="preload"
             as="font"
@@ -35,14 +33,10 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
         <ClientRouter />
     </head>
     <body>
-        {
-            layout?.navigation && (
-                <Navigation template={template} data={layout.navigation} />
-            )
-        }
+        {layout?.navigation && <Navigation template={template} data={layout.navigation} />}
         <slot />
         <Loader />
-        <Grid />
+        {isPreview() && <Grid />}
         <div
             id="data"
             class="pointer-events-none hidden"
@@ -52,12 +46,12 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 
 <script>
     import Zauberberg from "../scripts/Zauberberg";
-    import markerSDK from '@marker.io/browser'
+    import markerSDK from "@marker.io/browser";
 
     const app = new Zauberberg();
     app.init();
 
     const widget = await markerSDK.loadWidget({
-      project: '698dd13792e0c8443549e9dd',
-    })
+        project: "698dd13792e0c8443549e9dd",
+    });
 </script>

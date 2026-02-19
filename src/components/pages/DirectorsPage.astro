@@ -40,34 +40,27 @@ const directorsWithDuplicate = [...directors, ...directors];
         </video>
     </div>
     <div class="absolute inset-0 z-1 max-lg:mask-(--masking-edge-gradient)">
-        <div class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
+        <div id="directors-wrapper" class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
             <div id="directors-list" class="text-nav flex w-full flex-col items-center">
                 {
                     directorsWithDuplicate.map((director, index) => (
                         <div
-                            data-video={director.showcase.video.url}
-                            data-poster={director.showcase.poster.url}
+                            data-video={director.showcase.video?.url}
+                            data-poster={director.showcase.poster?.url}
                             data-color={director.color.hex}
-                            data-index={index % directors.length}
+                            data-index={index}
                             data-slug={director.slug}
                             data-director={director.name}
-                            class="director-item mb-8 h-18"
+                            data-selected="false"
+                            data-center="false"
+                            class="director-item h-26 py-4"
                         >
-                            <DatoLink class="relative h-18" link={{ internalLink: director }}>
-                                <span class="opacity-20">{director.name}</span>
+                            <DatoLink class="relative h-26 py-4" link={{ internalLink: director }}>
+                                <span class="opacity-20 transition-opacity duration-200 in-data-[center=true]:opacity-100 in-data-[selected=true]:opacity-100">
+                                    {director.name}
+                                </span>
                             </DatoLink>
                         </div>
-                    ))
-                }
-            </div>
-        </div>
-        <div
-            class="pointer-events-none absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden"
-        >
-            <div id="directors-ghost-list" class="text-nav flex w-full flex-col items-center">
-                {
-                    directorsWithDuplicate.map((director) => (
-                        <span class="mb-8 h-18">{director.name}</span>
                     ))
                 }
             </div>
