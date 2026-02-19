@@ -15,11 +15,7 @@ export default class DirectorsPage extends Page {
 
     y!: number;
 
-    videoEl1!: HTMLVideoElement;
-    videoEl2!: HTMLVideoElement;
-    activeVideoEl!: HTMLVideoElement;
-    inactiveVideoEl!: HTMLVideoElement;
-    crossfadeTimeline!: gsap.core.Timeline;
+    videoEl!: HTMLVideoElement;
     list!: HTMLElement;
     ghostList!: HTMLElement;
     directors!: NodeListOf<HTMLElement>;
@@ -98,27 +94,20 @@ export default class DirectorsPage extends Page {
     }
 
     async loadAndSetFirstVideo() {
-        this.videoEl1 = this.container.querySelector(
-            "#director-video-1",
+        this.videoEl = this.container.querySelector(
+            "#director-video",
         ) as HTMLVideoElement;
 
-        this.videoEl2 = this.container.querySelector(
-            "#director-video-2",
-        ) as HTMLVideoElement;
-
-        this.activeVideoEl = this.videoEl1;
-        this.inactiveVideoEl = this.videoEl2;
-
-        this.activeVideoEl.poster = this.currentDirector.dataset.poster!;
-        this.activeVideoEl.load();
+        this.videoEl.poster = this.currentDirector.dataset.poster!;
+        this.videoEl.load();
         const firstVideoUrl = this.currentDirector.dataset.video!;
         await this.fetchVideoAsBlob(firstVideoUrl);
 
-        this.activeVideoEl.src =
+        this.videoEl.src =
             this.app.store.homeVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
 
         return new Promise<void>((resolve) => {
-            this.activeVideoEl.addEventListener(
+            this.videoEl.addEventListener(
                 "loadeddata",
                 () => {
                     resolve();
@@ -186,48 +175,9 @@ export default class DirectorsPage extends Page {
         const srcToUse =
             this.app.store.homeVideoBlobs.get(videoUrl) || videoUrl;
 
-        // decomment later, for now we have the same video for all directors so we want to see the transi
-        // if (this.inactiveVideoEl.src === srcToUse) return;
-
-        this.inactiveVideoEl.src = srcToUse;
-        this.inactiveVideoEl.poster = videoPoster;
-        this.inactiveVideoEl.load();
-
-        this.startCrossfadeWhenReady();
-    }
-
-    startCrossfadeWhenReady() {
-        this.crossfadeTimeline?.kill();
-        this.crossfadeTimeline = gsap
-            .timeline({ paused: true })
-            .set(this.inactiveVideoEl, { zIndex: 2 })
-            .set(this.activeVideoEl, { zIndex: 1 })
-            .to(this.inactiveVideoEl, {
-                opacity: 1,
-                duration: 0.5,
-                ease: "power2.out",
-            })
-            .call(() => {
-                // Swap active/inactive references
-                [this.activeVideoEl, this.inactiveVideoEl] = [
-                    this.inactiveVideoEl,
-                    this.activeVideoEl,
-                ];
-
-                gsap.set(this.inactiveVideoEl, { opacity: 0 });
-            });
-
-        if (this.inactiveVideoEl.readyState >= 3) {
-            this.crossfadeTimeline.play();
-        } else {
-            this.inactiveVideoEl.addEventListener(
-                "loadeddata",
-                () => {
-                    this.crossfadeTimeline.play();
-                },
-                { once: true },
-            );
-        }
+        this.videoEl.src = srcToUse;
+        this.videoEl.poster = videoPoster;
+        this.videoEl.load();
     }
 
     selectCurrentDirectorFromScroll() {
