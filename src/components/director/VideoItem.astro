@@ -41,7 +41,7 @@ const { video } = Astro.props;
         </video>
         <img
             class="video-poster absolute inset-0 size-full object-cover transition-opacity duration-300 ease-in-out"
-            src={video.preview.poster.url}
+            src={video.preview.poster?.url}
             alt={video.name}
         />
         {
