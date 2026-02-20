@@ -41,10 +41,10 @@ export default class DirectorsPage extends Page {
         super(...args);
 
         this.DELTA_MULTIPLIER = 1;
-        this.ITEM_HEIGHT = 26;
+        this.ITEM_HEIGHT = 20;
         this.MAX_SCROLL_SPEED = 20;
         this.NUMBER_OF_DUPLICATES = 2;
-        this.ITEM_TOP_PADDING = 4;
+        this.ITEM_TOP_PADDING = 0;
     }
 
     destroy() {

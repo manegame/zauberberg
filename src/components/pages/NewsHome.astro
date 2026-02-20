@@ -29,14 +29,14 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
             <div class="relative size-full">
                 <div
                     id="filters-panel-list"
-                    class="flex flex-col items-start gap-9 max-lg:transform-none! lg:gap-8"
+                    class="flex flex-col items-start gap-9 max-lg:transform-none! lg:gap-0"
                 >
                     {
                         categories.map((category, index) => (
                             <button
                                 type="button"
                                 data-active={index === 0}
-                                class="text-left opacity-20 max-lg:data-[active=true]:opacity-100 lg:pointer-events-auto"
+                                class="flex h-20 items-center text-left opacity-20 max-lg:data-[active=true]:opacity-100 lg:pointer-events-auto"
                                 data-category={category}
                             >
                                 {category}
@@ -47,10 +47,10 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
                 <div
                     class="pointer-events-none absolute top-0 right-0 left-0 z-1 hidden h-18 overflow-hidden lg:block"
                 >
-                    <div id="filters-ghost-list" class="flex flex-col items-start gap-8">
+                    <div id="filters-ghost-list" class="flex flex-col items-start">
                         {
                             categories.map((category, index) => (
-                                <div class="text-left">{category}</div>
+                                <div class="flex h-20 items-center text-left">{category}</div>
                             ))
                         }
                     </div>

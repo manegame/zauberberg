@@ -29,10 +29,10 @@ const hasSubnavigation =
                             class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth max-lg:transform-[translate(0)]! lg:flex-col lg:gap-28 lg:px-0"
                         >
                             {data.subnavigation.blocks.map((block: any) => (
-                                <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">
+                                <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-0">
                                     {Array.isArray(block.links) &&
                                         block.links.map((link: any) => (
-                                            <div class="pointer-events-auto shrink-0">
+                                            <div class="pointer-events-auto shrink-0 lg:flex lg:h-20 lg:items-center">
                                                 <DatoLink
                                                     class="subnavigation-item opacity-30 [&.link-current]:max-lg:opacity-100"
                                                     link={link}

@@ -53,9 +53,9 @@ const directorsWithDuplicate = [...directors, ...directors];
                             data-director={director.name}
                             data-selected="false"
                             data-center="false"
-                            class="director-item h-26 py-4"
+                            class="director-item h-20"
                         >
-                            <DatoLink class="relative h-26 py-4" link={{ internalLink: director }}>
+                            <DatoLink class="relative" link={{ internalLink: director }}>
                                 <span class="opacity-20 transition-opacity duration-200 in-data-[center=true]:opacity-100 in-data-[selected=true]:opacity-100">
                                     {director.name}
                                 </span>
