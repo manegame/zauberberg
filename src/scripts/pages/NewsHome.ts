@@ -11,7 +11,6 @@ export default class NewsHome extends Page {
     newsItems!: NodeListOf<HTMLElement>;
     filtersPanel!: HTMLElement;
     filtersPanelList!: HTMLElement;
-    filtersGhostList!: HTMLElement;
     filtersToggle!: HTMLElement;
     filtersClose!: HTMLElement;
     currentCategory!: string;
@@ -43,7 +42,7 @@ export default class NewsHome extends Page {
         if (activeButton) {
             const offset = activeButton.offsetTop;
 
-            gsap.to([this.filtersPanelList, this.filtersGhostList], {
+            gsap.to(this.filtersPanelList, {
                 y: -offset,
                 duration: 0.8,
                 ease: "power3.out",
@@ -92,9 +91,6 @@ export default class NewsHome extends Page {
         this.filtersPanel = this.container.querySelector("#filters-panel")!;
         this.filtersPanelList = this.container.querySelector(
             "#filters-panel-list",
-        )!;
-        this.filtersGhostList = this.container.querySelector(
-            "#filters-ghost-list",
         )!;
         this.filtersToggle = this.container.querySelector("#filters-toggle")!;
         this.filtersClose = this.container.querySelector("#filters-close")!;

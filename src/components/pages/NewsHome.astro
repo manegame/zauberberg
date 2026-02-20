@@ -36,24 +36,13 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
                             <button
                                 type="button"
                                 data-active={index === 0}
-                                class="flex h-20 items-center text-left opacity-20 max-lg:data-[active=true]:opacity-100 lg:pointer-events-auto"
+                                class="flex h-20 items-center text-left opacity-20 transition-opacity duration-150 hover:opacity-100 data-[active=true]:opacity-100 lg:pointer-events-auto"
                                 data-category={category}
                             >
                                 {category}
                             </button>
                         ))
                     }
-                </div>
-                <div
-                    class="pointer-events-none absolute top-0 right-0 left-0 z-1 hidden h-18 overflow-hidden lg:block"
-                >
-                    <div id="filters-ghost-list" class="flex flex-col items-start">
-                        {
-                            categories.map((category, index) => (
-                                <div class="flex h-20 items-center text-left">{category}</div>
-                            ))
-                        }
-                    </div>
                 </div>
             </div>
         </nav>

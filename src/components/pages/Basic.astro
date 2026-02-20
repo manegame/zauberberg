@@ -34,7 +34,7 @@ const hasSubnavigation =
                                         block.links.map((link: any) => (
                                             <div class="pointer-events-auto shrink-0 lg:flex lg:h-20 lg:items-center">
                                                 <DatoLink
-                                                    class="subnavigation-item opacity-30 [&.link-current]:max-lg:opacity-100"
+                                                    class="subnavigation-item opacity-30 transition-opacity duration-150 hover:opacity-100 [&.link-exact]:opacity-100"
                                                     link={link}
                                                 />
                                             </div>
@@ -42,23 +42,6 @@ const hasSubnavigation =
                                 </div>
                             ))}
                         </nav>
-                        <div class="px-gutter text-nav pointer-events-none absolute top-0 left-0 hidden h-18 overflow-hidden lg:block lg:px-0">
-                            <div
-                                id="ghost-subnavigation"
-                                class="flex flex-col items-baseline gap-28 max-lg:transform-[translate(0)]!"
-                            >
-                                {data.subnavigation.blocks.map((block: any) => (
-                                    <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-8">
-                                        {Array.isArray(block.links) &&
-                                            block.links.map((link: any) => (
-                                                <div class="shrink-0">
-                                                    <div>{link.label}</div>
-                                                </div>
-                                            ))}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
                     </div>
                 )
             }

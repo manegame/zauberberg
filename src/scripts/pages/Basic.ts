@@ -4,7 +4,6 @@ import gsap from "gsap";
 export default class Basic extends Page {
     abortController!: AbortController;
     subnavigation!: HTMLElement | null;
-    ghostSubnavigation!: HTMLElement | null;
     content!: HTMLElement;
     prevHasSameSubnav: boolean = false;
     isMobile!: boolean;
@@ -18,9 +17,6 @@ export default class Basic extends Page {
         if (!this.container) return;
 
         this.subnavigation = this.container.querySelector("#subnavigation");
-        this.ghostSubnavigation = this.container.querySelector(
-            "#ghost-subnavigation",
-        );
         this.content = this.container.querySelector("#basic-content")!;
         this.abortController = new AbortController();
 
@@ -32,15 +28,15 @@ export default class Basic extends Page {
     }
 
     setupNavActive() {
-        if (!this.subnavigation || !this.ghostSubnavigation) return;
+        if (!this.subnavigation) return;
         const currentLink = this.subnavigation.querySelector(
-            ".link-current",
+            ".link-exact",
         ) as HTMLElement;
 
         if (currentLink) {
             const offset = currentLink.offsetTop;
 
-            gsap.set([this.subnavigation, this.ghostSubnavigation], {
+            gsap.set(this.subnavigation, {
                 y: -offset,
             });
         }
@@ -64,7 +60,6 @@ export default class Basic extends Page {
         }
 
         this.updateHeaderItems();
-        this.updateSubnavActiveItem();
 
         return this.swapTl.play();
     }
@@ -103,7 +98,7 @@ export default class Basic extends Page {
             to === "basic" && sourceElement.closest("#subnavigation");
 
         if (nextHasSameSubnav) {
-            this.swapTl.to([this.subnavigation, this.ghostSubnavigation], {
+            this.swapTl.to(this.subnavigation, {
                 y: -sourceElement.offsetTop,
                 duration: 0.6,
                 ease: "power3.out",
@@ -118,6 +113,7 @@ export default class Basic extends Page {
                 },
                 "<",
             );
+            this.updateSubnavActiveItem(sourceElement);
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
@@ -129,7 +125,7 @@ export default class Basic extends Page {
         return this.swapTl.play();
     }
 
-    updateSubnavActiveItem() {
+    updateSubnavActiveItem(sourceElement?: HTMLElement) {
         if (!this.subnavigation) return;
         const items = this.subnavigation.querySelectorAll(
             ".subnavigation-item",
@@ -137,12 +133,12 @@ export default class Basic extends Page {
 
         items.forEach((item) => {
             const itemPath = item.getAttribute("href");
-            const currentPath = window.location.pathname;
+            const toPath = sourceElement?.getAttribute("href");
 
-            if (itemPath === currentPath) {
-                item.classList.add("link-current");
+            if (itemPath === toPath) {
+                item.classList.add("link-exact");
             } else {
-                item.classList.remove("link-current");
+                item.classList.remove("link-exact");
             }
         });
     }

@@ -16,7 +16,7 @@ if (externalLink) {
 let pathName = Astro.url.pathname;
 if (pathName !== "/" && pathName.endsWith("/")) pathName = pathName.slice(0, -1);
 
-const isCurrent = internalLink && linkUrl === pathName;
+const isExact = internalLink && linkUrl === pathName;
 
 let subnavItemIsCurrent = false;
 let internalSubnavSlugs;
@@ -42,7 +42,10 @@ const target = link.externalLink ? "_blank" : "_self";
     style={style}
     href={linkUrl}
     draggable="false"
-    class:list={[className, { "link-current": isCurrent || subnavItemIsCurrent }]}
+    class:list={[
+        className,
+        { "link-current": isExact || subnavItemIsCurrent, "link-exact": isExact },
+    ]}
     target={target}
     data-template={internalLink?._modelApiKey}
     data-subslugs={internalSubnavSlugs ? internalSubnavSlugs.join(",") : undefined}
