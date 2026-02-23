@@ -79,6 +79,19 @@ export default class Work extends Page {
         });
     }
 
+    saveWorkPlaylist() {
+        const videos = this.container?.querySelectorAll(".video-item");
+        const playlist = Array.from(videos || []).map((video) => {
+            const href = video.getAttribute("href");
+            return href || "";
+        });
+
+        this.app.store.workPlaylist = {
+            urls: playlist,
+            source: window.location.pathname,
+        };
+    }
+
     prepareTransitionIn(sourceElement?: HTMLElement): void {
         if (
             this.previousPage?.template !== "directors_page" ||
@@ -88,6 +101,22 @@ export default class Work extends Page {
         } else {
             this.shouldLoadVideosOnInit = false;
         }
+    }
+
+    transitionOut({ to }: { to: string }) {
+        if (to === "video") {
+            this.saveWorkPlaylist();
+        }
+
+        this.swapTl = gsap.timeline({ paused: true });
+
+        this.swapTl.to(this.container, {
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.out",
+        });
+
+        return this.swapTl.play();
     }
 
     transitionIn() {
@@ -104,12 +133,13 @@ export default class Work extends Page {
                 this.loadVideos();
             });
 
-            const grid = this.container?.querySelector("#work-wrapper");
+            const wrapper = this.container?.querySelector("#work-wrapper");
+            const grid = this.container?.querySelector("#work-grid");
             const items = this.container?.querySelectorAll(".video-item");
 
             const scale = window.innerHeight / this.centerVideo!.offsetHeight;
 
-            gsap.set(grid, {
+            gsap.set(wrapper, {
                 scale: scale,
             });
 
@@ -118,7 +148,7 @@ export default class Work extends Page {
             });
 
             this.swapTl
-                .to(grid, {
+                .to(wrapper, {
                     scale: 1,
                     duration: 1.2,
                     ease: "power3.inOut",

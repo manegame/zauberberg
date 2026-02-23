@@ -40,7 +40,7 @@ export default class Video extends Page {
 
         if (this.video?.readyState >= 2) this.setupVideoControls();
 
-        if (this.previousPage?.template === "work") {
+        if (this.app.store.workPlaylist) {
             this.setClosePrevNextVideosLinks();
         }
 
@@ -232,21 +232,33 @@ export default class Video extends Page {
             );
     }
 
-    createClosePrevNextVideosLinks(sourceElement: HTMLElement) {
-        const dataPrev = sourceElement.getAttribute("data-prev");
-        const dataNext = sourceElement.getAttribute("data-next");
-
-        this.prevVideoLink = dataPrev || null;
-        this.nextVideoLink = dataNext || null;
-    }
-
     setClosePrevNextVideosLinks() {
+        this.prevVideoLink = null;
+        this.nextVideoLink = null;
+
         const nextLinkEl = this.container.querySelector("#next-video-link");
         const prevLinkEl = this.container.querySelector("#prev-video-link");
         const closeLinkEl = this.container.querySelector("#close-video-link");
 
+        const playlist = this.app.store.workPlaylist?.urls || [];
+
+        const currentIndex = playlist.findIndex(
+            (link: string) => link === window.location.pathname,
+        );
+
+        if (currentIndex !== -1) {
+            const prevIndex =
+                (currentIndex - 1 + playlist.length) % playlist.length;
+            const nextIndex = (currentIndex + 1) % playlist.length;
+            this.prevVideoLink = playlist[prevIndex];
+            this.nextVideoLink = playlist[nextIndex];
+        }
+
         if (closeLinkEl) {
-            closeLinkEl.setAttribute("href", this.previousUrl || "/");
+            closeLinkEl.setAttribute(
+                "href",
+                this.app.store.workPlaylist?.source || "/",
+            );
         }
 
         if (nextLinkEl && this.nextVideoLink) {
@@ -259,18 +271,19 @@ export default class Video extends Page {
     }
 
     transitionOut({ to }: { to: string }) {
+        clearTimeout(this.overlayTimeout);
         this.swapTl = gsap.timeline({ paused: true });
 
-        if (to === "director") {
-            const videosInfos = this.container.querySelectorAll(".video-info");
-            const videoPlayer =
-                this.container.querySelectorAll("#video-player");
-            const controlsItems = this.container.querySelectorAll(
-                "#video-controls .controls-item",
-            );
+        const videosInfos = this.container.querySelectorAll(".video-info");
+        const videoPlayer = this.container.querySelectorAll("#video-player");
+        const controlsItems = this.container.querySelectorAll(
+            "#video-controls .controls-item",
+        );
+        const video = this.container.querySelector("#video-video");
 
+        if (to === "director") {
             this.swapTl
-                .to([videosInfos], {
+                .to(videosInfos, {
                     yPercent: 100,
                     stagger: 0.05,
                     duration: 0.4,
@@ -294,12 +307,42 @@ export default class Video extends Page {
                     },
                     "<",
                 );
+        } else if (to === "video") {
+            this.swapTl
+                .to(videosInfos, {
+                    yPercent: 100,
+                    stagger: 0.05,
+                    duration: 0.4,
+                    ease: "power2.inOut",
+                })
+                .to(
+                    videoPlayer,
+                    {
+                        opacity: 0,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                )
+                .to(
+                    video,
+                    {
+                        opacity: 0,
+                        duration: 0.4,
+                        ease: "power2.out",
+                    },
+                    "<",
+                );
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.out",
             });
+        }
+
+        if (to !== "video" && this.app.store.workPlaylist) {
+            this.app.store.workPlaylist = null;
         }
 
         return this.swapTl.play();
@@ -335,15 +378,7 @@ export default class Video extends Page {
                 },
                 "<",
             )
-            .to(
-                controlsItems,
-                {
-                    yPercent: 0,
-                    duration: 0.4,
-                    ease: "power3.inOut",
-                },
-                "<+=0.2",
-            )
+
             .to(
                 videoPlayer,
                 {
@@ -353,6 +388,18 @@ export default class Video extends Page {
                 },
                 "<",
             );
+
+        if (this.previousPage?.template !== "video") {
+            this.swapTl.to(
+                controlsItems,
+                {
+                    yPercent: 0,
+                    duration: 0.4,
+                    ease: "power3.inOut",
+                },
+                "<+=0.2",
+            );
+        }
 
         this.updateHeaderItems();
 
@@ -369,15 +416,12 @@ export default class Video extends Page {
 
         if (this.previousPage?.template !== "director") {
             gsap.set(video, { opacity: 0 });
-        } else {
+        }
+        if (this.previousPage?.template !== "video") {
+            gsap.set(controlsItems, { yPercent: 100 });
         }
 
         gsap.set(videoPlayer, { opacity: 0 });
-        gsap.set(controlsItems, { yPercent: 100 });
         gsap.set(videosInfos, { yPercent: 100 });
-
-        if (this.previousPage?.template === "work") {
-            this.createClosePrevNextVideosLinks(sourceElement);
-        }
     }
 }
