@@ -97,6 +97,11 @@ export default class Work extends Page {
             this.previousPage?.template !== "directors_page" ||
             window.innerWidth < 1024
         ) {
+            // remove posters
+            const videos = this.container?.querySelectorAll(".work-video");
+            videos?.forEach((video) => {
+                video.removeAttribute("poster");
+            });
             gsap.set(this.container, { opacity: 0 });
         } else {
             this.shouldLoadVideosOnInit = false;
