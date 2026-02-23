@@ -85,6 +85,7 @@ const getNextVideoSlug = (index: number) => {
                                 "center-video": index === centerVideoIndex,
                             },
                         ]}
+                        data-row-index={rows.findIndex((row) => row.includes(index))}
                         data-prev={getPrevVideoSlug(index)}
                         data-next={getNextVideoSlug(index)}
                         link={{ internalLink: video.video }}

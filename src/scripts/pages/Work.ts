@@ -63,10 +63,10 @@ export default class Work extends Page {
     getInitialScroll() {
         if (!this.centerVideo) return 0;
 
+        const videoRect = this.centerVideo.getBoundingClientRect();
+
         const initialScroll =
-            this.centerVideo.offsetTop +
-            this.centerVideo.offsetHeight / 2 -
-            window.innerHeight / 2;
+            videoRect.top + videoRect.height / 2 - window.innerHeight / 2;
 
         return initialScroll;
     }
@@ -90,6 +90,22 @@ export default class Work extends Page {
             urls: playlist,
             source: window.location.pathname,
         };
+    }
+
+    setRetractedState(items?: NodeListOf<HTMLElement>) {
+        if (!items) return;
+        const centerRowIndex = this.centerVideo?.getAttribute("data-row-index");
+        items.forEach((item, index) => {
+            const rowIndex = item.getAttribute("data-row-index");
+            if (!rowIndex || !centerRowIndex) return;
+
+            const relativeRowIndex =
+                parseInt(rowIndex) - parseInt(centerRowIndex);
+
+            gsap.set(item, {
+                y: -relativeRowIndex * 195,
+            });
+        });
     }
 
     prepareTransitionIn(sourceElement?: HTMLElement): void {
@@ -139,9 +155,9 @@ export default class Work extends Page {
             });
 
             const wrapper = this.container?.querySelector("#work-wrapper");
-            const grid = this.container?.querySelector("#work-grid");
-            const items = this.container?.querySelectorAll(".video-item");
-
+            const items = this.container?.querySelectorAll(
+                ".video-item",
+            ) as NodeListOf<HTMLElement>;
             const scale = window.innerHeight / this.centerVideo!.offsetHeight;
 
             gsap.set(wrapper, {
@@ -152,12 +168,23 @@ export default class Work extends Page {
                 pointerEvents: "none",
             });
 
+            this.setRetractedState(items);
+
             this.swapTl
                 .to(wrapper, {
                     scale: 1,
-                    duration: 1.2,
-                    ease: "power3.inOut",
+                    duration: 1,
+                    ease: "power3.out",
                 })
+                .to(
+                    items,
+                    {
+                        y: 0,
+                        duration: 1,
+                        ease: "power2.inOut",
+                    },
+                    "<",
+                )
                 .set(items, { pointerEvents: "auto" });
         } else {
             this.swapTl.to(this.container, {
