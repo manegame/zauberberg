@@ -1,5 +1,9 @@
 import Page from "./Page";
 import gsap from "gsap";
+// @ts-ignore
+import { Observer } from "gsap/Observer";
+
+gsap.registerPlugin(Observer);
 
 import { navigate } from "astro:transitions/client";
 
@@ -7,6 +11,11 @@ export default class Director extends Page {
     banner!: HTMLElement;
     overlay!: HTMLElement;
     wrapper!: HTMLElement;
+    slider!: HTMLElement;
+    sliderParent!: HTMLElement;
+    sliderXTo!: any;
+    sliderClamp!: (value: number) => number;
+    sliderX!: number;
     abortController!: AbortController;
 
     destroy() {
@@ -26,9 +35,51 @@ export default class Director extends Page {
         if (this.banner) {
             this.setupMobileTabs();
             this.setupClose();
+            this.setupSlider();
         }
 
         await super.init();
+    }
+
+    computeSliderClamp() {
+        if (!this.slider || !this.sliderParent) return;
+        const distanceMax =
+            Math.max(this.slider.offsetWidth, this.sliderParent.offsetWidth) -
+            this.sliderParent.offsetWidth;
+        this.sliderClamp = gsap.utils.clamp(-distanceMax, 0);
+    }
+
+    setupSlider() {
+        this.slider = this.banner.querySelector(
+            "#director-slider",
+        )! as HTMLElement;
+        this.sliderParent = this.banner.querySelector(
+            "#director-slider-parent",
+        )! as HTMLElement;
+
+        this.computeSliderClamp();
+
+        this.sliderXTo = gsap.quickTo(this.slider, "x", {
+            duration: 0.2,
+            ease: "power2.out",
+        });
+        this.sliderX = 0;
+
+        Observer.create({
+            target: this.sliderParent,
+            type: "wheel,touch,pointer",
+            wheelSpeed: -1,
+            onDragStart: () => {
+                this.slider.setAttribute("data-dragging", "true");
+            },
+            onDragEnd: () => {
+                this.slider.setAttribute("data-dragging", "false");
+            },
+            onChangeX: (self) => {
+                this.sliderX = this.sliderClamp(this.sliderX + self.deltaX);
+                this.sliderXTo(this.sliderX);
+            },
+        });
     }
 
     setupClose() {
@@ -84,6 +135,12 @@ export default class Director extends Page {
             },
             { signal: this.abortController.signal },
         );
+    }
+
+    resize() {
+        this.computeSliderClamp();
+        this.sliderX = this.sliderClamp(this.sliderX);
+        this.sliderXTo(this.sliderX);
     }
 
     transitionIn() {

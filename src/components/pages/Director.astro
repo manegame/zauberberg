@@ -53,7 +53,7 @@ const videos = [...data.videos];
     <div
         id="director-banner"
         data-lenis-prevent
-        class="relative z-10 max-h-full w-full overflow-y-auto bg-(--director-color) text-black"
+        class="relative z-10 max-h-full w-full overflow-hidden bg-(--director-color) text-black"
         data-selected="work"
     >
         <button id="director-close-btn" class="right-gutter absolute top-30">
@@ -147,9 +147,16 @@ const videos = [...data.videos];
                     </div>
                 </div>
                 <div
-                    class="px-gutter group scrollbar-hide mb-5 hidden w-full shrink-0 gap-5 overflow-x-auto in-data-[selected='work']:flex md:mb-0 md:flex md:gap-0 md:px-0"
+                    class="group scrollbar-hide mb-5 hidden w-full shrink-0 overflow-hidden in-data-[selected='work']:flex md:mb-0 md:flex"
+                    id="director-slider-parent"
                 >
-                    {videos.map((video: any) => <VideoItem video={video} />)}
+                    <div
+                        class="px-gutter flex gap-5 md:gap-0 md:px-0"
+                        id="director-slider"
+                        data-dragging="false"
+                    >
+                        {videos.map((video: any) => <VideoItem video={video} />)}
+                    </div>
                 </div>
             </div>
         </div>
