@@ -116,7 +116,7 @@ const videos = [...data.videos];
                         }
                     </div>
                     <div
-                        class="scrollbar-hide h-full max-h-400 w-8/12 overflow-y-auto pb-20 md:w-5/12 md:pb-30 lg:mr-[12.5%] lg:ml-auto 2xl:w-6/24"
+                        class="scrollbar-hide mb-20 h-full w-8/12 overflow-y-auto md:mb-30 md:h-365 md:w-5/12 lg:mr-[12.5%] lg:ml-auto 2xl:w-6/24"
                     >
                         <div
                             class="scrollbar-hide hidden w-full overflow-y-auto in-data-[selected='work']:block md:mb-20 md:block [&>p+p]:mt-20"
@@ -131,16 +131,18 @@ const videos = [...data.videos];
                         class="flex w-3/12 flex-col items-end justify-between pb-30 md:w-2/12 md:items-start xl:w-1/12"
                     >
                         <div class="hidden md:block">{data.name}</div>
-                        <div class="aspect-75/100 w-full max-w-120 md:max-w-150">
-                            {
-                                data.photo?.responsiveImage && (
-                                    <DatoImage
-                                        pictureClass="block size-full object-cover"
-                                        imgClass="size-full object-cover"
-                                        data={data.photo.responsiveImage}
-                                    />
-                                )
-                            }
+                        <div class="w-full">
+                            <div class="aspect-77/100 w-full max-w-120 md:max-w-150">
+                                {
+                                    data.photo?.responsiveImage && (
+                                        <DatoImage
+                                            pictureClass="block size-full object-cover"
+                                            imgClass="size-full object-cover"
+                                            data={data.photo.responsiveImage}
+                                        />
+                                    )
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
