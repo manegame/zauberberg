@@ -234,11 +234,8 @@ export default class DirectorsPage extends Page {
     setInitialDirector() {
         let index = -1;
 
-        if (this.previousPage?.template === "director") {
-            const directorIndex = Array.from(this.directors).findIndex(
-                (dir) => `/${dir.dataset.slug}` === this.previousUrl,
-            );
-            index = directorIndex;
+        if (this.app.store.homeLastDirectorIndex) {
+            index = this.app.store.homeLastDirectorIndex;
         }
 
         if (index === -1) {
@@ -288,7 +285,6 @@ export default class DirectorsPage extends Page {
         }
 
         // Only when NUMBER_OF_DUPLICATES is 2
-        // TODO: make it work for any number of duplicates
         this.wrap = gsap.utils.wrap(
             (-this.list.offsetHeight / 4) * 3,
             -this.list.offsetHeight / 4,
@@ -378,6 +374,9 @@ export default class DirectorsPage extends Page {
         sourceElement: HTMLElement;
         to: string;
     }): Promise<any> | gsap.core.Timeline {
+        // save current director index to restore it when coming back to the page
+        this.app.store.homeLastDirectorIndex = this.currentIndex;
+
         this.swapTl = gsap.timeline({ paused: true });
 
         if (to === "work") {
