@@ -29,8 +29,6 @@ export default class Work extends Page {
 
         this.isMobile = window.innerWidth < 1024;
 
-        if (!this.isMobile) this.setupInitialScroll();
-
         if (this.shouldLoadVideosOnInit) this.loadVideos();
 
         await super.init();
@@ -150,6 +148,8 @@ export default class Work extends Page {
             this.previousPage?.template === "directors_page" &&
             window.innerWidth >= 1024
         ) {
+            this.setupInitialScroll();
+
             this.swapTl.eventCallback("onComplete", () => {
                 this.loadVideos();
             });
