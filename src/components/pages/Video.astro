@@ -74,12 +74,10 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
         <div class="flex h-full w-full flex-col items-center justify-end lg:h-auto lg:flex-row">
             <div class="text-nav pointer-events-auto flex items-center gap-10 overflow-hidden">
                 <DatoLink
-                    id="close-video-link"
-                    link={{ internalLink: { slug: undefined } }}
                     class="controls-item flex shrink-0 items-center gap-5"
+                    link={{ internalLink: data.directors?.[0] }}
                 >
-                    <Icon name="cross" class="-mt-1 size-12" />
-                    Close
+                    More ↓
                 </DatoLink>
 
                 <DatoLink
@@ -97,12 +95,13 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
                 >
                     Next →
                 </DatoLink>
-
                 <DatoLink
+                    id="close-video-link"
+                    link={{ internalLink: { slug: undefined } }}
                     class="controls-item flex shrink-0 items-center gap-5"
-                    link={{ internalLink: data.directors?.[0] }}
                 >
-                    More ↓
+                    <Icon name="cross" class="-mt-1 size-12" />
+                    Close
                 </DatoLink>
             </div>
         </div>
