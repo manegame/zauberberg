@@ -17,7 +17,7 @@ const adapter = env.VERCEL === "1" ? vercel() : node({ mode: "standalone" });
 // https://astro.build/config
 export default defineConfig({
     output: isPreview ? "server" : "static",
-    site: "https://www.example.com",
+    site: "https://zauberbergproductions.com",
     integrations: [sitemap(), icon()],
     vite: {
         plugins: [tailwindcss()],

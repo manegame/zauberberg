@@ -298,7 +298,7 @@ export default class DirectorsPage extends Page {
 
         this.scrollTo = gsap.quickTo(this.list, "y", {
             ease: "power2",
-            duration: 0.6,
+            duration: 0.3,
             modifiers: {
                 y: gsap.utils.unitize(this.wrap),
             },
