@@ -72,10 +72,33 @@ export default class Video extends Page {
         timeEl.textContent = `${minutes}:${seconds}`;
     }
 
-    onSoundClick() {
+    async toggleSound() {
         if (!this.video) return;
-        this.muted = !this.muted;
-        this.video.muted = this.muted;
+
+        try {
+            this.video.muted = !this.video.muted;
+            if (!this.video.muted) {
+                await this.video.play();
+            }
+        } catch (error: any) {
+            this.video.muted = !this.video.muted;
+
+            if (this.video.muted) {
+                this.video.play();
+            }
+
+            if (error.name === "NotAllowedError") {
+                console.error(
+                    "Autoplay policy blocked audio. User interaction is required to enable sound.",
+                );
+            } else if (error.name === "AbortError") {
+                console.error("Play request was aborted.");
+            } else {
+                console.error("Error toggling sound:", error.message);
+            }
+        }
+
+        this.muted = this.video.muted;
 
         if (this.btnSound) {
             this.btnSound.setAttribute(
@@ -113,7 +136,6 @@ export default class Video extends Page {
             duration: this.video.duration,
             ease: "none",
         });
-        this.progressTl.play();
 
         this.video.addEventListener(
             "timeupdate",
@@ -156,7 +178,7 @@ export default class Video extends Page {
         this.btnSound?.addEventListener(
             "click",
             () => {
-                this.onSoundClick();
+                this.toggleSound();
             },
             { signal: this.abortController.signal },
         );
@@ -174,10 +196,14 @@ export default class Video extends Page {
         this.isSetup = true;
         this.controls = this.container.querySelector("#video-controls");
 
-        this.video?.play();
         this.setupTimeline();
         this.setupButtons();
         this.setupOverlay();
+
+        this.video?.play();
+        this.progressTl?.play();
+        // try unmuting the video by default
+        this.toggleSound();
     }
 
     setupOverlay() {
