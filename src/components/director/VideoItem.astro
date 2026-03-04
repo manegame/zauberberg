@@ -2,6 +2,8 @@
 import DatoLink from "../global/DatoLink.astro";
 
 const { video } = Astro.props;
+
+const awardIcon = Array.isArray(video.awardIcon) ? video.awardIcon[0] : video.awardIcon;
 ---
 
 <DatoLink
@@ -45,10 +47,10 @@ const { video } = Astro.props;
             alt={video.name}
         />
         {
-            video.awardIcon && (
+            awardIcon && (
                 <img
-                    src={video.awardIcon.url}
-                    alt={video.awardIcon.alt}
+                    src={awardIcon.url}
+                    alt={awardIcon.alt}
                     class="absolute right-15 bottom-10 z-2 h-30 w-auto"
                 />
             )
