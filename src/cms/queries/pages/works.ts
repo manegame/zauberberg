@@ -22,6 +22,7 @@ export default `
                 slug
                 _modelApiKey
             }
+            externaldirectors
             awardIcon {
                 ${img}
             }

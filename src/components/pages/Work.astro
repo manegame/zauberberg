@@ -116,9 +116,13 @@ const getNextVideoSlug = (index: number) => {
                                 <div>{video.video.client}</div>
                             </div>
                             <div class="video-text flex gap-2 overflow-hidden text-ellipsis whitespace-nowrap transition-opacity duration-300 ease-in-out lg:opacity-0">
-                                {video.video.directors.map((director: any, index: number) => (
-                                    <span class="opacity-30">{director.name}</span>
-                                ))}
+                                {video.video.externaldirectors ? (
+                                    <span class="opacity-30">{video.video.externaldirectors}</span>
+                                ) : (
+                                    video.video.directors.map((director: any) => (
+                                        <span class="opacity-30">{director.name}</span>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </DatoLink>

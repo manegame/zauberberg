@@ -19,6 +19,7 @@ export default `
             slug
         }
     }
+    externaldirectors
     videoRss
     previewRss
     awardIcon {

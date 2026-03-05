@@ -49,13 +49,15 @@ const { prevVideo, nextVideo } = getNextPrevVideos(directorsVideos);
             >
                 <div class="text-nav flex items-center gap-6 overflow-hidden">
                     {
-                        data.directors.map((director: any) => {
-                            return (
+                        data.externaldirectors ? (
+                            <div class="video-info">{data.externaldirectors}</div>
+                        ) : (
+                            data.directors.map((director: any) => (
                                 <DatoLink class="video-info" link={{ internalLink: director }}>
                                     {director.name}
                                 </DatoLink>
-                            );
-                        })
+                            ))
+                        )
                     }
                 </div>
                 <div class="text-nav-kh flex items-center gap-6">
