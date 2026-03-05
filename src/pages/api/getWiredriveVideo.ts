@@ -15,17 +15,16 @@ export const POST = (async ({ request }) => {
                     message: "Failed to fetch video",
                 }),
                 {
-                    status: 500,
+                    status: response.status,
                 },
             );
         }
 
-        const blob = await response.blob();
-
-        return new Response(blob, {
-            status: 200,
+        return new Response(response.body, {
+            status: response.status,
             headers: {
-                "Content-Type": blob.type,
+                "Content-Type":
+                    response.headers.get("Content-Type") || "video/mp4",
             },
         });
     }
