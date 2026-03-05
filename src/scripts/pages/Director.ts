@@ -69,6 +69,7 @@ export default class Director extends Page {
             target: this.sliderParent,
             type: "wheel,touch,pointer",
             wheelSpeed: -1,
+            preventDefault: true,
             onDragStart: () => {
                 this.slider.setAttribute("data-dragging", "true");
             },
