@@ -40,6 +40,7 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
         <div
             id="data"
             class="pointer-events-none hidden"
+            aria-hidden="true"
             data-data={JSON.stringify({ slugToModelApiKeyMap })}></div>
     </body></html
 >
