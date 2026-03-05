@@ -1,4 +1,4 @@
-import responsiveImg from "../utils/responsiveImg";
+import img from "../utils/img";
 import seoMetaTags from "../utils/seoMetaTags";
 
 export default `
@@ -21,4 +21,7 @@ export default `
     }
     videoRss
     previewRss
+    awardIcon {
+        ${img}
+    }
 `;
