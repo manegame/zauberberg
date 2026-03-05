@@ -20,12 +20,15 @@ const initialHide = TEMPLATES_WITH_HIDDEN_NAVIGATION.includes(template);
         <a href="/" class="pointer-events-auto w-80 lg:h-auto lg:w-2/24">
             <Logo class="w-full" />
         </a>
-        <div class="pointer-events-auto flex items-center gap-10 overflow-hidden p-10">
+        <div
+            style={{ "pointer-events": initialHide ? "none" : "auto" }}
+            class="navigation-items-wrapper pointer-events-auto flex items-center overflow-hidden"
+        >
             {
                 data.links.map((link: any) => (
                     <DatoLink
                         style={{ transform: initialHide ? "translateY(-100%)" : "translateY(0)" }}
-                        class="text-nav-mobile navigation-item xl:text-nav-desktop block opacity-30 transition-opacity duration-150 hover:opacity-100 [&.link-current]:opacity-100"
+                        class="text-nav-mobile navigation-item xl:text-nav-desktop block px-5 py-10 opacity-30 transition-opacity duration-150 hover:opacity-100 [&.link-current]:opacity-100"
                         link={link}
                     />
                 ))

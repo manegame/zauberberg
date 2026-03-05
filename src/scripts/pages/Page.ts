@@ -83,6 +83,9 @@ export default class Page {
 
     updateHeaderItemsVisibility(navigation: HTMLElement) {
         const items = navigation.querySelectorAll(".navigation-item");
+        const itemWrapper = navigation.querySelector(
+            ".navigation-items-wrapper",
+        ) as HTMLElement;
 
         const hideOn =
             navigation.getAttribute("data-hide-on")?.split(",") || [];
@@ -93,12 +96,14 @@ export default class Page {
                 duration: 0.4,
                 ease: "power3.out",
             });
+            if (itemWrapper) itemWrapper.style.pointerEvents = "none";
         } else {
             gsap.to(items, {
                 y: "0%",
                 duration: 0.4,
                 ease: "power3.out",
             });
+            if (itemWrapper) itemWrapper.style.pointerEvents = "auto";
         }
     }
 
