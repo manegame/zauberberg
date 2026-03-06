@@ -77,6 +77,7 @@ export default class DirectorsPage extends Page {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ video: videoUrl }),
+            signal: this.abortController.signal,
         });
 
         if (!response.ok) {
@@ -143,6 +144,10 @@ export default class DirectorsPage extends Page {
             try {
                 await this.fetchVideoAsBlob(video);
             } catch (error) {
+                // Ignore abort errors when page is being destroyed
+                if ((error as any)?.name === "AbortError") {
+                    return;
+                }
                 console.error(`Failed to preload ${video}:`, error);
             }
         });
