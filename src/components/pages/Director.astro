@@ -136,8 +136,9 @@ const videos = [...data.videos];
                                 {
                                     data.photo?.responsiveImage && (
                                         <DatoImage
-                                            pictureClass="block size-full object-cover"
-                                            imgClass="size-full object-cover"
+                                            pictureClass="block size-full object-cover object-[var(--focal-x)_var(--focal-y))]"
+                                            imgClass="size-full object-cover object-[var(--focal-x)_var(--focal-y))]"
+                                            focalPoint={data.photo.focalPoint}
                                             data={data.photo.responsiveImage}
                                         />
                                     )

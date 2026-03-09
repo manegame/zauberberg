@@ -11,6 +11,10 @@ const {
     fetchpriority,
     usePlaceholder = true,
     sizes,
+    focalPoint = {
+        x: 0.5,
+        y: 0.5,
+    },
     srcSetCandidates = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4],
     referrerPolicy = "no-referrer-when-downgrade",
 } = Astro.props;
@@ -37,7 +41,15 @@ const sizingStyle = {
 };
 ---
 
-<picture class={pictureClass} style={pictureStyle} data-datocms-image="true">
+<picture
+    class={pictureClass}
+    style={{
+        "--focal-x": `${focalPoint.x * 100}%`,
+        "--focal-y": `${focalPoint.y * 100}%`,
+        ...pictureStyle,
+    }}
+    data-datocms-image="true"
+>
     {
         data.webpSrcSet && (
             <source

@@ -9,4 +9,8 @@ export default `
         base64
         sizes
     }
+    focalPoint {
+        x
+        y
+    }
 `;
