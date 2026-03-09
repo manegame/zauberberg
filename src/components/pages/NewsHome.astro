@@ -15,40 +15,39 @@ const categories = ["All", ...new Set(data.news?.map((item: any) => item.categor
 ---
 
 <div class="px-gutter flex min-h-dvh items-center justify-center">
-    <button
-        type="button"
-        class="text-body fixed top-100 z-20 px-23 py-16 lg:hidden"
-        id="filters-toggle">Filters</button
-    >
     <div
-        data-open="false"
-        class="p-gutter bg-grey fixed top-0 right-0 left-0 z-20 flex items-start justify-between gap-10 data-[open=false]:-translate-y-full max-lg:transition-transform max-lg:duration-300 max-lg:ease-in-out lg:pointer-events-none lg:inset-0 lg:h-dvh lg:w-screen lg:translate-y-0! lg:items-end lg:bg-transparent"
+        class="lg:px-gutter fixed top-116 right-0 left-0 z-20 flex items-start justify-between gap-10 lg:pointer-events-none lg:inset-0 lg:h-dvh lg:items-end lg:bg-transparent"
         id="filters-panel"
     >
-        <nav class="text-nav lg:relative lg:-top-[0.55em] lg:h-1/2 lg:w-6/24 lg:pl-[12.5%]">
-            <div class="relative size-full">
+        <nav
+            class="w-full lg:relative lg:-top-[0.55em] lg:flex lg:h-1/2 lg:w-6/24 lg:flex-col lg:justify-between lg:gap-y-28 lg:pb-20 lg:pl-[12.5%]"
+        >
+            <div
+                class="relative flex size-full justify-center lg:h-auto lg:flex-col lg:justify-between"
+            >
                 <div
                     id="filters-panel-list"
-                    class="flex flex-col items-start gap-9 max-lg:transform-none! lg:gap-0"
+                    class="px-gutter scrollbar-hide text-nav flex items-baseline gap-17 overflow-x-auto scroll-smooth max-lg:transform-[translate(0)]! lg:flex-col lg:gap-0 lg:px-0"
                 >
-                    {
-                        categories.map((category, index) => (
-                            <button
-                                type="button"
-                                data-active={index === 0}
-                                class="flex h-20 items-center text-left opacity-20 transition-opacity duration-150 hover:opacity-100 data-[active=true]:opacity-100 lg:pointer-events-auto"
-                                data-category={category}
-                            >
-                                {category}
-                            </button>
-                        ))
-                    }
+                    <div class="flex shrink-0 items-baseline gap-17 lg:flex-col lg:gap-0">
+                        {
+                            categories.map((category, index) => (
+                                <div class="pointer-events-auto shrink-0 lg:flex lg:h-20 lg:items-center">
+                                    <button
+                                        type="button"
+                                        data-active={index === 0}
+                                        class="subnavigation-item opacity-30 transition-opacity duration-150 hover:opacity-100 data-[active=true]:opacity-100"
+                                        data-category={category}
+                                    >
+                                        {category}
+                                    </button>
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
-        <button type="button" class="flex-none lg:hidden" id="filters-close">
-            <Icon name="cross" class="size-14" />
-        </button>
     </div>
     <div class="w-full gap-25 pt-212 pb-80 md:w-10/12 lg:w-4/12 lg:pt-240 lg:pb-112">
         <ul class="flex flex-col gap-50 lg:gap-100" id="news-list">

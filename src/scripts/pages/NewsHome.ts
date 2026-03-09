@@ -11,8 +11,6 @@ export default class NewsHome extends Page {
     newsItems!: NodeListOf<HTMLElement>;
     filtersPanel!: HTMLElement;
     filtersPanelList!: HTMLElement;
-    filtersToggle!: HTMLElement;
-    filtersClose!: HTMLElement;
     currentCategory!: string;
     isMobile!: boolean;
 
@@ -72,9 +70,6 @@ export default class NewsHome extends Page {
         }
         window.history.replaceState({}, "", url.toString());
 
-        // close filters panel on mobile
-        this.filtersPanel.setAttribute("data-open", "false");
-
         this.currentCategory = category;
     }
 
@@ -92,8 +87,6 @@ export default class NewsHome extends Page {
         this.filtersPanelList = this.container.querySelector(
             "#filters-panel-list",
         )!;
-        this.filtersToggle = this.container.querySelector("#filters-toggle")!;
-        this.filtersClose = this.container.querySelector("#filters-close")!;
 
         // initial category from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -111,22 +104,6 @@ export default class NewsHome extends Page {
                 },
             );
         });
-
-        this.filtersToggle.addEventListener(
-            "click",
-            () => {
-                this.filtersPanel.setAttribute("data-open", "true");
-            },
-            { signal: this.abortController.signal },
-        );
-
-        this.filtersClose.addEventListener(
-            "click",
-            () => {
-                this.filtersPanel.setAttribute("data-open", "false");
-            },
-            { signal: this.abortController.signal },
-        );
     }
 
     transitionOut({
@@ -152,26 +129,16 @@ export default class NewsHome extends Page {
                 duration: 0.4,
                 ease: "power2.out",
             });
-            this.swapTl
-                .to(
-                    filtersNav,
-                    {
-                        opacity: 0,
-                        x: -20,
-                        duration: 0.4,
-                        ease: "power2.out",
-                    },
-                    "<",
-                )
-                .to(
-                    this.filtersToggle,
-                    {
-                        opacity: 0,
-                        duration: 0.4,
-                        ease: "power2.out",
-                    },
-                    "<",
-                );
+            this.swapTl.to(
+                filtersNav,
+                {
+                    opacity: 0,
+                    x: -20,
+                    duration: 0.4,
+                    ease: "power2.out",
+                },
+                "<",
+            );
         } else {
             this.swapTl.to(this.container, {
                 opacity: 0,
