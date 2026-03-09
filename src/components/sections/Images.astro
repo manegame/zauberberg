@@ -8,7 +8,15 @@ const { data } = Astro.props;
     {
         data.images.map((image: any) => (
             <div class="w-full">
-                <DatoImage imgClass="w-full" data={image.responsiveImage} />
+                <DatoImage
+                    imgClass={data.displayTrueSize ? `mx-auto` : "w-full"}
+                    imgStyle={{
+                        width: data.displayTrueSize
+                            ? `${image.responsiveImage.width}px`
+                            : undefined,
+                    }}
+                    data={image.responsiveImage}
+                />
             </div>
         ))
     }

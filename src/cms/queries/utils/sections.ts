@@ -11,6 +11,7 @@ export default `
     ... on ImagesModuleRecord {
         _modelApiKey
         id
+        displayTrueSize
         images {
             ${responsiveImg}
         }
