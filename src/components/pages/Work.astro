@@ -91,15 +91,17 @@ const getNextVideoSlug = (index: number) => {
                         link={{ internalLink: video.video }}
                     >
                         <div class="relative aspect-16/10 w-full">
-                            <video
-                                class="work-video size-full object-cover"
-                                autoplay
-                                muted
-                                loop
-                                playsinline
-                                data-src={video.video.preview.video?.url}
-                                poster={video.video.preview.poster?.url}
-                            />
+                            <div class="size-full overflow-hidden object-cover">
+                                <video
+                                    class="work-video size-full scale-120"
+                                    autoplay
+                                    muted
+                                    loop
+                                    playsinline
+                                    data-src={video.video.preview.video?.url}
+                                    poster={video.video.preview.poster?.url}
+                                />
+                            </div>
                             <div class="absolute -inset-1 z-1 bg-black opacity-30" />
                             {video.video.awardIcon && video.video.awardIcon.length > 0 && (
                                 <div class="absolute right-15 bottom-10 z-2 flex flex-wrap-reverse items-center justify-end gap-5">

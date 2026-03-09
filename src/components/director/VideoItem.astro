@@ -29,21 +29,23 @@ const { video } = Astro.props;
             class="overlay absolute inset-0 z-3 bg-black opacity-0 transition-opacity duration-300 ease-in-out md:group-hover:opacity-50"
         ></div>
         <div class="absolute inset-0 z-1 bg-black opacity-40"></div>
-        <video
-            class="absolute inset-0 hidden size-full object-cover md:block"
-            autoplay
-            muted
-            loop
-            playsinline
-            poster={video.preview.poster?.url}
-            src={video.preview.video?.url}
+        <div class="absolute inset-0 hidden size-full overflow-hidden object-cover md:block">
+            <video
+                class="size-full scale-120"
+                autoplay
+                muted
+                loop
+                playsinline
+                poster={video.preview.poster?.url}
+                src={video.preview.video?.url}
+            >
+            </video>
+        </div>
+        <div
+            class="video-poster absolute inset-0 size-full overflow-hidden object-cover transition-opacity duration-300 ease-in-out"
         >
-        </video>
-        <img
-            class="video-poster absolute inset-0 size-full object-cover transition-opacity duration-300 ease-in-out"
-            src={video.preview.poster?.url}
-            alt={video.name}
-        />
+            <img class="size-full scale-120" src={video.preview.poster?.url} alt={video.name} />
+        </div>
         {
             video.awardIcon && video.awardIcon.length > 0 && (
                 <div class="absolute right-15 bottom-10 z-2 flex flex-wrap-reverse items-center justify-end gap-5">
