@@ -54,6 +54,7 @@ export default `
     ... on EmbedVideoRecord {
         _modelApiKey
         id
+        wiredriveEmbedSrc
         externalVideo {
             height
             provider
