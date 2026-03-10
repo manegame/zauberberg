@@ -47,12 +47,7 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 
 <script>
     import Zauberberg from "../scripts/Zauberberg";
-    import markerSDK from "@marker.io/browser";
 
     const app = new Zauberberg();
     app.init();
-
-    const widget = await markerSDK.loadWidget({
-        project: "698dd13792e0c8443549e9dd",
-    });
 </script>
