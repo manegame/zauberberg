@@ -29,10 +29,15 @@ const directorsWithDuplicate = [...directors, ...directors];
 >
     <div class="pointer-events-none absolute inset-0 z-0">
         <div id="overlay" class="absolute inset-0 z-3 bg-black opacity-40"></div>
+        <img
+            id="low-power-fallback"
+            src=""
+            alt=""
+            class="absolute inset-0 h-full w-full object-cover"
+        />
         <video
             id="director-video"
             class="absolute inset-0 h-full w-full object-cover"
-            autoplay
             muted
             loop
             playsinline

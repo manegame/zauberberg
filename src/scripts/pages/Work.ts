@@ -8,6 +8,7 @@ export default class Work extends Page {
     initialScroll!: number;
     centerVideo!: HTMLElement | null;
     isMobile!: boolean;
+    isLowPowerMode: boolean = false;
     shouldLoadVideosOnInit!: boolean;
 
     constructor(...args: ConstructorParameters<typeof Page>) {
@@ -70,10 +71,27 @@ export default class Work extends Page {
     }
 
     loadVideos() {
-        const videos = this.container?.querySelectorAll(".work-video");
+        const videos = this.container?.querySelectorAll(
+            ".work-video",
+        ) as NodeListOf<HTMLVideoElement>;
         videos?.forEach((video) => {
             const src = video.getAttribute("data-src");
             if (src) video.setAttribute("src", src);
+            video.load();
+            video.play().catch((error) => {
+                if (error.name === "NotAllowedError" && !this.isLowPowerMode) {
+                    this.enableLowPowerFallback(videos);
+                }
+            });
+        });
+    }
+
+    enableLowPowerFallback(videos: NodeListOf<HTMLVideoElement>) {
+        if (this.isLowPowerMode) return;
+        this.isLowPowerMode = true;
+
+        videos?.forEach((video) => {
+            video.style.display = "none";
         });
     }
 
