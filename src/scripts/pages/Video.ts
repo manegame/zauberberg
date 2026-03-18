@@ -126,6 +126,26 @@ export default class Video extends Page {
         }
     }
 
+    checkPlayState() {
+        if (!this.video) return;
+
+        const videoIsPlaying = !!(
+            !this.video.paused &&
+            !this.video.ended &&
+            this.video.readyState >= 2
+        );
+
+        if (videoIsPlaying !== this.play) {
+            this.play = videoIsPlaying;
+            if (this.btnPlay) {
+                this.btnPlay.setAttribute(
+                    "data-play",
+                    this.play ? "true" : "false",
+                );
+            }
+        }
+    }
+
     setupTimeline() {
         if (!this.video || !this.controls) return;
 
@@ -194,7 +214,7 @@ export default class Video extends Page {
         );
     }
 
-    setupVideoControls() {
+    async setupVideoControls() {
         if (!this.video || this.isSetup) return;
         this.isSetup = true;
         this.controls = this.container.querySelector("#video-controls");
@@ -204,8 +224,11 @@ export default class Video extends Page {
         this.setupOverlay();
 
         this.video?.play();
-        // try unmuting the video by default
-        this.toggleSound();
+        // Try unmuting the video by default
+        await this.toggleSound();
+
+        // With sound autoplay or low power mode, the video might still not be playing. We ensure play state in aligned with the actual play state of the video element.
+        this.checkPlayState();
     }
 
     setupOverlay() {
