@@ -101,12 +101,23 @@ const getNextVideoSlug = (index: number) => {
                                     data-src={video.video.preview.video?.url}
                                     poster={video.video.preview.poster?.url}
                                 />
+                                <img
+                                    class="work-low-power-fallback absolute inset-0 -z-1 size-full object-cover"
+                                    src={video.video.preview.poster?.url}
+                                    alt=""
+                                />
                             </div>
                             <div class="absolute -inset-1 z-1 bg-black opacity-30" />
                             {video.video.awardIcon && video.video.awardIcon.length > 0 && (
                                 <div class="absolute right-15 bottom-10 z-2 flex flex-wrap-reverse items-center justify-end gap-5">
                                     {video.video.awardIcon.map((icon: any) => (
-                                        <img src={icon.url} alt={icon.alt} class="h-30 w-auto" />
+                                        <div class="h-15 w-20 sm:h-25 sm:w-35">
+                                            <img
+                                                src={icon.url}
+                                                alt={icon.alt}
+                                                class="size-full object-contain"
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             )}

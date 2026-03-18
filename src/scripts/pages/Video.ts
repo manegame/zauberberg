@@ -13,7 +13,6 @@ export default class Video extends Page {
     infos!: NodeListOf<HTMLElement>;
     overlayTimeout!: ReturnType<typeof setTimeout>;
     overlayTl!: gsap.core.Timeline;
-    progressTl!: gsap.core.Timeline;
     muted!: boolean;
     play!: boolean;
     isSetup!: boolean;
@@ -21,9 +20,11 @@ export default class Video extends Page {
     nextVideoLink!: string | null;
     OVERLAY_TIME!: number;
     showOverlay!: boolean;
+    onProgressUpdate = () => {};
 
     destroy() {
         this.abortController.abort();
+        gsap.ticker.remove(this.onProgressUpdate);
         super.destroy();
     }
 
@@ -113,10 +114,8 @@ export default class Video extends Page {
         this.play = !this.play;
         if (this.play) {
             this.video.play();
-            this.progressTl.play();
         } else {
             this.video.pause();
-            this.progressTl.pause();
         }
 
         if (this.btnPlay) {
@@ -130,12 +129,18 @@ export default class Video extends Page {
     setupTimeline() {
         if (!this.video || !this.controls) return;
 
-        this.progressTl = gsap.timeline({ paused: true, repeat: -1 });
-        this.progressTl.to(this.controls, {
-            "--video-progress": 1,
-            duration: this.video.duration,
-            ease: "none",
-        });
+        // Not clean, but only way to manage the 'this' context in the gsap ticker callback.
+        // We need to remove it on destroy, so we can't use an arrow function directly in the ticker.add
+        this.onProgressUpdate = () => {
+            if (!this.video || !this.controls) return;
+            const progress = this.video.currentTime / this.video.duration;
+            this.controls.style.setProperty(
+                "--video-progress",
+                progress.toString(),
+            );
+        };
+
+        gsap.ticker.add(this.onProgressUpdate);
 
         this.video.addEventListener(
             "timeupdate",
@@ -156,8 +161,6 @@ export default class Video extends Page {
 
         this.video.currentTime = newTime;
         this.onTimeUpdate();
-
-        this.progressTl.seek(this.video.currentTime);
     }
 
     setupButtons() {
@@ -201,7 +204,6 @@ export default class Video extends Page {
         this.setupOverlay();
 
         this.video?.play();
-        this.progressTl?.play();
         // try unmuting the video by default
         this.toggleSound();
     }
@@ -334,6 +336,7 @@ export default class Video extends Page {
                     "<",
                 );
         } else if (to === "video") {
+            this.video?.pause();
             this.swapTl
                 .to(videosInfos, {
                     yPercent: 100,

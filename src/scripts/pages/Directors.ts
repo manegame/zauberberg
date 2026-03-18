@@ -17,6 +17,7 @@ export default class DirectorsPage extends Page {
     y!: number;
 
     videoEl!: HTMLVideoElement;
+    lowPowerFallbackEl!: HTMLImageElement;
     list!: HTMLElement;
     listWrapper!: HTMLElement;
     directors!: NodeListOf<HTMLElement>;
@@ -28,6 +29,7 @@ export default class DirectorsPage extends Page {
 
     allVideos!: { video: string; index: number }[];
     videosToLoad!: { video: string; index: number }[];
+    isLowPowerMode: boolean = false;
 
     scrollTo!: any;
     wrap!: (index: number) => number;
@@ -103,8 +105,21 @@ export default class DirectorsPage extends Page {
             "#director-video",
         ) as HTMLVideoElement;
 
+        this.lowPowerFallbackEl = this.container.querySelector(
+            "#low-power-fallback",
+        ) as HTMLImageElement;
+
+        this.lowPowerFallbackEl.src = this.currentDirector.dataset.poster!;
         this.videoEl.poster = this.currentDirector.dataset.poster!;
         this.videoEl.load();
+
+        this.videoEl.play().catch((error) => {
+            if (error.name === "NotAllowedError") {
+                // If it fails to play, we can assume it's due to iOS low-power mode which prevents autoplay.
+                this.enableLowPowerModeFallback();
+            }
+        });
+
         const firstVideoUrl = this.currentDirector.dataset.video!;
         await this.fetchVideoAsBlob(firstVideoUrl);
 
@@ -112,6 +127,10 @@ export default class DirectorsPage extends Page {
             this.app.store.homeVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
 
         return new Promise<void>((resolve) => {
+            if (this.isLowPowerMode) {
+                resolve();
+                return;
+            }
             this.videoEl.addEventListener(
                 "loadeddata",
                 () => {
@@ -155,6 +174,11 @@ export default class DirectorsPage extends Page {
         await Promise.allSettled(preloadPromises);
     }
 
+    enableLowPowerModeFallback() {
+        this.isLowPowerMode = true;
+        this.videoEl.style.display = "none";
+    }
+
     onScrollEvent(scroll: any) {
         if (this.scrollEndTimeout) clearTimeout(this.scrollEndTimeout);
 
@@ -193,9 +217,19 @@ export default class DirectorsPage extends Page {
 
         if (srcToUse === this.videoEl.src) return;
 
+        this.lowPowerFallbackEl.src = videoPoster;
         this.videoEl.src = srcToUse;
         this.videoEl.poster = videoPoster;
         this.videoEl.load();
+
+        if (!this.isLowPowerMode) {
+            this.videoEl.play().catch((error) => {
+                if (error.name === "NotAllowedError") {
+                    // If it fails to play, we can assume it's due to iOS low-power mode which prevents autoplay.
+                    this.enableLowPowerModeFallback();
+                }
+            });
+        }
     }
 
     selectCurrentDirectorFromScroll() {
