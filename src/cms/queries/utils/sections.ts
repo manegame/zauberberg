@@ -7,6 +7,7 @@ export default `
         _modelApiKey
         id
         text
+        credits
     }
     ... on ImagesModuleRecord {
         _modelApiKey
