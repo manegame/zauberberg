@@ -60,7 +60,7 @@ const videos = [...data.videos];
             <Icon name="cross" class="size-12" />
         </button>
         <div class="h-auto pt-30">
-            <div class="flex h-full flex-col">
+            <div class="flex h-full flex-col overflow-y-scroll md:overflow-y-visible">
                 <div class="px-gutter mb-35 flex shrink-0 flex-col items-start gap-2 md:hidden">
                     <button
                         id="director-work-btn"
@@ -117,17 +117,17 @@ const videos = [...data.videos];
                     </div>
                     <div class="relative mb-20 h-full md:-mt-36 w-8/12 md:mb-30 md:h-365 md:w-5/12 lg:mr-[12.5%] lg:ml-auto 2xl:w-6/24">
                         <div
-                            class="hidden md:block pointer-events-none absolute bottom-0 left-0 w-full h-36"
+                            class="block pointer-events-none absolute bottom-0 left-0 w-full h-36"
                             style={`background: linear-gradient(to top, ${data.color.hex} 0%, transparent 100%);`}
                         ></div>
                         <div
-                            class="hidden md:block pointer-events-none absolute top-0 left-0 w-full h-36"
-                            style={`background: linear-gradient(to bottom, ${data.color.hex} 0%, transparent 100%);`}
+                            class="md:block hidden pointer-events-none absolute top-0 left-0 w-full h-46"
+                            style={`background: linear-gradient(to bottom, ${data.color.hex} 30%, transparent 90%);`}
                         ></div>
                         <div
-                            class="scrollbar-hide h-full w-full overflow-y-auto md:pb-18"
+                            class="scrollbar-hide h-full w-full overflow-y-auto md:pb-18 max-h-[80vh] md:max-h-none"
                         >
-                        <div class="hidden md:block h-36"></div>
+                            <div class="md:block hidden h-36"></div>
                             <div
                                 class="scrollbar-hide hidden w-full overflow-y-auto md:overflow-y-visible in-data-[selected='work']:block md:mb-20 md:block [&>p+p]:mt-20"
                                 set:html={data.introduction}
@@ -136,6 +136,7 @@ const videos = [...data.videos];
                                 class="scrollbar-hide hidden w-full overflow-y-auto md:overflow-y-visible in-data-[selected='bio']:block md:block [&>p+p]:mt-20"
                                 set:html={data.biography}
                             />
+                            <div class="block md:hidden h-36"></div>
                         </div>
                     </div>
                     <div
