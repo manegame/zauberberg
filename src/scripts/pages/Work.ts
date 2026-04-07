@@ -10,6 +10,7 @@ export default class Work extends Page {
     isMobile!: boolean;
     isLowPowerMode: boolean = false;
     shouldLoadVideosOnInit!: boolean;
+    enableCenterVideoTransition: boolean = false;
 
     constructor(...args: ConstructorParameters<typeof Page>) {
         super(...args);
@@ -163,6 +164,7 @@ export default class Work extends Page {
         });
 
         if (
+            this.enableCenterVideoTransition &&
             this.previousPage?.template === "directors_page" &&
             window.innerWidth >= 1024
         ) {
