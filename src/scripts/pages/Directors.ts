@@ -18,10 +18,26 @@ export default class DirectorsPage extends Page {
 
     videoEl!: HTMLVideoElement;
     lowPowerFallbackEl!: HTMLImageElement;
+
+    // Mobile (single list)
     list!: HTMLElement;
     listWrapper!: HTMLElement;
-    directors!: NodeListOf<HTMLElement>;
+    directors!: HTMLElement[];
     totalItems!: number;
+    totalDirectors!: number; // total unique directors (for video preload distance)
+    scrollTo!: any;
+    wrap!: (index: number) => number;
+
+    centerOffset: number = 0; // vertical offset to center selected item in wrapper
+
+    // Desktop (three columns)
+    isDesktop: boolean = false;
+    columnLists!: HTMLElement[];
+    columnWraps!: ((n: number) => number)[];
+    columnScrollTos!: any[];
+    columnDirectors!: HTMLElement[][];
+    allDesktopDirectors!: HTMLElement[];
+
     centerIndex!: number;
     centerDirector!: HTMLElement;
     currentIndex!: number;
@@ -30,9 +46,6 @@ export default class DirectorsPage extends Page {
     allVideos!: { video: string; index: number }[];
     videosToLoad!: { video: string; index: number }[];
     isLowPowerMode: boolean = false;
-
-    scrollTo!: any;
-    wrap!: (index: number) => number;
 
     scrollEndTimeout?: number;
     observer!: Observer;
@@ -115,7 +128,6 @@ export default class DirectorsPage extends Page {
 
         this.videoEl.play().catch((error) => {
             if (error.name === "NotAllowedError") {
-                // If it fails to play, we can assume it's due to iOS low-power mode which prevents autoplay.
                 this.enableLowPowerModeFallback();
             }
         });
@@ -143,14 +155,14 @@ export default class DirectorsPage extends Page {
 
     async preloadOtherVideos() {
         const initialIndex = this.currentIndex;
+        const total = this.totalDirectors;
 
         const getCircularDistance = (fromIndex: number, toIndex: number) => {
             const directDist = Math.abs(toIndex - fromIndex);
-            const wrapDist = this.totalItems - directDist;
+            const wrapDist = total - directDist;
             return Math.min(directDist, wrapDist);
         };
 
-        // We sort them based on their distance from the initial index
         this.videosToLoad.sort((a, b) => {
             const distA = getCircularDistance(initialIndex, a.index);
             const distB = getCircularDistance(initialIndex, b.index);
@@ -163,7 +175,6 @@ export default class DirectorsPage extends Page {
             try {
                 await this.fetchVideoAsBlob(video);
             } catch (error) {
-                // Ignore abort errors when page is being destroyed
                 if ((error as any)?.name === "AbortError") {
                     return;
                 }
@@ -189,7 +200,7 @@ export default class DirectorsPage extends Page {
 
         this.y += deltaY * this.DELTA_MULTIPLIER;
 
-        this.scrollTo(this.y);
+        this.applyScroll(this.y);
 
         this.scrollEndTimeout = setTimeout(() => {
             this.onScrollEnd();
@@ -198,8 +209,14 @@ export default class DirectorsPage extends Page {
         if (this.centerDirector) {
             this.centerDirector.dataset.center = "false";
         }
-        if (this.currentDirector) {
-            this.currentDirector.dataset.selected = "false";
+        this.clearSelection();
+    }
+
+    applyScroll(y: number) {
+        if (this.isDesktop) {
+            this.columnScrollTos.forEach((scrollTo) => scrollTo(y));
+        } else {
+            this.scrollTo(y);
         }
     }
 
@@ -225,7 +242,6 @@ export default class DirectorsPage extends Page {
         if (!this.isLowPowerMode) {
             this.videoEl.play().catch((error) => {
                 if (error.name === "NotAllowedError") {
-                    // If it fails to play, we can assume it's due to iOS low-power mode which prevents autoplay.
                     this.enableLowPowerModeFallback();
                 }
             });
@@ -233,10 +249,21 @@ export default class DirectorsPage extends Page {
     }
 
     selectCurrentDirectorFromScroll() {
-        const wrappedY = this.wrap(this.y);
-        const centerIndex = Math.round(-wrappedY / this.ITEM_HEIGHT);
-
-        this.setCenterDirectorByIndex(centerIndex);
+        if (this.isDesktop) {
+            // Use the middle column (index 1) for center detection
+            const wrappedY = this.columnWraps[1](this.y);
+            const centerIndexInCol = Math.round(
+                -(wrappedY - this.centerOffset) / this.ITEM_HEIGHT,
+            );
+            const directorEl = this.columnDirectors[1][centerIndexInCol];
+            if (directorEl) {
+                this.setCenterDirector(directorEl);
+            }
+        } else {
+            const wrappedY = this.wrap(this.y);
+            const centerIndex = Math.round(-wrappedY / this.ITEM_HEIGHT);
+            this.setCenterDirectorByIndex(centerIndex);
+        }
     }
 
     setCenterDirectorByIndex(index: number) {
@@ -249,6 +276,16 @@ export default class DirectorsPage extends Page {
         this.centerDirector.dataset.center = "true";
     }
 
+    setCenterDirector(el: HTMLElement) {
+        if (this.centerDirector) {
+            this.centerDirector.dataset.center = "false";
+        }
+        this.centerDirector = el;
+        this.centerIndex = parseInt(el.dataset.originalIndex || el.dataset.index!);
+        this.centerDirector.dataset.center = "true";
+        this.setCurrentDirector(el);
+    }
+
     setCurrentDirectorByIndex(index: number) {
         if (this.currentDirector) {
             this.currentDirector.dataset.selected = "false";
@@ -259,14 +296,49 @@ export default class DirectorsPage extends Page {
         this.currentDirector.dataset.selected = "true";
     }
 
+    setCurrentDirector(el: HTMLElement) {
+        this.clearSelection();
+        this.currentDirector = el;
+        this.currentIndex = parseInt(el.dataset.originalIndex || el.dataset.index!);
+
+        // Highlight all elements with the same director name across columns
+        const name = el.dataset.director!;
+        this.getAllDirectorElementsByName(name).forEach(
+            (d) => (d.dataset.selected = "true"),
+        );
+    }
+
+    clearSelection() {
+        if (this.currentDirector) {
+            if (this.isDesktop) {
+                const name = this.currentDirector.dataset.director!;
+                this.getAllDirectorElementsByName(name).forEach(
+                    (d) => (d.dataset.selected = "false"),
+                );
+            } else {
+                this.currentDirector.dataset.selected = "false";
+            }
+        }
+    }
+
+    getAllDirectorElementsByName(name: string): HTMLElement[] {
+        if (this.isDesktop) {
+            return this.allDesktopDirectors.filter(
+                (d) => d.dataset.director === name,
+            );
+        }
+        return this.directors.filter((d) => d.dataset.director === name);
+    }
+
     snapToGrid() {
-        const roundedY =
-            Math.round(this.y / this.ITEM_HEIGHT) * this.ITEM_HEIGHT -
-            this.ITEM_TOP_PADDING;
+        const adjusted = this.y - this.centerOffset;
+        const snapped =
+            Math.round(adjusted / this.ITEM_HEIGHT) * this.ITEM_HEIGHT;
+        const roundedY = snapped + this.centerOffset - this.ITEM_TOP_PADDING;
 
         if (Math.abs(this.y - roundedY) > 0.1) {
             this.y = roundedY;
-            this.scrollTo(this.y);
+            this.applyScroll(this.y);
         }
     }
 
@@ -277,14 +349,22 @@ export default class DirectorsPage extends Page {
             index = this.app.store.homeLastDirectorIndex;
         }
 
+        if (this.isDesktop) {
+            this.setInitialDirectorDesktop(index);
+        } else {
+            this.setInitialDirectorMobile(index);
+        }
+    }
+
+    setInitialDirectorMobile(index: number) {
         if (index === -1) {
             const randomIndex = Math.floor(Math.random() * this.totalItems);
             index = randomIndex;
         }
 
         const initialOffset =
-            (index + this.totalItems) * -this.ITEM_HEIGHT -
-            this.ITEM_TOP_PADDING;
+            -(index + this.totalItems) * this.ITEM_HEIGHT +
+            this.centerOffset;
 
         this.y = this.wrap(initialOffset);
         gsap.set(this.list, { y: this.y });
@@ -292,36 +372,83 @@ export default class DirectorsPage extends Page {
         this.selectCurrentDirectorFromScroll();
     }
 
+    setInitialDirectorDesktop(index: number) {
+        // For desktop, use the middle column to determine initial position
+        const col1Items = this.columnDirectors[1];
+        const col1TotalUnique = col1Items.length / this.NUMBER_OF_DUPLICATES;
+
+        let colIndex: number;
+        if (index === -1) {
+            colIndex = Math.floor(Math.random() * col1TotalUnique);
+        } else {
+            // Find the closest item in column 1 by original director index
+            colIndex = 0;
+            for (let i = 0; i < col1TotalUnique; i++) {
+                if (parseInt(col1Items[i].dataset.originalIndex || "0") === index) {
+                    colIndex = i;
+                    break;
+                }
+            }
+        }
+
+        const initialOffset =
+            -(colIndex + col1TotalUnique) * this.ITEM_HEIGHT +
+            this.centerOffset;
+
+        this.y = this.columnWraps[1](initialOffset);
+
+        this.columnLists.forEach((colList) => {
+            gsap.set(colList, { y: this.y });
+        });
+
+        this.selectCurrentDirectorFromScroll();
+    }
+
     setupInfiniteScroll() {
-        this.list = this.container.querySelector(
-            "#directors-list",
-        ) as HTMLElement;
+        this.isDesktop = window.matchMedia("(min-width: 1024px)").matches;
 
         this.listWrapper = this.container.querySelector(
             "#directors-wrapper",
         ) as HTMLElement;
 
-        this.directors = this.list.querySelectorAll(".director-item");
-        this.totalItems = this.directors.length / this.NUMBER_OF_DUPLICATES;
-
         this.preventHover = false;
-
-        const allVideos = Array.from(this.directors).map((dir) => ({
-            video: dir.dataset.video!,
-            index: parseInt(dir.dataset.index!),
-        }));
-
-        // Remove duplicates
-        this.videosToLoad = Array.from(
-            new Set(allVideos.map((v) => v.video)),
-        ).map((video) => {
-            return allVideos.find((v) => v.video === video)!;
-        });
 
         // persistent store between page swaps
         if (!this.app.store.homeVideoBlobs) {
             this.app.store.homeVideoBlobs = new Map();
         }
+
+        if (this.isDesktop) {
+            this.setupDesktopScroll();
+        } else {
+            this.setupMobileScroll();
+        }
+
+        this.observer = Observer.create({
+            target: this.container,
+            type: "wheel,touch,pointer",
+            wheelSpeed: -0.25,
+            onChangeY: (self: any) => {
+                this.onScrollEvent(self);
+            },
+        });
+
+        this.setupDirectorInteractions();
+    }
+
+    setupMobileScroll() {
+        this.list = this.container.querySelector(
+            "#directors-list",
+        ) as HTMLElement;
+
+        this.directors = Array.from(
+            this.list.querySelectorAll(".director-item"),
+        );
+        this.totalItems = this.directors.length / this.NUMBER_OF_DUPLICATES;
+        this.totalDirectors = this.totalItems;
+        this.centerOffset = 0;
+
+        this.collectVideosToLoad(this.directors);
 
         // Only when NUMBER_OF_DUPLICATES is 2
         this.wrap = gsap.utils.wrap(
@@ -338,20 +465,78 @@ export default class DirectorsPage extends Page {
                 y: gsap.utils.unitize(this.wrap),
             },
         });
+    }
 
-        this.observer = Observer.create({
-            target: this.container,
-            type: "wheel,touch,pointer",
-            wheelSpeed: -0.25,
-            onChangeY: (self) => {
-                this.onScrollEvent(self);
-            },
+    setupDesktopScroll() {
+        this.columnLists = Array.from(
+            this.container.querySelectorAll(".directors-column-list"),
+        );
+
+        this.columnDirectors = this.columnLists.map((colList) =>
+            Array.from(colList.querySelectorAll(".director-item")),
+        );
+
+        this.allDesktopDirectors = this.columnDirectors.flat();
+        this.directors = this.allDesktopDirectors;
+
+        // Use the middle column's unique count for scroll calculations
+        this.totalItems =
+            this.columnDirectors[1].length / this.NUMBER_OF_DUPLICATES;
+
+        // Total unique directors across all columns (for video preload distance)
+        this.totalDirectors = this.columnDirectors.reduce(
+            (sum, col) => sum + col.length / this.NUMBER_OF_DUPLICATES,
+            0,
+        );
+
+        // Offset to vertically center the selected item in the wrapper
+        this.centerOffset =
+            this.listWrapper.offsetHeight / 2 - this.ITEM_HEIGHT / 2;
+
+        this.collectVideosToLoad(this.allDesktopDirectors);
+
+        this.columnWraps = this.columnLists.map((colList) =>
+            gsap.utils.wrap(
+                (-colList.offsetHeight / 4) * 3,
+                -colList.offsetHeight / 4,
+            ),
+        );
+
+        this.setInitialDirector();
+
+        this.columnScrollTos = this.columnLists.map((colList, i) =>
+            gsap.quickTo(colList, "y", {
+                ease: "power2",
+                duration: 0.3,
+                modifiers: {
+                    y: gsap.utils.unitize(this.columnWraps[i]),
+                },
+            }),
+        );
+    }
+
+    collectVideosToLoad(directors: HTMLElement[]) {
+        const allVideos = directors.map((dir) => ({
+            video: dir.dataset.video!,
+            index: parseInt(dir.dataset.originalIndex || dir.dataset.index!),
+        }));
+
+        this.videosToLoad = Array.from(
+            new Set(allVideos.map((v) => v.video)),
+        ).map((video) => {
+            return allVideos.find((v) => v.video === video)!;
         });
+    }
 
-        this.directors.forEach((director) => {
+    setupDirectorInteractions() {
+        const allDirectors = this.isDesktop
+            ? this.allDesktopDirectors
+            : this.directors;
+
+        allDirectors.forEach((director) => {
             director.addEventListener(
                 "click",
-                (e) => {
+                () => {
                     this.onDirectorClick(director);
                 },
                 { signal: this.abortController.signal },
@@ -363,7 +548,6 @@ export default class DirectorsPage extends Page {
                 },
                 { signal: this.abortController.signal },
             );
-
             director.addEventListener(
                 "mouseleave",
                 () => {
@@ -376,24 +560,38 @@ export default class DirectorsPage extends Page {
 
     onDirectorClick(director: HTMLElement) {
         this.preventHover = true;
-        const index = parseInt(director.dataset.index!);
-        this.setCurrentDirectorByIndex(index);
+        if (this.isDesktop) {
+            this.setCurrentDirector(director);
+        } else {
+            const index = parseInt(director.dataset.index!);
+            this.setCurrentDirectorByIndex(index);
+        }
         this.setBackgroundVideo();
     }
 
     onDirectorEnter(director: HTMLElement) {
         if (this.preventHover) return;
-        const index = parseInt(director.dataset.index!);
-        if (index === this.currentIndex) return;
-        this.setCurrentDirectorByIndex(index);
+        if (director === this.currentDirector) return;
+        if (this.isDesktop) {
+            this.setCurrentDirector(director);
+        } else {
+            const index = parseInt(director.dataset.index!);
+            if (index === this.currentIndex) return;
+            this.setCurrentDirectorByIndex(index);
+        }
         this.setBackgroundVideo();
     }
 
     onDirectorLeave(director: HTMLElement) {
         if (this.preventHover) return;
-        const index = parseInt(director.dataset.index!);
-        if (index === this.centerIndex) return;
-        this.setCurrentDirectorByIndex(this.centerIndex);
+        if (this.isDesktop) {
+            if (director.dataset.director === this.centerDirector?.dataset.director) return;
+            this.setCurrentDirector(this.centerDirector);
+        } else {
+            const index = parseInt(director.dataset.index!);
+            if (index === this.centerIndex) return;
+            this.setCurrentDirectorByIndex(this.centerIndex);
+        }
         this.setBackgroundVideo();
     }
 
@@ -406,6 +604,11 @@ export default class DirectorsPage extends Page {
         });
     }
 
+    get allLists(): HTMLElement[] {
+        if (this.isDesktop) return this.columnLists;
+        return [this.list];
+    }
+
     transitionOut({
         sourceElement,
         to,
@@ -413,19 +616,13 @@ export default class DirectorsPage extends Page {
         sourceElement: HTMLElement;
         to: string;
     }): Promise<any> | gsap.core.Timeline {
-        // save current director index to restore it when coming back to the page
+        // save current director index to restore it when coming back
         this.app.store.homeLastDirectorIndex = this.currentIndex;
 
         this.swapTl = gsap.timeline({ paused: true });
 
-        if (to === "work") {
-            this.swapTl.to(this.list, {
-                opacity: 0,
-                duration: 0.4,
-                ease: "power2.out",
-            });
-        } else if (to === "director") {
-            this.swapTl.to(this.list, {
+        if (to === "work" || to === "director") {
+            this.swapTl.to(this.allLists, {
                 opacity: 0,
                 duration: 0.4,
                 ease: "power2.out",
@@ -445,8 +642,7 @@ export default class DirectorsPage extends Page {
         this.swapTl = gsap.timeline({ paused: true });
 
         if (this.previousPage?.template === "director") {
-            const list = this.container.querySelectorAll("#directors-list");
-            this.swapTl.to(list, {
+            this.swapTl.to(this.allLists, {
                 opacity: 1,
                 duration: 0.4,
                 ease: "power2.out",
@@ -478,8 +674,10 @@ export default class DirectorsPage extends Page {
             "#directors-wrapper",
         ) as HTMLElement;
         if (this.previousPage?.template === "director") {
-            const list = this.container.querySelectorAll("#directors-list");
-            gsap.set(list, { opacity: 0 });
+            const lists = this.container.querySelectorAll(
+                "#directors-list, .directors-column-list",
+            );
+            gsap.set(lists, { opacity: 0 });
         } else {
             gsap.set(this.container, { opacity: 0 });
         }
