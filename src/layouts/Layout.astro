@@ -9,6 +9,7 @@ import Loader from "../components/global/Loader.astro";
 import Grid from "../components/global/Grid.astro";
 import Seo from "../components/global/Seo.astro";
 
+import CookieBanner from "../components/global/CookieBanner.astro";
 import isPreview from "../utils/isPreview";
 
 const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
@@ -19,6 +20,18 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
+        <!-- Google Consent Mode v2 — defaults BEFORE GTM loads -->
+        <script is:inline>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            wait_for_update: 500,
+        });
+        </script>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -48,6 +61,7 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
         <slot />
         <Loader />
         {isPreview() && <Grid />}
+        <CookieBanner />
         <div
             id="data"
             class="pointer-events-none hidden"
@@ -61,4 +75,12 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 
     const app = new Zauberberg();
     app.init();
+
+    document.addEventListener("astro:page-load", () => {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "gtm.historyChange",
+            "gtm.newUrl": window.location.href,
+        });
+    });
 </script>
