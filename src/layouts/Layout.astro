@@ -61,4 +61,12 @@ const { layout, template, seoMetaTags, slugToModelApiKeyMap } = Astro.props;
 
     const app = new Zauberberg();
     app.init();
+
+    document.addEventListener("astro:page-load", () => {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "gtm.historyChange",
+            "gtm.newUrl": window.location.href,
+        });
+    });
 </script>
