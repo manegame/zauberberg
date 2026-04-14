@@ -21,15 +21,6 @@ directors.forEach((director: any) => {
 await Promise.all(rssVideoPromises);
 
 const directorsWithDuplicate = [...directors, ...directors];
-
-// Split directors into 3 interleaved columns for desktop
-const col0 = directors.filter((_: any, i: number) => i % 3 === 0);
-const col1 = directors.filter((_: any, i: number) => i % 3 === 1);
-const col2 = directors.filter((_: any, i: number) => i % 3 === 2);
-
-const col0Duplicated = [...col0, ...col0];
-const col1Duplicated = [...col1, ...col1];
-const col2Duplicated = [...col2, ...col2];
 ---
 
 <div
@@ -53,10 +44,9 @@ const col2Duplicated = [...col2, ...col2];
         >
         </video>
     </div>
-    <div class="absolute inset-0 z-1 max-lg:mask-(--masking-edge-gradient) lg:mask-(--masking-edge-gradient-desktop)">
-        <div id="directors-wrapper" class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2 overflow-hidden lg:h-[65dvh]">
-            <!-- Mobile: single column -->
-            <div id="directors-list" class="text-nav flex w-full flex-col items-center lg:hidden">
+    <div class="absolute inset-0 z-1 max-lg:mask-(--masking-edge-gradient)">
+        <div id="directors-wrapper" class="absolute top-[50%] right-0 left-0 h-18 -translate-y-1/2">
+            <div id="directors-list" class="text-nav flex w-full flex-col items-center">
                 {
                     directorsWithDuplicate.map((director, index) => (
                         <div
@@ -78,88 +68,6 @@ const col2Duplicated = [...col2, ...col2];
                         </div>
                     ))
                 }
-            </div>
-
-            <!-- Desktop: three columns -->
-            <div id="directors-columns" class="hidden h-full w-full justify-center gap-40 lg:flex">
-                <div class="directors-column h-full overflow-hidden">
-                    <div class="directors-column-list text-nav flex w-full flex-col items-center" data-column="0">
-                        {
-                            col0Duplicated.map((director, index) => (
-                                <div
-                                    data-video={director.showcase.video?.url}
-                                    data-poster={director.showcase.poster?.url}
-                                    data-color={director.color.hex}
-                                    data-index={index}
-                                    data-original-index={directors.indexOf(director)}
-                                    data-slug={director.slug}
-                                    data-director={director.name}
-                                    data-selected="false"
-                                    data-center="false"
-                                    class="director-item h-20"
-                                >
-                                    <DatoLink class="relative" link={{ internalLink: director }}>
-                                        <span class="opacity-30 transition-opacity duration-200 in-data-[selected=true]:opacity-100">
-                                            {director.name}
-                                        </span>
-                                    </DatoLink>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div class="directors-column h-full overflow-hidden">
-                    <div class="directors-column-list text-nav flex w-full flex-col items-center" data-column="1">
-                        {
-                            col1Duplicated.map((director, index) => (
-                                <div
-                                    data-video={director.showcase.video?.url}
-                                    data-poster={director.showcase.poster?.url}
-                                    data-color={director.color.hex}
-                                    data-index={index}
-                                    data-original-index={directors.indexOf(director)}
-                                    data-slug={director.slug}
-                                    data-director={director.name}
-                                    data-selected="false"
-                                    data-center="false"
-                                    class="director-item h-20"
-                                >
-                                    <DatoLink class="relative" link={{ internalLink: director }}>
-                                        <span class="opacity-30 transition-opacity duration-200 in-data-[selected=true]:opacity-100">
-                                            {director.name}
-                                        </span>
-                                    </DatoLink>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div class="directors-column h-full overflow-hidden">
-                    <div class="directors-column-list text-nav flex w-full flex-col items-center" data-column="2">
-                        {
-                            col2Duplicated.map((director, index) => (
-                                <div
-                                    data-video={director.showcase.video?.url}
-                                    data-poster={director.showcase.poster?.url}
-                                    data-color={director.color.hex}
-                                    data-index={index}
-                                    data-original-index={directors.indexOf(director)}
-                                    data-slug={director.slug}
-                                    data-director={director.name}
-                                    data-selected="false"
-                                    data-center="false"
-                                    class="director-item h-20"
-                                >
-                                    <DatoLink class="relative" link={{ internalLink: director }}>
-                                        <span class="opacity-30 transition-opacity duration-200 in-data-[selected=true]:opacity-100">
-                                            {director.name}
-                                        </span>
-                                    </DatoLink>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
             </div>
         </div>
     </div>
