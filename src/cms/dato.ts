@@ -142,7 +142,7 @@ export const getAllPagesAndLayout = async () => {
 };
 
 export const pagesSlugToModelApiKeyMap = (pagesData: any) => {
-    const slugMap = Object.values(pagesData).reduce(
+    const slugMap: { [key: string]: any } = Object.values(pagesData).reduce(
         (acc: { [key: string]: any }, page) => {
             if (!page) return acc;
 
@@ -158,6 +158,8 @@ export const pagesSlugToModelApiKeyMap = (pagesData: any) => {
         },
         {},
     );
+
+    slugMap["directors"] = "directors_grid";
 
     return slugMap;
 };
