@@ -25,13 +25,18 @@ const initialHide = TEMPLATES_WITH_HIDDEN_NAVIGATION.includes(template);
             class="navigation-items-wrapper pointer-events-auto flex items-center overflow-hidden"
         >
             {
-                data.links.map((link: any) => (
-                    <DatoLink
-                        style={{ transform: initialHide ? "translateY(-100%)" : "translateY(0)" }}
-                        class="text-nav-mobile navigation-item xl:text-nav-desktop block px-5 py-10 opacity-30 transition-opacity duration-150 hover:opacity-100 [&.link-current]:opacity-100"
-                        link={link}
-                    />
-                ))
+                data.links.map((link: any) => {
+                    const isDirectorsGridLink =
+                        link.internalLink?._modelApiKey === "directors_page";
+                    return (
+                        <DatoLink
+                            style={{ transform: initialHide ? "translateY(-100%)" : "translateY(0)" }}
+                            class="text-nav-mobile navigation-item xl:text-nav-desktop block px-5 py-10 opacity-30 transition-opacity duration-150 hover:opacity-100 [&.link-current]:opacity-100"
+                            data-directors-grid-link={isDirectorsGridLink ? "true" : undefined}
+                            link={link}
+                        />
+                    );
+                })
             }
         </div>
     </header>

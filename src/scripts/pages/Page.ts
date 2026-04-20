@@ -109,8 +109,13 @@ export default class Page {
 
     updateHeaderActiveItem(navigation: HTMLElement) {
         const items = navigation.querySelectorAll(".navigation-item");
+        const isMobile = window.matchMedia("(max-width: 1023px)").matches;
 
         items.forEach((item) => {
+            if (item.hasAttribute("data-directors-grid-link")) {
+                item.setAttribute("href", isMobile ? "/" : "/directors");
+            }
+
             const src = item.getAttribute("href");
             const subslugs =
                 item.getAttribute("data-subslugs")?.split(",") || [];

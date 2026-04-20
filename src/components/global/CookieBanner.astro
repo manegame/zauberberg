@@ -9,7 +9,7 @@
     aria-label="Cookie consent"
 >
     <div class="flex items-center gap-10 overflow-hidden whitespace-nowrap" style="transform-origin: right center; transform: rotate(-90deg) translateX(50%);">
-        <p class="text-nav-mobile cookie-text opacity-60" style="translate: 0 100%;">
+        <p class="text-nav-mobile cookie-text opacity-60">
             This site uses cookies.
         </p>
         <div class="flex shrink-0 gap-8 overflow-hidden">
@@ -46,7 +46,7 @@
 </div>
 
 <script is:inline>
-    (function () {
+    const checkCookieBanner = () => {
         var CONSENT_KEY = "cookie_consent";
 
         function updateGTMConsent(value) {
@@ -86,10 +86,12 @@
 
         var consent = localStorage.getItem(CONSENT_KEY);
 
-        if (consent === "granted") {
-            updateGTMConsent("granted");
-        } else if (consent === "denied") {
-            updateGTMConsent("denied");
+        if (consent === "granted" || consent === "denied") {
+            updateGTMConsent(consent);
+            var mobile = document.getElementById("cookie-banner-mobile");
+            var desktop = document.getElementById("cookie-banner-desktop");
+            if (mobile) mobile.style.display = "none";
+            if (desktop) desktop.style.display = "none";
         } else {
             setTimeout(showBanner, 1000);
         }
@@ -109,5 +111,9 @@
                 hideBanner();
             });
         });
-    })();
+    };
+
+    checkCookieBanner();
+
+    document.addEventListener("astro:page-load", checkCookieBanner);
 </script>
