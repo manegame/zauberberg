@@ -85,7 +85,11 @@ export default class SwapManager {
         this.app.setCurrentPage(this.page);
         this.app.scroll.lenis.start();
 
-        await this.page.init();
+        try {
+            await this.page.init();
+        } catch (error) {
+            console.error("Page init failed during swap; forcing transitionIn to avoid stuck invisible page", error);
+        }
 
         this.page.transitionIn();
     }

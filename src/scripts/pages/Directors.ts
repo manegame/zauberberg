@@ -121,7 +121,14 @@ export default class DirectorsPage extends Page {
         });
 
         const firstVideoUrl = this.currentDirector.dataset.video!;
-        await this.fetchVideoAsBlob(firstVideoUrl);
+
+        try {
+            await this.fetchVideoAsBlob(firstVideoUrl);
+        } catch (error) {
+            if ((error as any)?.name !== "AbortError") {
+                console.warn("First video blob fetch failed, falling back to direct URL", error);
+            }
+        }
 
         this.videoEl.src =
             this.app.store.homeVideoBlobs.get(firstVideoUrl) || firstVideoUrl;
